@@ -1,8 +1,12 @@
+require 'bundler'
+Bundler.setup
+
 require 'rspec/core/rake_task'
 require 'active_support/core_ext/string'
 require 'ncs_navigator/mdes'
 
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift File.expand_path('../generated_models', __FILE__)
 require 'ncs_navigator/warehouse'
 
 RSpec::Core::RakeTask.new do |t|
