@@ -1,3 +1,4 @@
+require 'data_mapper'
 require 'ncs_navigator/warehouse'
 
 module NcsNavigator::Warehouse

@@ -1,10 +1,22 @@
 require 'active_support/core_ext/string'
+require 'active_support/ordered_hash'
 
 ##
 # Extensions to the models provided by the ncs_mdes gem to assist in
 # model generation.
 module NcsNavigator
   module Mdes
+    ##
+    # Extends ActiveSupport's OrderedHash to produce an inspection
+    # which is valid ruby and which preserves the order.
+    #
+    # @private
+    class OrderedHash < ActiveSupport::OrderedHash
+      def inspect
+        '{ ' << keys.collect { |k| "#{k.inspect} => #{self[k].inspect}" }.join(', ') << ' }'
+      end
+    end
+
     class TransmissionTable
       def wh_model_name(module_name=nil)
         [module_name, name.camelize].compact.join('::')
@@ -41,12 +53,12 @@ module NcsNavigator
       def wh_property_options(in_table)
         @wh_property_options ||=
           begin
-            options = {}
-            options[:required] = true if required
-            options[:pii] = pii if pii
+            options = OrderedHash.new
             if in_table.wh_keys.include?(self)
               options[:key] = true
             end
+            options[:required] = true if required
+            options[:pii] = pii if pii
             options.merge(type.wh_type_options)
           end
       end
@@ -66,7 +78,7 @@ module NcsNavigator
       def wh_type_options
         @wh_type_options ||=
           begin
-            options = {}
+            options = OrderedHash.new
             options[:length] = (wh_min_length..wh_max_length) if wh_max_length
             options[:set] = code_list.collect(&:value) if code_list
             options[:format] = pattern if pattern

@@ -46,10 +46,14 @@ module NcsNavigator::Warehouse
     let(:model_class) { Spec::ModeledTables::GenerationalTableau }
     let(:model_property) { model_class.properties[variable_name] }
 
-    let(:path) { tmpdir('modeled_tables') }
+    let(:path) { tmpdir }
+
+    let(:options) {
+      { :module => Spec::ModeledTables, :path => path }
+    }
 
     subject {
-      TableModeler.new(tables, :module => Spec::ModeledTables, :path => path)
+      TableModeler.new(tables, options)
     }
 
     after do
@@ -64,13 +68,32 @@ module NcsNavigator::Warehouse
 
     it 'writes the model into the expected file' do
       subject.generate!
-      expected_path = File.join(path, 'generational_tableau.rb')
+      expected_path =
+        File.join(path, 'ncs_navigator/warehouse/spec/modeled_tables', 'generational_tableau.rb')
       File.exist?(expected_path).should be_true
     end
 
     it 'produces a model with all the properties except for transaction_type' do
       subject.load!
       model_class.properties.collect(&:name).should == [:tableau_id, :age_span]
+    end
+
+    describe 'the main entry file' do
+      before do
+        subject.generate!
+        expected_path = File.join(path, 'ncs_navigator/warehouse/spec/modeled_tables.rb')
+        @contents = File.read(expected_path).strip
+      end
+
+      it 'requires all the models' do
+        @contents.should =~
+          %r{require 'ncs_navigator/warehouse/spec/modeled_tables/generational_tableau'$}
+      end
+
+      it 'defines the module' do
+        @contents.should =~
+          %r{module NcsNavigator; module Warehouse; module Spec; module ModeledTables; end; end; end; end;}
+      end
     end
 
     describe 'validation' do
@@ -414,6 +437,44 @@ module NcsNavigator::Warehouse
 
       it 'does not raise any errors' do
         lambda { subject.model! }.should_not raise_error
+      end
+    end
+
+    describe '#initialize' do
+      describe 'of path' do
+        it 'is mandatory' do
+          options.delete(:path)
+          lambda { subject }.should raise_error(/path/)
+        end
+
+        it 'appends a patherized version of the module name' do
+          options.merge!(:path => '.', :module => 'Foo::Ncs::Things')
+          subject.path.should == './foo/ncs/things'
+        end
+      end
+
+      describe 'of module_name' do
+        it 'is mandatory' do
+          options.delete :module
+          lambda { subject }.should raise_error(/module/)
+        end
+      end
+    end
+
+    describe '.for_version' do
+      it 'derives the module name from the version' do
+        TableModeler.for_version('1.2', :path => '.').module_name.
+          should == 'NcsNavigator::Warehouse::Models::OnePointTwo'
+      end
+
+      it 'prepends the specified path if any' do
+        TableModeler.for_version('1.2', :path => 'quux/zap/').path.
+          should == 'quux/zap/ncs_navigator/warehouse/models/one_point_two'
+      end
+
+      it 'takes the tables from the appropriate ncs_mdes Specification' do
+        TableModeler.for_version('2.0', :path => '.').tables.collect(&:name).
+          should == NcsNavigator::Mdes('2.0').transmission_tables.collect(&:name)
       end
     end
   end
