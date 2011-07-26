@@ -1,0 +1,14 @@
+require 'data_mapper'
+require 'ncs_navigator/warehouse'
+
+class <%= t.wh_model_name(module_name) %>
+  include DataMapper::Resource
+
+<% t.wh_variables.each do |v| -%>
+  property :<%= v.name %>, <%= v.type.wh_property_type %>, <%= v.wh_property_options(t).inspect %>
+<% end -%>
+
+<% t.wh_manual_validations.each do |manual_validation| -%>
+  <%= manual_validation %>
+<% end -%>
+end
