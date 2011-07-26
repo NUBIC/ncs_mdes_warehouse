@@ -358,6 +358,54 @@ module NcsNavigator::Warehouse
       end
     end
 
+    describe 'foreign key creation' do
+      let(:parent_table) do
+        NcsNavigator::Mdes::TransmissionTable.new('tree').tap do |t|
+          t.variables = [
+            NcsNavigator::Mdes::Variable.new('tree_id').tap do |v|
+              v.type = NcsNavigator::Mdes::VariableType.new('primaryKeyType').tap do |vt|
+                vt.base_type = :string
+              end
+              v.required = true
+            end
+          ]
+        end
+      end
+
+      before do
+        table.variables << NcsNavigator::Mdes::Variable.new('some_tree_id').tap do |v|
+          v.table_reference = parent_table
+          v.type = NcsNavigator::Mdes::VariableType.new('foreignKeyRequiredType').tap do |vt|
+            vt.base_type = :string
+          end
+        end
+        tables << parent_table
+
+        subject.load!
+      end
+
+      describe 'from child to parent' do
+        let(:relationship) { model_class.relationships.first }
+
+        it 'has the correct child key' do
+          relationship.child_key.collect(&:name).should == [:some_tree_id]
+        end
+
+        it 'has the correct parent key' do
+          relationship.parent_key.collect(&:name).should == [:tree_id]
+        end
+
+        it 'has the expected accessor name' do
+          model_class.instance_methods.should include('some_tree')
+        end
+
+        it 'has the expected parent model name' do
+          relationship.parent_model_name.should ==
+            'NcsNavigator::Warehouse::Spec::ModeledTables::Tree'
+        end
+      end
+    end
+
     describe 'with the real MDES', :slow do
       before do
         tables.clear
