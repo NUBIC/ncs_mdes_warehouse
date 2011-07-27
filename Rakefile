@@ -1,5 +1,4 @@
-require 'bundler'
-Bundler.setup
+require 'bundler/gem_tasks'
 
 require 'rspec/core/rake_task'
 require 'active_support/core_ext/string'
