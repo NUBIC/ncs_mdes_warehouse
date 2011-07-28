@@ -74,9 +74,9 @@ module NcsNavigator::Warehouse
 
     def generate_main_library_file!
       File.open("#{path}.rb", 'w') do |f|
-        parts = module_name.split('::')
-        f.puts(
-          parts.collect { |p| "module #{p};" }.join(' ') + ' ' + parts.collect { "end;" }.join(' '))
+        f.puts(generate_code_in_module do
+          'extend NcsNavigator::Warehouse::Models::MdesModelCollection'
+        end)
 
         f.puts
         @generated_requires.each do |fn|
@@ -84,8 +84,30 @@ module NcsNavigator::Warehouse
         end
 
         f.puts
+        f.puts(generate_code_in_module do
+          "mdes_order #{tables.collect(&:wh_model_name).join(",\n  ")}"
+        end)
+
+        f.puts
         f.puts '::DataMapper.finalize'
       end
+    end
+
+    def generate_code_in_module(indent='  ')
+      s = ''
+      parts = module_name.split('::')
+      s <<
+        parts.each_with_index.collect { |p, i|
+        "#{indent * i}module #{p}"
+      }.join("\n")
+
+      full_indent = "\n#{indent * parts.size}"
+      s << full_indent << yield.split("\n").join(full_indent) << "\n"
+
+      s <<
+        parts.each_with_index.collect { |p, i|
+        "#{indent * (parts.size - i - 1)}end"
+      }.join("\n")
     end
 
     def model_template

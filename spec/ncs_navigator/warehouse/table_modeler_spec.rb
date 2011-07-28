@@ -95,9 +95,24 @@ module NcsNavigator::Warehouse
           %r{require 'ncs_navigator/warehouse/spec/modeled_tables/generational_tableau'$}
       end
 
-      it 'defines the module' do
+      it 'sets the model order' do
         @contents.should =~
-          %r{module NcsNavigator; module Warehouse; module Spec; module ModeledTables; end; end; end; end;}
+          %r{mdes_order GenerationalTableau}
+      end
+
+      it 'defines the module' do
+        expected = (<<-MOD).strip
+module NcsNavigator
+  module Warehouse
+    module Spec
+      module ModeledTables
+        extend NcsNavigator::Warehouse::Models::MdesModelCollection
+      end
+    end
+  end
+end
+        MOD
+@contents.should include(expected)
       end
     end
 
