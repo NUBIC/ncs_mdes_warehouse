@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module <%= module_name %>
   class <%= t.wh_model_name %>
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
 <% t.wh_variables.each do |v| -%>
 <% if v.table_reference -%>
@@ -16,6 +17,8 @@ module <%= module_name %>
                <%= v.wh_property_options(t).inspect %>
 <% end -%>
 <% end -%>
+
+    mdes_order :<%= t.wh_variables.collect { |v| v.name }.join(', :') %>
 
 <% t.wh_manual_validations.each do |manual_validation| -%>
     <%= manual_validation %>

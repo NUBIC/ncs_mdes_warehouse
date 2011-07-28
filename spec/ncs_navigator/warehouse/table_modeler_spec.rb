@@ -78,6 +78,11 @@ module NcsNavigator::Warehouse
       model_class.properties.collect(&:name).should == [:tableau_id, :age_span]
     end
 
+    it 'produces a model with the mdes_order set' do
+      subject.load!
+      model_class.mdes_order.should == [:tableau_id, :age_span]
+    end
+
     describe 'the main entry file' do
       before do
         subject.generate!
@@ -461,7 +466,7 @@ module NcsNavigator::Warehouse
       end
     end
 
-    describe '.for_version' do
+    describe '.for_version', :slow do
       it 'derives the module name from the version' do
         TableModeler.for_version('1.2', :path => '.').module_name.
           should == 'NcsNavigator::Warehouse::Models::OnePointTwo'
