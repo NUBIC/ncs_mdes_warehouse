@@ -14,10 +14,10 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :spsc,
                'NcsNavigator::Warehouse::Models::TwoPointZero::SpecSpscInfo',
-               :child_key => [ :spsc_id ]
+               :child_key => [ :spsc_id ], :required => true
     belongs_to :staff,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
-               :child_key => [ :staff_id ]
+               :child_key => [ :staff_id ], :required => true
     property   :shipper_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..36 }

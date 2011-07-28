@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :pv2,
                'NcsNavigator::Warehouse::Models::TwoPointZero::PregVisit22',
-               :child_key => [ :pv2_id ]
+               :child_key => [ :pv2_id ], :required => true
     property   :cool,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-5", "-1", "-2", "-4"] }

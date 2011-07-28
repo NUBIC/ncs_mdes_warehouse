@@ -14,10 +14,10 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :srsc,
                'NcsNavigator::Warehouse::Models::TwoPointZero::SrscInfo',
-               :child_key => [ :srsc_id ]
+               :child_key => [ :srsc_id ], :required => true
     belongs_to :staff,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
-               :child_key => [ :staff_id ]
+               :child_key => [ :staff_id ], :required => true
     property   :shipper_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..36 }
@@ -38,7 +38,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => :possible, :length => 0..255 }
     belongs_to :staff_id_track,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
-               :child_key => [ :staff_id_track ]
+               :child_key => [ :staff_id_track ], :required => false
     property   :sample_shipped_by,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-4"] }

@@ -14,13 +14,13 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :p,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Participant',
-               :child_key => [ :p_id ]
+               :child_key => [ :p_id ], :required => true
     belongs_to :contact,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Contact',
-               :child_key => [ :contact_id ]
+               :child_key => [ :contact_id ], :required => true
     belongs_to :provider,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Provider',
-               :child_key => [ :provider_id ]
+               :child_key => [ :provider_id ], :required => true
     property   :auth_form_type,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-5", "-4"] }

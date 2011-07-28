@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :staff_weekly_expense,
                'NcsNavigator::Warehouse::Models::TwoPointZero::StaffWeeklyExpense',
-               :child_key => [ :staff_weekly_expense_id ]
+               :child_key => [ :staff_weekly_expense_id ], :required => true
     property   :mgmt_task_type,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "-5", "-4"] }

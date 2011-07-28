@@ -14,10 +14,10 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :srsc,
                'NcsNavigator::Warehouse::Models::TwoPointZero::SrscInfo',
-               :child_key => [ :srsc_id ]
+               :child_key => [ :srsc_id ], :required => true
     belongs_to :staff,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
-               :child_key => [ :staff_id ]
+               :child_key => [ :staff_id ], :required => true
     property   :sample_condition,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "-5", "-4"] }
@@ -32,7 +32,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-4"] }
     belongs_to :equip,
                'NcsNavigator::Warehouse::Models::TwoPointZero::EnvEquipment',
-               :child_key => [ :equip_id ]
+               :child_key => [ :equip_id ], :required => true
     property   :placed_in_storage_dt,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..16, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9])?$/ }

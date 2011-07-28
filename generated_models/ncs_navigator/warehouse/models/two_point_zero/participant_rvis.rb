@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :p,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Participant',
-               :child_key => [ :p_id ]
+               :child_key => [ :p_id ], :required => true
     property   :rvis_language,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "-1", "-5", "-6", "-4"] }
@@ -23,7 +23,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => :possible, :length => 0..255 }
     belongs_to :rvis_person,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
-               :child_key => [ :rvis_person ]
+               :child_key => [ :rvis_person ], :required => false
     property   :rvis_who_consented,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
@@ -32,7 +32,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-4"] }
     belongs_to :contact,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Contact',
-               :child_key => [ :contact_id ]
+               :child_key => [ :contact_id ], :required => true
     property   :time_stamp_1,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }

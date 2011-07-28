@@ -14,22 +14,22 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :contact,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Contact',
-               :child_key => [ :contact_id ]
+               :child_key => [ :contact_id ], :required => true
     belongs_to :event,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Event',
-               :child_key => [ :event_id ]
+               :child_key => [ :event_id ], :required => false
     belongs_to :instrument,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Instrument',
-               :child_key => [ :instrument_id ]
+               :child_key => [ :instrument_id ], :required => false
     belongs_to :staff,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
-               :child_key => [ :staff_id ]
+               :child_key => [ :staff_id ], :required => true
     belongs_to :person,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
-               :child_key => [ :person_id ]
+               :child_key => [ :person_id ], :required => false
     belongs_to :provider,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Provider',
-               :child_key => [ :provider_id ]
+               :child_key => [ :provider_id ], :required => false
 
     mdes_order :psu_id, :contact_link_id, :contact_id, :event_id, :instrument_id, :staff_id, :person_id, :provider_id
 

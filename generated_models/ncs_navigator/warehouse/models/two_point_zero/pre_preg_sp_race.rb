@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :pp,
                'NcsNavigator::Warehouse::Models::TwoPointZero::PrePreg',
-               :child_key => [ :pp_id ]
+               :child_key => [ :pp_id ], :required => true
     property   :sp_race,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-5", "-1", "-2", "-3", "-4"] }

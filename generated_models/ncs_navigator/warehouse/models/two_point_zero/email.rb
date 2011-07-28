@@ -14,13 +14,13 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :person,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
-               :child_key => [ :person_id ]
+               :child_key => [ :person_id ], :required => false
     belongs_to :institute,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Institution',
-               :child_key => [ :institute_id ]
+               :child_key => [ :institute_id ], :required => false
     belongs_to :provider,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Provider',
-               :child_key => [ :provider_id ]
+               :child_key => [ :provider_id ], :required => false
     property   :email,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..100 }

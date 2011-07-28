@@ -77,7 +77,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-7", "-4"] }
     belongs_to :new_address,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Address',
-               :child_key => [ :new_address_id ]
+               :child_key => [ :new_address_id ], :required => false
     property   :when_move,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-6", "-7", "-4"] }

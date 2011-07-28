@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :ps_hi,
                'NcsNavigator::Warehouse::Models::TwoPointZero::PregScreenHi',
-               :child_key => [ :ps_hi_id ]
+               :child_key => [ :ps_hi_id ], :required => true
     property   :race,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-5", "-1", "-2", "-3", "-4"] }

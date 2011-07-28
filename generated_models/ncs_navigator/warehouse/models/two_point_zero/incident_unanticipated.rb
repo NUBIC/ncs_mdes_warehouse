@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :incident,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Incident',
-               :child_key => [ :incident_id ]
+               :child_key => [ :incident_id ], :required => true
     property   :inc_unanticipated,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }

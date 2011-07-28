@@ -14,10 +14,10 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :ssu,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Ssu',
-               :child_key => [ :ssu_id ]
+               :child_key => [ :ssu_id ], :required => true
     belongs_to :tsu,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Tsu',
-               :child_key => [ :tsu_id ]
+               :child_key => [ :tsu_id ], :required => false
     property   :list_line,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }

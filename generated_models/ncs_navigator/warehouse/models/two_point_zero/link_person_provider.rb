@@ -14,10 +14,10 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :provider,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Provider',
-               :child_key => [ :provider_id ]
+               :child_key => [ :provider_id ], :required => true
     belongs_to :person,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
-               :child_key => [ :person_id ]
+               :child_key => [ :person_id ], :required => true
     property   :is_active,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-4"] }

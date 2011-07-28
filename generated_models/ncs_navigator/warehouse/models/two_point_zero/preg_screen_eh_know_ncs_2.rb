@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :ps_eh,
                'NcsNavigator::Warehouse::Models::TwoPointZero::PregScreenEh2',
-               :child_key => [ :ps_eh_id ]
+               :child_key => [ :ps_eh_id ], :required => true
     property   :how_know_ncs,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "-5", "-1", "-2", "-3", "-4"] }

@@ -17,7 +17,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "-5", "-1", "-2", "-4"] }
     belongs_to :bv,
                'NcsNavigator::Warehouse::Models::TwoPointZero::BirthVisit',
-               :child_key => [ :bv_id ]
+               :child_key => [ :bv_id ], :required => true
 
     mdes_order :psu_id, :bv_decorate_room_id, :decorate_room, :bv_id
 

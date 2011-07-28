@@ -14,10 +14,10 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :hhenum,
                'NcsNavigator::Warehouse::Models::TwoPointZero::HouseholdEnumeration',
-               :child_key => [ :hhenum_id ]
+               :child_key => [ :hhenum_id ], :required => true
     belongs_to :p,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Participant',
-               :child_key => [ :p_id ]
+               :child_key => [ :p_id ], :required => true
     property   :p_age,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }

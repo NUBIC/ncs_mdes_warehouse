@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :person,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
-               :child_key => [ :person_id ]
+               :child_key => [ :person_id ], :required => true
     property   :race,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-1", "-6", "-5", "-4"] }

@@ -14,16 +14,16 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :contact,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Contact',
-               :child_key => [ :contact_id ]
+               :child_key => [ :contact_id ], :required => true
     property   :nir,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
     belongs_to :du,
                'NcsNavigator::Warehouse::Models::TwoPointZero::DwellingUnit',
-               :child_key => [ :du_id ]
+               :child_key => [ :du_id ], :required => false
     belongs_to :person,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
-               :child_key => [ :person_id ]
+               :child_key => [ :person_id ], :required => false
     property   :nir_vac_info,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-5", "-7", "-4"] }

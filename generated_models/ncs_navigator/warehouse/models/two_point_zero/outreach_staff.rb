@@ -14,10 +14,10 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :outreach_event,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Outreach',
-               :child_key => [ :outreach_event_id ]
+               :child_key => [ :outreach_event_id ], :required => true
     belongs_to :staff,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
-               :child_key => [ :staff_id ]
+               :child_key => [ :staff_id ], :required => true
 
     mdes_order :psu_id, :outreach_event_staff_id, :outreach_event_id, :staff_id
 

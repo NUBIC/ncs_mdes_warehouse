@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :p,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Participant',
-               :child_key => [ :p_id ]
+               :child_key => [ :p_id ], :required => true
     property   :consent_version,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..9 }
@@ -53,13 +53,13 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => :possible, :length => 0..255 }
     belongs_to :person_who_consented,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
-               :child_key => [ :person_who_consented_id ]
+               :child_key => [ :person_who_consented_id ], :required => false
     property   :who_consented,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
     belongs_to :person_wthdrw_consent,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
-               :child_key => [ :person_wthdrw_consent_id ]
+               :child_key => [ :person_wthdrw_consent_id ], :required => false
     property   :who_wthdrw_consent,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "-7", "-4"] }
@@ -71,7 +71,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => :possible, :length => 0..8000 }
     belongs_to :contact,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Contact',
-               :child_key => [ :contact_id ]
+               :child_key => [ :contact_id ], :required => false
     property   :reconsideration_script_use,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-7", "-4"] }

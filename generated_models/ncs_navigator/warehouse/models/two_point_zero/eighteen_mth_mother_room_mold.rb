@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :eighteen_mth_mother,
                'NcsNavigator::Warehouse::Models::TwoPointZero::EighteenMthMother',
-               :child_key => [ :eighteen_mth_mother_id ]
+               :child_key => [ :eighteen_mth_mother_id ], :required => true
     property   :room_mold,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "-5", "-1", "-2", "-4"] }

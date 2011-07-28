@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :p,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Participant',
-               :child_key => [ :p_id ]
+               :child_key => [ :p_id ], :required => true
     property   :vis_consent_type,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-4"] }
@@ -29,7 +29,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => :possible, :length => 0..255 }
     belongs_to :vis_person_who_consented,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
-               :child_key => [ :vis_person_who_consented_id ]
+               :child_key => [ :vis_person_who_consented_id ], :required => false
     property   :vis_who_consented,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
@@ -41,7 +41,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => :possible, :length => 0..8000 }
     belongs_to :contact,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Contact',
-               :child_key => [ :contact_id ]
+               :child_key => [ :contact_id ], :required => false
 
     mdes_order :psu_id, :pid_visit_consent_id, :p_id, :vis_consent_type, :vis_consent_response, :vis_language, :vis_language_oth, :vis_person_who_consented_id, :vis_who_consented, :vis_translate, :vis_comments, :contact_id
 

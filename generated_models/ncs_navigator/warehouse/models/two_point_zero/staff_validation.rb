@@ -14,10 +14,10 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :staff,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
-               :child_key => [ :staff_id ]
+               :child_key => [ :staff_id ], :required => true
     belongs_to :event,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Event',
-               :child_key => [ :event_id ]
+               :child_key => [ :event_id ], :required => true
     property   :staff_validate,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-7", "-4"] }

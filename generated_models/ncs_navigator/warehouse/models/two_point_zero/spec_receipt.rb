@@ -14,10 +14,10 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :spsc,
                'NcsNavigator::Warehouse::Models::TwoPointZero::SpecSpscInfo',
-               :child_key => [ :spsc_id ]
+               :child_key => [ :spsc_id ], :required => true
     belongs_to :staff,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
-               :child_key => [ :staff_id ]
+               :child_key => [ :staff_id ], :required => true
     property   :receipt_comment,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "-7", "-4"] }
@@ -65,7 +65,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :length => 0..36 }
     belongs_to :equip,
                'NcsNavigator::Warehouse::Models::TwoPointZero::SpecEquipment',
-               :child_key => [ :equip_id ]
+               :child_key => [ :equip_id ], :required => false
 
     mdes_order :psu_id, :specimen_id, :spsc_id, :staff_id, :receipt_comment, :receipt_comment_oth, :receipt_dt, :cooler_temp, :monitor_status, :upper_trigger, :upper_trigger_lvl, :lower_trigger_cold, :lower_trigger_ambient, :storage_container_id, :centrifuge_comment, :centrifuge_comment_oth, :centrifuge_st, :centrifuge_et, :centrifuge_staff_id, :equip_id
 

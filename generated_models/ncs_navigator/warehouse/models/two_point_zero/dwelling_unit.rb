@@ -14,13 +14,13 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :list,
                'NcsNavigator::Warehouse::Models::TwoPointZero::ListingUnit',
-               :child_key => [ :list_id ]
+               :child_key => [ :list_id ], :required => false
     belongs_to :tsu,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Tsu',
-               :child_key => [ :tsu_id ]
+               :child_key => [ :tsu_id ], :required => false
     belongs_to :ssu,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Ssu',
-               :child_key => [ :ssu_id ]
+               :child_key => [ :ssu_id ], :required => false
     property   :duplicate_du,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-4"] }

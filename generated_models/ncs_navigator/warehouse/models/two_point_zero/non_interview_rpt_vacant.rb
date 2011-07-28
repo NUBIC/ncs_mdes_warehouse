@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :nir,
                'NcsNavigator::Warehouse::Models::TwoPointZero::NonInterviewRpt',
-               :child_key => [ :nir_id ]
+               :child_key => [ :nir_id ], :required => true
     property   :nir_vacant,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-5", "-7", "-4"] }

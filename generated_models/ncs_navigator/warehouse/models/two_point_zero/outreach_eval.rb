@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :outreach_event,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Outreach',
-               :child_key => [ :outreach_event_id ]
+               :child_key => [ :outreach_event_id ], :required => true
     property   :outreach_eval,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-5", "-4"] }

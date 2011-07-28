@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :pii => " ", :length => 1..36 }
     belongs_to :address,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Address',
-               :child_key => [ :address_id ]
+               :child_key => [ :address_id ], :required => false
 
     mdes_order :psu_id, :srsc_id, :address_id
 

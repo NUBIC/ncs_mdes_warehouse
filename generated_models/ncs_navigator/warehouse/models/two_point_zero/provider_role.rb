@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :provider,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Provider',
-               :child_key => [ :provider_id ]
+               :child_key => [ :provider_id ], :required => true
     property   :provider_ncs_role,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "-5", "-4"] }

@@ -17,13 +17,13 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-4"] }
     belongs_to :du,
                'NcsNavigator::Warehouse::Models::TwoPointZero::DwellingUnit',
-               :child_key => [ :du_id ]
+               :child_key => [ :du_id ], :required => false
     belongs_to :p,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Participant',
-               :child_key => [ :p_id ]
+               :child_key => [ :p_id ], :required => true
     belongs_to :event,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Event',
-               :child_key => [ :event_id ]
+               :child_key => [ :event_id ], :required => true
     property   :event_type,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "-5", "-4"] }
@@ -32,7 +32,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :format => /^([-+]?[\d]{1,9})?$/ }
     belongs_to :instrument,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Instrument',
-               :child_key => [ :instrument_id ]
+               :child_key => [ :instrument_id ], :required => true
     property   :instrument_type,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "-5", "-4"] }
