@@ -38,7 +38,7 @@ module NcsNavigator::Warehouse::Models
       # The name of the table in the MDES corresponding to this model.
       # @return [String]
       def mdes_table_name
-        self.name.demodulize.underscore
+        @mdes_table_name ||= self.name.demodulize.underscore
       end
 
       ##
