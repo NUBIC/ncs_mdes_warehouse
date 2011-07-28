@@ -10,7 +10,7 @@ module <%= module_name %>
 <% if v.table_reference -%>
     belongs_to :<%= v.name.sub(/_id$/, '') %>,
                '<%= v.table_reference.wh_model_name(module_name) %>',
-               :child_key => [ :<%= v.name %> ]
+               :child_key => [ :<%= v.name %> ], :required => <%= !!v.required %>
 <% else -%>
     property   :<%= v.name %>,
                <%= v.type.wh_property_type %>,

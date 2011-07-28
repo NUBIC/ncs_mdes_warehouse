@@ -56,9 +56,13 @@ module NcsNavigator::Warehouse
       TableModeler.new(tables, options)
     }
 
-    after do
+    def reset_models
       ::DataMapper::Model.descendants.clear
       Spec::ModeledTables.clear
+    end
+
+    after do
+      reset_models
     end
 
     it 'produces an appropriately named model' do
@@ -439,12 +443,33 @@ end
         end
 
         it 'has the expected accessor name' do
-          model_class.instance_methods.should include('some_tree')
+          # to_s is so this will run on both 1.8.7 and 1.9.2
+          model_class.instance_methods.collect(&:to_s).should include('some_tree')
         end
 
         it 'has the expected parent model name' do
           relationship.parent_model_name.should ==
             'NcsNavigator::Warehouse::Spec::ModeledTables::Tree'
+        end
+
+        it 'is not mandatory if the FK is not mandatory' do
+          instance = model_class.new
+          instance.tableau_id = '7'
+          instance.some_tree = nil
+
+          instance.should be_valid
+        end
+
+        it 'is mandatory if the FK is mandatory' do
+          table.variables.last.required = true
+          reset_models
+          subject.load!
+
+          instance = model_class.new
+          instance.tableau_id = '7'
+          instance.some_tree = nil
+
+          instance.should_not be_valid
         end
       end
     end
