@@ -16,11 +16,15 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib", "generated_models"]
 
   s.add_dependency 'ncs_mdes', '~> 0.3'
-  s.add_dependency 'data_mapper', '~> 1.1.0'
   s.add_dependency 'activesupport', '~> 3.0.9'
   s.add_dependency 'i18n', '~> 0.6' # required by activesupport
+
   s.add_dependency 'nokogiri', '~> 1.5.0'
   s.add_dependency 'builder', '~> 3.0'
+
+  s.add_dependency 'data_mapper', '~> 1.1.0'
+  s.add_dependency 'bcdatabase', '~> 1.0.6'
+  s.add_dependency 'dm-postgres-adapter', '~> 1.1.0'
 
   s.add_development_dependency 'rspec', '~> 2.6'
   s.add_development_dependency 'rake', '~> 0.9.2'
