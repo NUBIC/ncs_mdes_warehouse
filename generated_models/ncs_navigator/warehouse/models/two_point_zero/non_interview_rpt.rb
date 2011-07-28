@@ -32,7 +32,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => :possible, :length => 0..255 }
     property   :nir_noaccess,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-5", "-7", "-4"] }
+               { :length => 1..2, :set => ["1", "2", "3", "-5", "-7", "-4"] }
     property   :nir_noaccess_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }

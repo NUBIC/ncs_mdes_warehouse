@@ -20,7 +20,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => :possible, :length => 0..255 }
     property   :provider_ncs_role,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "-5", "-4"] }
+               { :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "-5", "-4"] }
     property   :provider_ncs_role_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
