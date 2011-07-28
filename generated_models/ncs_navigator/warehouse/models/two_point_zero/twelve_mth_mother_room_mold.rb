@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class TwelveMthMotherRoomMold
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -20,6 +21,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :room_mold_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
+
+    mdes_order :psu_id, :twelve_mth_id, :twelve_mth_room_mold_id, :room_mold, :room_mold_oth
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

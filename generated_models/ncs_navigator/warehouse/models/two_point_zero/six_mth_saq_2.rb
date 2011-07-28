@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SixMthSaq2
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -206,6 +207,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :six_mth_saq_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :breast_feed, :breast_feed_now, :pumped, :pumped_now, :breast_stop, :breast_stop_unit, :breast_milk, :breast_unit, :formula_often, :formula_often_unit, :cow_milk, :cow_milk_unit, :milk_other, :milk_other_unit, :pumped_2, :breast_milk_stored, :breast_milk_temp, :formula, :formula_iron, :formula_label, :formula_amt, :formula_unit, :water_amt, :water_unit, :water_2, :ounces, :clean_hands_1, :clean_hands_2, :clean_hands_3, :clean_hands_4, :clean_hands_5, :b_type_1, :b_type_2, :b_type_3, :b_type_4, :b_type_5, :pacifier, :cows_milk_1, :cows_milk_2, :cows_milk_2_unit, :juice, :juice_age, :juice_age_unit, :juice_calcium, :c_food1, :c_food2, :c_food3, :c_food4, :c_food5, :organic, :supp_form, :herbal, :herbal_oth, :time_stamp_2
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class ParticipantVisConsent
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -41,6 +42,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     belongs_to :contact,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Contact',
                :child_key => [ :contact_id ]
+
+    mdes_order :psu_id, :pid_visit_consent_id, :p_id, :vis_consent_type, :vis_consent_response, :vis_language, :vis_language_oth, :vis_person_who_consented_id, :vis_who_consented, :vis_translate, :vis_comments, :contact_id
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

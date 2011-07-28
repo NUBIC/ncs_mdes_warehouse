@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SpecEquipment
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -26,6 +27,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :government_asset_tag_no,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..36 }
+
+    mdes_order :psu_id, :spsc_id, :equip_id, :equipment_type, :equipment_type_oth, :serial_no, :government_asset_tag_no
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

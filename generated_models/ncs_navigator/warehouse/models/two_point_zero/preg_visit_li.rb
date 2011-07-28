@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PregVisitLi
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -338,6 +339,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_12,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :pv_li_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :female_1, :best_ttc_1, :best_ttc_2, :best_ttc_3, :phone, :phone_nbr, :time_stamp_2, :pregnant, :time_stamp_3, :loss_info, :due_date, :know_date, :date_period, :knew_date, :time_stamp_4, :home_test, :birth_plan, :birth_place, :b_address_id, :b_address_1, :b_address_2, :b_city, :b_state, :b_zipcode, :pn_vitamin, :preg_vitamin, :date_visit, :diabetes_1, :highbp_preg, :urine, :preeclamp, :early_labor, :anemia, :nausea, :kidney, :rh_disease, :group_b, :herpes, :vaginosis, :oth_condition, :condition_oth, :time_stamp_5, :health, :height_ft, :ht_inch, :weight, :asthma, :highbp_notpreg, :diabetes_notpreg, :diabetes_2, :diabetes_3, :thyroid_1, :thyroid_2, :hlth_care, :time_stamp_6, :insure, :ins_employ, :ins_medicaid, :ins_tricare, :ins_ihs, :ins_medicare, :ins_oth, :time_stamp_7, :age_home, :main_heat, :main_heat_oth, :cool_oth, :water_drink, :water_drink_oth, :time_stamp_8, :cig_now, :cig_now_freq, :cig_now_num, :drink_now, :drink_now_num, :drink_now_5, :time_stamp_9, :time_stamp_10, :learn, :help, :incent, :research, :envir, :community, :know_others, :family, :doctor, :opin_spouse, :opin_family, :opin_friend, :opin_dr, :experience, :improve, :int_length, :int_stress, :int_repeat, :time_stamp_11, :time_stamp_12
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

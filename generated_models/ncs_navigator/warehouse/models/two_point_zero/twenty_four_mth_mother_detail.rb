@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class TwentyFourMthMotherDetail
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -38,6 +39,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :child_dob,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :twenty_four_mth_id, :p_id, :twenty_four_mth_detail_id, :child_qnum, :child_sex, :cname_confirm, :c_fname, :c_lname, :cdob_confirm, :child_dob
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

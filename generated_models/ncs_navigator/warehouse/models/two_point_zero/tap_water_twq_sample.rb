@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class TapWaterTwqSample
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -20,6 +21,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :sample_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..14 }
+
+    mdes_order :psu_id, :tap_water_twq_id, :tap_water_twq_sample_id, :sample_number, :sample_id
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PregVisit1Diagnose2
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -17,6 +18,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :diagnose_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-5", "-1", "-2", "-3", "-4"] }
+
+    mdes_order :psu_id, :pv1_diagnose_2_id, :pv1_id, :diagnose_2
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

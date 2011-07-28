@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Telephone
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -71,6 +72,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :phone_end_date,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :phone_id, :person_id, :institute_id, :provider_id, :phone_info_source, :phone_info_source_oth, :phone_info_date, :phone_info_update, :phone_nbr, :phone_ext, :phone_type, :phone_type_oth, :phone_rank, :phone_rank_oth, :phone_landline, :phone_share, :cell_permission, :text_permission, :phone_comment, :phone_start_date, :phone_end_date
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

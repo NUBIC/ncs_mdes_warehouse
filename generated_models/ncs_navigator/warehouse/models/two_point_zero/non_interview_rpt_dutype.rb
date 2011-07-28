@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class NonInterviewRptDutype
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -20,6 +21,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :nir_type_du_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
+
+    mdes_order :psu_id, :nir_dutype_id, :nir_id, :nir_type_du, :nir_type_du_oth
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

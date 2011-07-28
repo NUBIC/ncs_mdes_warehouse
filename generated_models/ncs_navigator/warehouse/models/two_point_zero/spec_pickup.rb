@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SpecPickup
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -35,6 +36,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :specimen_trans_temp,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^(([-+]?\d{1,12})|([-+]?\d{0,12}\.\d{1,6})|(\d{0,12}\.\d{1,6})|([-+]?\d{1,12}\.\d{0,6}))?$/ }
+
+    mdes_order :psu_id, :spsc_id, :specimen_id, :event_id, :instrument_id, :staff_id, :specimen_pickup_dt, :specimen_pickup_comment, :specimen_pickup_cmt_oth, :specimen_trans_temp
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

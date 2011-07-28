@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SpecCordBlood
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -98,6 +99,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :spec_cord_blood_id, :recruit_type, :du_id, :hh_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :person_dob, :child_dob, :cord_birth_hr, :cord_birth_min, :cord_birth_unit, :child_sex, :cord_collection, :cord_notcol_comment, :cord_notcol_oth, :cord_collect_date, :cord_collect_hr, :cord_collect_min, :cord_collect_unit, :cord_where_collect, :cord_delivery, :cord_container, :time_stamp_2
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

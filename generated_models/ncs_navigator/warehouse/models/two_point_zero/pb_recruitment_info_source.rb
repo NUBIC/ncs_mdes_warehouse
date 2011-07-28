@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PbRecruitmentInfoSource
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -20,6 +21,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :pb_insti_info_source_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
+
+    mdes_order :psu_id, :pb_recruitment_id, :pb_recruit_info_source_id, :pb_insti_info_source, :pb_insti_info_source_oth
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

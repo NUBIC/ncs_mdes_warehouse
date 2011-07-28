@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Email
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -62,6 +63,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :email_end_date,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :email_id, :person_id, :institute_id, :provider_id, :email, :email_rank, :email_rank_oth, :email_info_source, :email_info_source_oth, :email_info_date, :email_info_update, :email_type, :email_type_oth, :email_share, :email_active, :email_comment, :email_start_date, :email_end_date
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

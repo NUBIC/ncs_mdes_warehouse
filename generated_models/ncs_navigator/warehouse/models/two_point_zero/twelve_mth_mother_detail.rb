@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class TwelveMthMotherDetail
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -290,6 +291,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :smoke_hours,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
+
+    mdes_order :psu_id, :twelve_mth_id, :p_id, :twelve_mth_detail_id, :child_qnum, :child_sex, :cname_confirm, :c_fname, :c_lname, :cdob_confirm, :child_dob, :time_stamp_2, :calm, :worried, :social, :angry, :shy, :stubborn, :happy, :c_health, :eyes_follow, :smile, :reach_1, :feed, :wave, :reach_2, :grab, :switch_hands, :pickup, :hold, :sound_1, :sound_2, :sound_3, :speak_1, :speak_2, :headup, :roll_1, :roll_2, :situp, :stand, :stand_alone, :walk, :scribble, :fork_spoon, :talk_about, :pictures, :thinkof, :hold_fun, :give_fun, :read, :read_freq, :watch_tv, :tv_freq, :play_freq, :walks, :time_stamp_3, :childcare, :family_care, :family_care_hrs, :homecare, :homecare_hrs, :daycare, :daycare_hrs, :time_stamp_4, :r_hcare, :last_visit, :visit_wt, :same_care, :hcare_sick, :time_stamp_5, :ear_infection, :gastro, :respiratory, :fever, :blind, :eyesight, :deaf, :birth_defect, :defect_type, :genetic, :genetic_type, :fail_thrive, :time_stamp_6, :insure, :ins_employ, :ins_medicaid, :ins_tricare, :ins_ihs, :ins_medicare, :ins_oth, :time_stamp_7, :lice_1, :lice_oth_1, :lice_oth_2, :smoke_hours
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

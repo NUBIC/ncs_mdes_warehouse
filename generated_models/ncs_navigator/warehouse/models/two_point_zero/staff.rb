@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Staff
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -47,6 +48,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :staff_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :staff_id, :staff_type, :staff_type_oth, :subcontractor, :staff_yob, :staff_age_range, :staff_gender, :staff_race, :staff_race_oth, :staff_zip, :staff_ethnicity, :staff_exp, :staff_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

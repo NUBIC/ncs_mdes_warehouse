@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class ValidationIns
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -221,6 +222,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_18,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :validation_ins_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :intro_1, :ver_number, :best_ttc_1, :day_week_1, :best_ttc_2, :best_ttc_3, :phone, :phone_nbr, :time_stamp_2, :intro_2, :schedule, :intro_3, :r_best_ttc_1, :day_week_2, :r_best_ttc_2, :r_best_ttc_3, :time_stamp_3, :int_confirm, :time_stamp_4, :hh_enum, :num_female, :time_stamp_5, :preg_scr, :age, :time_stamp_6, :inf_consent, :inf_consent2, :time_stamp_7, :ppg_cati, :ppg_cati2, :time_stamp_8, :prepreg, :prepreg2, :time_stamp_9, :preg1, :home_test, :time_stamp_10, :preg2, :own_home, :time_stamp_11, :birth, :vaccine, :time_stamp_12, :childslp, :vchildcare, :time_stamp_13, :six_month, :insure, :time_stamp_14, :childskill, :r_hcare, :time_stamp_15, :twelve_month, :childcare, :time_stamp_16, :comment, :comment_oth, :time_stamp_17, :time_stamp_18
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

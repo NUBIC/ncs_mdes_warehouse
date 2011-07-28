@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Provider
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -50,6 +51,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :provider_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :provider_id, :provider_type, :provider_type_oth, :provider_ncs_role, :provider_ncs_role_oth, :practice_info, :practice_patient_load, :practice_size, :public_practice, :provider_info_source, :provider_info_source_oth, :provider_info_date, :provider_info_update, :provider_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

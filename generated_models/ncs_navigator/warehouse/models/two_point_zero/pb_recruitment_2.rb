@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PbRecruitment2
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -263,6 +264,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :provider_ncs_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
+
+    mdes_order :psu_id, :pb_recruitment_id, :recruit_type, :du_id, :provider_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :pb_insti_info_date, :pb_insti_fullname, :pb_insti_id, :pb_insti_size, :pb_prov_total, :pb_pract_res, :pb_res_pharm, :pb_res_network, :pb_other, :pb_oth, :pb_prac_spec, :pb_spec_mou, :pb_spec_lse, :pb_spec_pmt, :pb_spec_irb, :pb_spec_ce, :pb_spec_inc, :pb_inc_oth, :provider_complete_date, :address_pb_id, :address_1, :address_2, :unit, :city, :state, :zipcode, :zip4, :pb_prov_id, :pb_prov_size, :num_obgyn, :num_fp, :num_midwives, :num_oth, :pb_prac_type, :pb_prac_type_oth, :inst_name1, :institute_id1, :inst_name2, :institute_id2, :inst_name3, :institute_id3, :inst_name4, :institute_id4, :inst_name5, :institute_id5, :num_births, :num_new_pts, :pt_race_aian, :pt_race_asian, :pt_race_black, :pt_race_hisp, :pt_race_nhpi, :pt_race_white, :pt_lang_eng, :pt_lang_span, :pt_lang_oth, :pt_lang_spec, :pay_ins_tricare, :pay_ins_medicaid, :pay_ins_comm, :pay_ins_hmo, :pay_self, :provider_ncs_trn, :provider_ncs_infowt, :provider_ncs_infoex, :provider_ncs_acc, :provider_ncs_alt, :provider_ncs_ltr, :provider_ncs_pnltr, :provider_ncs_info, :provider_ncs_stf, :provider_ncs_rfr, :provider_ncs_partic, :provider_ncs_oth
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

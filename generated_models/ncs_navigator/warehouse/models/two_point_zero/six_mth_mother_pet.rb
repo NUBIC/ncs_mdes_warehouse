@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SixMthMotherPet
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -20,6 +21,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :pet_type_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
+
+    mdes_order :psu_id, :six_mth_id, :six_mth_pet_id, :pet_type, :pet_type_oth
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SpecBlood
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -182,6 +183,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_5,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :spec_blood_id, :recruit_type, :du_id, :hh_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :blood_intro, :hemophilia, :blood_thinner, :chemo, :blood_draw, :blood_draw_oth, :last_time_eat, :last_time_eat_unit, :last_date_eat, :coffee_tea, :alcohol, :cough_cold, :laxative, :vitamin, :diabetes, :insulin, :blood_complete, :time_stamp_2, :collection_status, :collection_location, :overall_comments, :overall_comments_oth, :time_stamp_3, :centrifuge_location, :equip_id, :centrifuge_time, :centrifuge_time_unit, :centrifuge_date, :centrifuge_end_time, :centrifuge_end_time_unit, :centrifuge_end_date, :centrifuge_temp_measure, :centrifuge_temp, :blood_hemolyze, :centrifuge_comment, :centrifuge_comment_oth, :time_stamp_4, :cold_temp_measure, :cold_temp, :cold_threshold_low, :cold_threshold_high, :ambient_threshold_low, :blood_draw_com, :blood_draw_comment, :time_stamp_5
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

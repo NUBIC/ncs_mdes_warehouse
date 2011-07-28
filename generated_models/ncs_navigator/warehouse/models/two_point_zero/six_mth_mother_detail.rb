@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SixMthMotherDetail
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -251,6 +252,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :daycare_hrs,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
+
+    mdes_order :psu_id, :six_mth_id, :p_id, :six_mth_detail_id, :child_qnum, :child_sex, :cname_confirm, :c_fname, :c_lname, :cdob_confirm, :child_dob, :time_stamp_2, :eyes_follow, :smile, :reach_1, :feed, :wave, :reach_2, :grab, :switch_hands, :pickup, :hold, :sound_2, :sound_3, :speak_1, :speak_2, :headup, :roll_1, :roll_2, :situp, :stand, :time_stamp_3, :sleep_place_1, :sleep_place_2, :sleep_place_2_oth, :sleep_position_night, :sleep_position_nap, :sleep_routine, :sleep_hrs_day, :sleep_hrs_night, :sleep_time_night, :sleep_time_wake, :sleep_difficult, :sleep_through, :time_stamp_4, :c_health, :cold, :cold_age, :cold_age_unit, :ear_infection, :ear_infection_age, :ear_infection_age_unit, :gastro, :gastro_age, :gastro_age_unit, :respiratory, :respiratory_age, :respiratory_age_unit, :fever, :fail_thrive, :time_stamp_5, :r_hcare, :last_visit, :visit_wt, :same_care, :hcare_sick, :time_stamp_6, :insure, :ins_employ, :ins_medicaid, :ins_tricare, :ins_ihs, :ins_medicare, :ins_oth, :time_stamp_7, :childcare, :family_care, :family_care_hrs, :homecare, :homecare_hrs, :daycare, :daycare_hrs
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

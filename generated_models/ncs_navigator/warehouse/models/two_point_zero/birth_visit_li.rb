@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class BirthVisitLi
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -362,6 +363,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_12,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :bv_li_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :release, :multiple, :multiple_num, :child_dob, :live_mom, :live_oth, :time_stamp_2, :recent_move, :own_home, :own_home_oth, :age_home, :length_reside, :length_reside_unit, :time_stamp_3, :renovate, :decorate, :smoke, :smoke_locate, :time_stamp_4, :fed_baby, :how_fed, :plan_feed, :time_stamp_5, :pos_hosp, :pos_home, :sleep_room, :bed, :bed_oth, :time_stamp_6, :hcare_yet, :hcare, :hcare_oth, :vaccine_yet, :vaccine, :time_stamp_7, :employ2, :return_job_yet, :return_job_dt, :return_job, :return_job_unit, :childcare, :ccare_type, :ccare_type_oth, :ccare_who, :rel_care_oth, :ccare_who_oth, :time_stamp_8, :r_fname, :r_lname, :phone_nbr, :phone_type, :friend_phone_oth, :phone_type_oth, :home_phone, :cell_phone_1, :cell_phone_2, :cell_phone_3, :cell_phone_4, :cell_phone, :time_stamp_9, :move_info, :new_address_id, :new_address1, :new_address2, :new_unit, :new_city, :new_state, :new_zip, :new_zip4, :same_addr, :mail_address_id, :mail_address1, :mail_address2, :mail_unit, :mail_city, :mail_state, :mail_zip, :mail_zip4, :have_email, :email, :email_type, :email_share, :plan_move, :where_move, :move_info_2, :new_address_b_id, :new_address1_b, :new_address2_b, :new_unit_b, :new_city_b, :new_state_b, :new_zip_b, :new_zip4_b, :when_move, :date_move, :time_stamp_10, :time_stamp_11, :participant, :contact_type, :english, :contact_lang, :contact_lang_oth, :interpret, :contact_interpret, :contact_interpret_oth, :time_stamp_12
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

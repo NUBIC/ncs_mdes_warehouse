@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class BirthVisitDecorateRoom
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -17,6 +18,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     belongs_to :bv,
                'NcsNavigator::Warehouse::Models::TwoPointZero::BirthVisit',
                :child_key => [ :bv_id ]
+
+    mdes_order :psu_id, :bv_decorate_room_id, :decorate_room, :bv_id
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

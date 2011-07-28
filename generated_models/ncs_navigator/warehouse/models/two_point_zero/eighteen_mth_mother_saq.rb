@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class EighteenMthMotherSaq
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -245,6 +246,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :psoc18_total,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
+
+    mdes_order :psu_id, :eighteen_mth_saq_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :asq_date_comp, :c_fname, :c_minital, :c_lname, :child_dob, :weeks_premature, :child_sex, :respondent_fname, :respondent_minital, :respondent_lname, :respondent_rel, :respondent_rel_oth, :asq18_address_id, :asq18_address_1, :asq18_address_2, :asq18_unit, :asq18_city, :asq18_state, :asq18_zip, :asq18_zip4, :asq18_country, :home_phone, :other_phone, :email, :asq18_assistname_comment, :asq_child_id, :sc_id, :sc_name, :asq18_age_months, :asq18_age_days, :asq18_adj_age_months, :asq18_adj_age_days, :comm18_points_1, :comm18_find_2, :comm18_eight_3, :comm18_imitate_4, :comm18_picture_5, :comm18_say_idea_6, :example18_comment, :comm18_total, :grmtr18_bndstd_1, :grmtr18_walk_2, :grmtr18_nofall_3, :grmtr18_climb_4, :grmtr18_stairs_5, :grmtr18_howkick_6, :grmtr18_total, :fnmtr18_throw_1, :fnmtr18_stack_2, :fnmtr18_mark_3, :fnmtr18_threestk_4, :fnmtr18_turn_5, :fnmtr18_spoon_6, :fnmtr18_total, :pslv18_drop_1, :pslv18_rchtool_2, :pslv18_dmpbtl_3, :pslv18_scribble_4, :pslv18_copy_5, :pslv18_btldmp_6, :pslv18_total, :psoc18_mirror_1, :psoc18_hugtoy_2, :psoc18_attn_3, :psoc18_help_4, :psoc18_spill_5, :psoc18_copy_6, :psoc18_total
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

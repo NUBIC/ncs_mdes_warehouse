@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SrscInfo
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -14,6 +15,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     belongs_to :address,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Address',
                :child_key => [ :address_id ]
+
+    mdes_order :psu_id, :srsc_id, :address_id
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

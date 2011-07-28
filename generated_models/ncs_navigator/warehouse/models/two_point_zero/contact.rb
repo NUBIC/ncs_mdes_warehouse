@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Contact
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -65,6 +66,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :contact_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :contact_id, :contact_disp, :contact_type, :contact_type_oth, :contact_date, :contact_start_time, :contact_end_time, :contact_lang, :contact_lang_oth, :contact_interpret, :contact_interpret_oth, :contact_location, :contact_location_oth, :contact_private, :contact_private_detail, :contact_distance, :who_contacted, :who_contact_oth, :contact_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

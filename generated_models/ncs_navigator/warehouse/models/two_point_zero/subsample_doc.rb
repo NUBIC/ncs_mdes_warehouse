@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SubsampleDoc
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -17,6 +18,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :random_order_no,
                NcsNavigator::Warehouse::DataMapper::NcsInteger,
                { :required => true }
+
+    mdes_order :psu_id, :event_id, :subsample_doc_id, :random_order_no
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

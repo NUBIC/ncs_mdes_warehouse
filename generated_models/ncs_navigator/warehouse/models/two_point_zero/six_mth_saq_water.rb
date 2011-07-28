@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SixMthSaqWater
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -17,6 +18,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :water_1,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "-5", "-1", "-2", "-3", "-4"] }
+
+    mdes_order :psu_id, :six_mth_saq_id, :six_month_water_id, :water_1
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

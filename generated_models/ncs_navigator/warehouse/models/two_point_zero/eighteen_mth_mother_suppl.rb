@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class EighteenMthMotherSuppl
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -35,6 +36,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :suppl_freq_unit,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-3", "-1", "-2", "-4"] }
+
+    mdes_order :psu_id, :eighteen_mth_mother_id, :p_id, :eighteen_mth_mother_suppl_id, :supplmed, :suppl_admin, :suppl_admin_oth, :suppl_takestill, :suppl_freq, :suppl_freq_unit
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

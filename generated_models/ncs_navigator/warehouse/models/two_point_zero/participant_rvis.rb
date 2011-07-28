@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class ParticipantRvis
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -62,6 +63,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :rvis_id, :p_id, :rvis_language, :rvis_language_oth, :rvis_person, :rvis_who_consented, :rvis_translate, :contact_id, :time_stamp_1, :rvis_sections, :rvis_during_interv, :rvis_during_bio, :rvis_bio_cord, :rvis_during_env, :rvis_during_thanks, :rvis_after_saq, :rvis_reconsideration, :time_stamp_2
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class StaffCertTraining
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -35,6 +36,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :cert_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :staff_cert_list_id, :staff_id, :cert_train_type, :cert_completed, :cert_date, :staff_bgcheck_lvl, :cert_type_frequency, :cert_type_exp_date, :cert_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

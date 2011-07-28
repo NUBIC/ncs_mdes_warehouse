@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SampleReceiptConfirm
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -41,6 +42,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :shipment_received_by,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..255 }
+
+    mdes_order :psu_id, :srsc_id, :shipment_receipt_confirmed, :shipper_id, :shipment_tracking_no, :shipment_receipt_dt, :shipment_condition, :shipment_damaged_reason, :sample_id, :sample_receipt_temp, :sample_condition, :shipment_received_by
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class HouseholdUnit
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -41,6 +42,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :hh_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :hh_id, :hh_status, :hh_elig, :num_age_elig, :num_preg, :num_preg_minor, :num_preg_adult, :num_preg_over49, :hh_structure, :hh_structure_oth, :hh_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

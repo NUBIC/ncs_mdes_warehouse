@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class HouseholdEnumerationHiddenDu
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -38,6 +39,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :hdu_zip4,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..4 }
+
+    mdes_order :psu_id, :hdu_id, :hhenum_id, :hdu_address_id, :hdu_address_1, :hdu_address_2, :hdu_unit, :hdu_city, :hdu_state, :hdu_zip, :hdu_zip4
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

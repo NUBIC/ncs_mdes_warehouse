@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class DrfThermVerification
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -38,6 +39,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :correction_factor_temp,
                NcsNavigator::Warehouse::DataMapper::NcsDecimal,
                { :required => true, :precision => 128, :scale => 64 }
+
+    mdes_order :psu_id, :srsc_id, :staff_id, :drf_therm_verification_date, :drf_verification_id, :equip_id, :rf_thermometer_equip_id, :certification_expire_dt, :precision_term_temp, :rf_temp, :correction_factor_temp
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

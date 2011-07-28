@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class ParticipantConsent
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -74,6 +75,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :reconsideration_script_use,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-7", "-4"] }
+
+    mdes_order :psu_id, :participant_consent_id, :p_id, :consent_version, :consent_expiration, :consent_type, :consent_form_type, :consent_given, :consent_date, :consent_withdraw, :consent_withdraw_type, :consent_withdraw_reason, :consent_withdraw_date, :consent_language, :consent_language_oth, :person_who_consented_id, :who_consented, :person_wthdrw_consent_id, :who_wthdrw_consent, :consent_translate, :consent_comments, :contact_id, :reconsideration_script_use
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class LinkHouseholdDwelling
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -26,6 +27,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :du_rank_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
+
+    mdes_order :psu_id, :hh_du_id, :hh_id, :du_id, :is_active, :du_rank, :du_rank_oth
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

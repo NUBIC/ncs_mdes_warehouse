@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PrePregPdecorateRoom
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :decorate_room_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -20,6 +21,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :decorate_room,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "-5", "-1", "-2", "-3", "-4"] }
+
+    mdes_order :decorate_room_oth, :psu_id, :pp_decorate_room_id, :pp_id, :decorate_room
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

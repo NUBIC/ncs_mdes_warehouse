@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PrecThermCert
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -29,6 +30,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :certification_expire_dt,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :srsc_id, :equip_id, :staff_id, :certification_id, :precision_cert_status, :certification_date, :certification_expire_dt
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

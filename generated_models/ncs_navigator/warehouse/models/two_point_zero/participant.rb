@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Participant
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -50,6 +51,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :pid_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :p_id, :p_type, :p_type_oth, :status_info_source, :status_info_source_oth, :status_info_mode, :status_info_mode_oth, :status_info_date, :enroll_status, :enroll_date, :pid_entry, :pid_entry_other, :pid_age_elig, :pid_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

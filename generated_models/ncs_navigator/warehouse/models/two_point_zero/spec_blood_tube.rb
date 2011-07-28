@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SpecBloodTube
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -26,6 +27,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :tube_comments_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
+
+    mdes_order :psu_id, :spec_blood_id, :spec_blood_tube_id, :tube_type, :specimen_id, :tube_status, :tube_comments_oth
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

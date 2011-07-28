@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class HouseholdEnumerationAgeElig
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -26,6 +27,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :age_elig_relate,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "-1", "-2", "-4"] }
+
+    mdes_order :psu_id, :age_eligible_loop_id, :hhenum_id, :p_id, :age_elig_fname, :age_elig_age, :age_elig_relate
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

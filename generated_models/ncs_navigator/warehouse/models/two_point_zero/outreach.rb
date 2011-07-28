@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Outreach
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -86,6 +87,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :outreach_eval_result,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
+
+    mdes_order :psu_id, :tsu_id, :ssu_id, :outreach_event_id, :outreach_event_date, :outreach_target, :outreach_target_oth, :outreach_mode, :outreach_mode_oth, :outreach_type, :outreach_type_oth, :outreach_tailored, :outreach_lang1, :outreach_lang2, :outreach_lang_oth, :outreach_race1, :outreach_race2, :outreach_race_oth, :outreach_culture1, :outreach_culture2, :outreach_culture_oth, :outreach_quantity, :outreach_cost, :outreach_staffing, :outreach_incident, :incident_id, :outreach_eval_result
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

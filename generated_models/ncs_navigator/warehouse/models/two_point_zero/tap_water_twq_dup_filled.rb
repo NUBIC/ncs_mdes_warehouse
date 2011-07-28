@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class TapWaterTwqDupFilled
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -17,6 +18,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :dp_reas_bottle_n_filled,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-5", "-3", "-4"] }
+
+    mdes_order :psu_id, :tap_water_twq_id, :tap_water_twq_dup_filled_id, :dp_reas_bottle_n_filled
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

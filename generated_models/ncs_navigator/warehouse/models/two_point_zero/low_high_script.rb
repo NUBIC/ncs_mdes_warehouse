@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class LowHighScript
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -107,6 +108,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :followup_3,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-2", "-4"] }
+
+    mdes_order :psu_id, :low_hi_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :out_answer, :out_answer_oth, :out_speak, :out_avail, :out_visit, :out_visit_ucla, :out_talk, :r_best_ttc_1, :day_week_2, :r_best_ttc_2, :r_best_ttc_3, :out_unavail, :best_ttc_1, :day_week_1, :best_ttc_2, :best_ttc_3, :out_nextph, :in_visit, :in_visit_ucla, :ppg_confirm, :followup_1, :followup_3
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

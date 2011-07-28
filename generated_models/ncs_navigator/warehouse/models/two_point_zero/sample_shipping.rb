@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SampleShipping
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -41,6 +42,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :sample_shipped_by,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-4"] }
+
+    mdes_order :psu_id, :sample_id, :srsc_id, :staff_id, :shipper_id, :shipper_destination, :shipment_date, :shipment_coolant, :shipment_tracking_no, :shipment_issues_oth, :staff_id_track, :sample_shipped_by
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

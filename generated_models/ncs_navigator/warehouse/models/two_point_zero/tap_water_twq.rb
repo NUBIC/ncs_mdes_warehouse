@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class TapWaterTwq
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -131,6 +132,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_3,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :tap_water_twq_id, :recruit_type, :du_id, :hh_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :twq_okay, :twq_location, :twq_location_oth, :time_stamp_2, :twq_collect, :bottle1_filled, :bottle2_filled, :supplies_missing, :reas_bottle_n_filled_oth, :twq_filtered, :twq_none_suppl_missing, :reason_twq_n_collected_oth, :twq_blank_collect, :bl_bottle1_filled, :bl_bottle2_filled, :bl_supplies_missing, :bl_reas_bottle_n_filled_oth, :twq_bl_none_suppl_missing, :reas_twq_bl_n_collected_oth, :twq_dp_collect, :dp_bottle1_filled, :dp_bottle2_filled, :dp_supplies_missing, :dp_reas_bottle_n_filled_oth, :reas_twq_dp_n_collected_suppl, :reas_twq_dp_n_collected_oth, :twq_comments, :time_stamp_3
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

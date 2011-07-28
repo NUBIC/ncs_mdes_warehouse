@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SpecStorage
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -47,6 +48,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :temp_event_high_temp,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^(([-+]?\d{1,12})|([-+]?\d{0,12}\.\d{1,6})|(\d{0,12}\.\d{1,6})|([-+]?\d{1,12}\.\d{0,6}))?$/ }
+
+    mdes_order :psu_id, :spsc_id, :storage_container_id, :placed_in_storage_dt, :staff_id, :equip_id, :master_storage_unit, :storage_comment, :storage_comment_oth, :removed_from_storage_dt, :temp_event_st, :temp_event_et, :temp_event_low_temp, :temp_event_high_temp
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

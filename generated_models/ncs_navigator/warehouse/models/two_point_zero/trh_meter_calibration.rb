@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class TrhMeterCalibration
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -65,6 +66,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :trh_calib_status,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-4"] }
+
+    mdes_order :psu_id, :srsc_id, :equip_id, :staff_id, :calibration_id, :calibration_expire_dt, :verification_dt, :thr_equip_id, :precision_term_temp, :trh_temp, :salts_moist, :s_33rh_reading, :s_75rh_reading, :s_33_rh_need_calib, :s_75_rh_need_calib, :s_33rh_reading_calib, :s_75rh_reading_calib, :trh_calib_fail_rsn, :trh_calib_fail_reas_other, :trh_calib_status
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

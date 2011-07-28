@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SpecCordBloodSpecimen
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -17,6 +18,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :specimen_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..36 }
+
+    mdes_order :psu_id, :spec_cord_blood_id, :spec_cord_blood_specimen_id, :specimen_id
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

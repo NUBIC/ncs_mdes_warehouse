@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class InternetUsage
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -80,6 +81,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :internet_usage_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :prefer_contact, :ever_connect, :use_web, :have_email, :check_email, :ok_email_addr, :email, :prefer_survey, :dc_mode_simple, :dc_mode_convenient, :dc_mode_choice, :time_stamp_2
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class StaffWeeklyExpense
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -32,6 +33,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :weekly_expenses_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :weekly_exp_id, :staff_id, :week_start_date, :staff_pay, :staff_hours, :staff_expenses, :staff_miles, :weekly_expenses_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

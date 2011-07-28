@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class DwellingUnit
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -41,6 +42,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :duid_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :du_id, :list_id, :tsu_id, :ssu_id, :duplicate_du, :missed_du, :du_type, :du_type_oth, :du_ineligible, :du_access, :duid_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

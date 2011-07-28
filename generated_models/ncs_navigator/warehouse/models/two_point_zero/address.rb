@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Address
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -89,6 +90,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :address_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => true, :length => 0..8000 }
+
+    mdes_order :psu_id, :address_id, :person_id, :institute_id, :provider_id, :du_id, :address_rank, :address_rank_oth, :address_info_source, :address_info_source_oth, :address_info_mode, :address_info_mode_oth, :address_info_date, :address_info_update, :address_start_date, :address_end_date, :address_type, :address_type_oth, :address_description, :address_description_oth, :address_1, :address_2, :unit, :city, :state, :zip, :zip4, :address_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PpgStatusHistory
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -35,6 +36,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :ppg_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :ppg_history_id, :p_id, :ppg_status, :ppg_status_date, :ppg_info_source, :ppg_info_source_oth, :ppg_info_mode, :ppg_info_mode_oth, :ppg_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

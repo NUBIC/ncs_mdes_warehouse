@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class OutreachStaff
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -17,6 +18,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     belongs_to :staff,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
                :child_key => [ :staff_id ]
+
+    mdes_order :psu_id, :outreach_event_staff_id, :outreach_event_id, :staff_id
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

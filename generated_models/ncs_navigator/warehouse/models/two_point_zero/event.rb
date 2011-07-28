@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Event
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -56,6 +57,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :event_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :event_id, :participant_id, :event_type, :event_type_oth, :event_repeat_key, :event_disp, :event_disp_cat, :event_start_date, :event_start_time, :event_end_date, :event_end_time, :event_breakoff, :event_incentive_type, :event_incent_cash, :event_incent_noncash, :event_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

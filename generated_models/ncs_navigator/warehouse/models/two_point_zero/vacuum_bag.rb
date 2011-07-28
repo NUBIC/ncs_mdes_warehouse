@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class VacuumBag
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -119,6 +120,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_3,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :vacuum_bag_id, :recruit_type, :du_id, :hh_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :vacuum_participant, :vacuum_in_home, :vacuum_tech_okay, :vacuum_refuse, :vacuum_refuse_oth, :vacuum_type, :vac_type_oth, :vacuum_make_model, :vacuum_bag_changed, :vacuum_bag_changed_freq, :time_stamp_2, :vacuum_collected, :r_vacuum_n_collected, :r_vacuum_n_collected_oth, :vacuum_most_used, :vacuum_temp, :vacuum_rh, :vacuum_bag, :vacuum_bag_oth, :sample_number, :sample_id, :vacuum_problems, :vacuum_problems_oth, :time_stamp_3
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

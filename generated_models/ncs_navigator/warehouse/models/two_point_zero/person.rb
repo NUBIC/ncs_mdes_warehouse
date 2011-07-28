@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Person
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -101,6 +102,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :person_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :person_id, :prefix, :first_name, :last_name, :middle_name, :maiden_name, :suffix, :title, :sex, :age, :age_range, :person_dob, :deceased, :ethnic_group, :person_lang, :person_lang_oth, :maristat, :maristat_oth, :pref_contact, :pref_contact_oth, :plan_move, :move_info, :new_address_id, :when_move, :date_move, :p_tracing, :p_info_source, :p_info_source_oth, :p_info_date, :p_info_update, :person_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

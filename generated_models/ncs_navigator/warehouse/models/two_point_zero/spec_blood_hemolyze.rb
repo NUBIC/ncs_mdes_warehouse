@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SpecBloodHemolyze
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -17,6 +18,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :v1_tube_hemolyze,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-3", "-4"] }
+
+    mdes_order :psu_id, :spec_blood_id, :spec_blood_hemolyze_id, :v1_tube_hemolyze
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

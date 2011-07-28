@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class StudyCenter
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :sc_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -14,6 +15,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :comments,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :sc_id, :sc_name, :comments
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

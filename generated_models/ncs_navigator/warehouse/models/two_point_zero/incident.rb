@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Incident
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -86,6 +87,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     belongs_to :contact,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Contact',
                :child_key => [ :contact_id ]
+
+    mdes_order :psu_id, :incident_id, :incident_date, :incident_time, :inc_report_date, :inc_report_time, :inc_staff_reporter_id, :inc_staff_supervisor_id, :inc_recip_is_participant, :inc_recip_is_du, :inc_recip_is_staff, :inc_recip_is_family, :inc_recip_is_acquaintance, :inc_recip_is_other, :inc_contact_person, :inctype, :inctype_oth, :incloss_cmptr_model, :incloss_cmptr_sn, :incloss_cmptr_decal, :incloss_rem_media, :incloss_paper, :incloss_oth, :inc_description, :inc_action, :inc_reported, :contact_id
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

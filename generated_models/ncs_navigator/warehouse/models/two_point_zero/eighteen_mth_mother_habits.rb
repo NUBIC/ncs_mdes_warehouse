@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class EighteenMthMotherHabits
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -152,6 +153,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :smoke_hours,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
+
+    mdes_order :psu_id, :eighteen_mth_mother_id, :p_id, :eighteen_mth_mother_habits_id, :time_stamp_3, :sleep_hrs_day, :sleep_hrs_night, :sleep_time_night, :sleep_time_wake, :sleep_difficult, :sleep_through, :tv_freq_hrs, :time_stamp_4, :childcare_change, :childcare, :family_care, :family_care_hrs, :homecare, :homecare_hrs, :daycare, :daycare_hrs, :time_stamp_5, :r_hcare, :c_health, :use_ic_log, :reason_no_ic_log, :reason_no_ic_log_oth, :num_prov_ic_log, :num_prov_rec, :last_visit, :visit_wt, :hospital, :admin_date, :hosp_nights, :diagnose, :diagnose_oth, :time_stamp_6, :fever, :asthma, :ihmob, :time_stamp_7, :prescr_take, :otc_take, :suppl_take, :time_stamp_8, :lice_1, :lice_oth_1, :lice_oth_2, :smoke_hours
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

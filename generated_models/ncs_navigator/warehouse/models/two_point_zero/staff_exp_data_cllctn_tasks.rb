@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class StaffExpDataCllctnTasks
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -32,6 +33,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :data_coll_task_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :staff_exp_data_coll_task_id, :staff_weekly_expense_id, :data_coll_task_type, :data_coll_task_type_oth, :data_coll_tasks_hrs, :data_coll_task_cases, :data_coll_transmit, :data_coll_task_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

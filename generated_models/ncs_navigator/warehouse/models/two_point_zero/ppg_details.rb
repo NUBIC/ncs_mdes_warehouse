@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PpgDetails
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -29,6 +30,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :due_date_3,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :ppg_details_id, :p_id, :ppg_pid_status, :ppg_first, :orig_due_date, :due_date_2, :due_date_3
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

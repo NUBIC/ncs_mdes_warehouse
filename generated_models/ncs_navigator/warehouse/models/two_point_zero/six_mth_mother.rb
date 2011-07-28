@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SixMthMother
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -266,6 +267,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_17,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :six_mth_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :mult_child, :child_num, :time_stamp_8, :pets, :pet_meds, :pet_med_time, :time_stamp_9, :rodent, :roach, :time_stamp_10, :work_preg, :work_now, :work_now_oth, :work_hrs, :time_stamp_11, :cig_now, :num_smoker, :smoke_inside, :smoke_rules, :smoke_hours, :time_stamp_12, :pay_bills, :wic, :food_stamp, :tanf, :time_stamp_13, :nonenglish_freq, :time_stamp_14, :income, :income2, :fam_support, :fam_support_num, :time_stamp_15, :comm_email, :have_email, :email_2, :email_3, :email, :comm_cell, :cell_phone_1, :cell_phone_2, :cell_phone_3, :cell_phone_4, :cell_phone, :time_stamp_16, :comm_contact, :contact_1, :contact_fname_1, :contact_lname_1, :contact_relate_1, :contact_relate1_oth, :c_addr1_id, :c_addr1_1, :c_addr_2_1, :c_unit_1, :c_city_1, :c_state_1, :c_zipcode_1, :c_zip4_1, :contact_phone_1, :contact_fname_2, :contact_lname_2, :contact_relate_2, :contact_relate2_oth, :c_addr2_id, :c_addr1_2, :c_addr_2_2, :c_unit_2, :c_city_2, :c_state_2, :c_zipcode_2, :c_zip4_2, :contact_phone_2, :time_stamp_17
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

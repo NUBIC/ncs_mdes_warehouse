@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class RefFreezerVerification
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -38,6 +39,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :minimum_temp,
                NcsNavigator::Warehouse::DataMapper::NcsDecimal,
                { :required => true, :precision => 128, :scale => 64 }
+
+    mdes_order :psu_id, :srsc_id, :equip_id, :staff_id, :verification_id, :verification_dt, :rf_thermometer_equip_id, :correction_factor_temp, :current_temp, :maximum_temp, :minimum_temp
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

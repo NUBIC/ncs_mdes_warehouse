@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class TwelveMthSaq2
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -281,6 +282,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_3,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :twelve_mth_saq_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :sp_listen, :sp_feel, :sp_distant, :sp_understand, :sp_neglect, :sp_lonely, :behave_1, :behave_2, :behave_3, :behave_4, :behave_5, :behave_6, :behave_7, :behave_8, :behave_9, :behave_10, :behave_11, :behave_12, :behave_13, :behave_14, :behave_15, :behave_16, :behave_17, :behave_18, :behave_19, :behave_20, :behave_21, :behave_22, :behave_23, :behave_24, :behave_25, :behave_26, :behave_27, :behave_28, :behave_29, :behave_30, :behave_31, :behave_32, :behave_33, :behave_34, :behaviors_1, :behaviors_2, :behaviors_3, :behaviors_4, :behaviors_5, :behaviors_6, :behaviors_7, :behaviors_8, :time_stamp_2, :breast_milk, :breast_unit, :formula, :formula_unit, :cow_milk, :cow_milk_unit, :milk_other, :milk_other_unit, :breast_milk_fed, :breast_stop, :breast_stop_unit, :pumped, :pumped_2, :formula_fed, :formula_last7, :water_2, :ounces, :b_type_1, :b_type_2, :b_type_3, :b_type_4, :b_type_5, :pacifer, :cows_milk_1, :cows_milk_2, :cereal, :pureed, :table_food, :herbal, :time_stamp_3
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

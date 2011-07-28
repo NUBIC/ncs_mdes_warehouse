@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class HouseholdEnumerationPregnant
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -26,6 +27,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :p_relate,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "-1", "-2", "-4"] }
+
+    mdes_order :psu_id, :pregnant_loop_id, :hhenum_id, :p_id, :p_age, :p_fname, :p_relate
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

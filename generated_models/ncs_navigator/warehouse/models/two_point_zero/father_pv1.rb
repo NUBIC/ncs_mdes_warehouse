@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class FatherPv1
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -362,6 +363,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_11,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :father_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :f_int_ready, :time_stamp_2, :r_fname, :r_lname, :person_dob, :age_elig, :f_relate, :f_relate_oth, :f_maristat, :ethnicity, :time_stamp_3, :cig_now, :time_stamp_4, :drink, :drink_now, :drink_now_5, :time_stamp_5, :f_health, :f_asthma, :f_eczema, :f_allergies, :f_highbp, :f_diabetes, :f_highcholest, :f_cancer, :f_cancer_type_oth, :f_sicklecell, :f_autoimmune, :f_autoimmune_type, :f_autoimmune_type_oth, :f_birth_defect, :f_defect_type, :f_blind, :f_deaf, :f_add, :f_autism, :f_bipolar, :f_depression, :f_anxiety, :f_oth_condition, :f_condition_oth, :time_stamp_6, :working, :work_hrs, :job_satisfied, :hh_members, :num_child, :income, :time_stamp_7, :bothered, :appetite_poor, :blues, :good_as_others, :trb_keep_mind, :depressed, :evthg_effort, :hopeful_future, :life_failure, :felt_fearful, :sleep_restless, :happy, :talked_less, :felt_lonely, :people_unfriendly, :enjoyed_life, :crying_spells, :felt_sad, :feel_peop_dislike, :not_get_going, :time_stamp_8, :born_us, :time_us, :m_born_us, :f_born_us, :ins_employ, :ins_purchased, :ins_medicaid, :ins_tricare, :ins_ihs, :ins_medicare, :ins_oth, :time_stamp_9, :num_people_comm, :freq_comm, :social_support, :time_stamp_10, :timing, :discuss_preg, :seen_sono, :listen_heart, :felt_move, :attend_lamaze, :bought_baby, :plan_attend_birth, :child_lname, :want_child_lname, :fam_attend_birth, :want_fam_attend, :f_time_essential, :affect_difficult, :f_involved_as_m, :f_effects_baby, :f_provide_matter, :f_support_m, :f_reward, :time_stamp_11
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

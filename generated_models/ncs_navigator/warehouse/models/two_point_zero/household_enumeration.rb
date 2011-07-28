@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class HouseholdEnumeration
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -227,6 +228,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_12,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :hhenum_id, :recruit_type, :du_id, :hh_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :hh_member, :time_stamp_2, :address_id, :address_1, :address_2, :unit, :city, :state, :zip, :zip4, :du_elig_confirm, :private, :time_stamp_3, :place_type, :place_type_oth, :place_name, :admin, :rooms, :reside_age, :reside_preg, :time_stamp_4, :r_gender, :num_adult, :num_male, :num_female, :hh_age_elig, :num_age_elig, :time_stamp_5, :pregnant_hh, :num_preg, :time_stamp_6, :time_stamp_7, :confirm_1, :confirm_2, :time_stamp_8, :residence_type, :apt_1, :apt_2, :enum_status, :time_stamp_9, :r_fname, :r_lname, :phone_nbr, :phone_type, :phone_type_oth, :phone_alt, :phone_alt_type, :phone_alt_type_oth, :time_stamp_10, :hh_elig, :time_stamp_11, :contact_type, :contact_type_oth, :english, :contact_lang, :contact_lang_oth, :interpret, :contact_interpret, :contact_interpret_oth, :time_stamp_12
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

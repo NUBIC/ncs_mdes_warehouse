@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class TwentyFourMthSaq
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -230,6 +231,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :psoc24_total,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
+
+    mdes_order :psu_id, :twenty_four_mth_saq_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :asq_date_comp, :c_fname, :c_minital, :c_lname, :child_dob, :child_sex, :respondent_fname, :respondent_minital, :respondent_lname, :respondent_rel, :respondent_rel_oth, :asq24_address_id, :asq24_address_1, :asq24_address_2, :asq24_unit, :asq24_city, :asq24_state, :asq24_zip, :asq24_zip4, :asq24_country, :home_phone, :other_phone, :email, :asq24_assistname_comment, :asq_child_id, :sc_id, :sc_name, :comm24_picture_1, :comm24_imitate_2, :comm24_direct_3, :comm24_name_4, :comm24_say_idea_5, :example24_comment, :comm24_usewords_6, :comm24_total, :grmtr24_stairs_1, :grmtr24_howkick_2, :grmtr24_steps_3, :grmtr24_run_4, :grmtr24_jump_5, :grmtr24_cankick_6, :grmtr24_total, :fnmtr24_spoon_1, :fnmtr24_turn_2, :fnmtr24_knobs_3, :fnmtr24_switch_4, :fnmtr24_7stack_5, :fnmtr24_string_6, :fnmtr24_total, :pslv24_copy_1, :pslv24_dmpbtl_2, :pslv24_pretend_3, :pslv24_away_4, :pslv24_stdon_5, :pslv24_line4_6, :pslv24_total, :psoc24_spill_1, :psoc24_copy_2, :psoc24_fork_3, :psoc24_hugtoy_4, :psoc24_pushtoy_5, :psoc24_calli_6, :psoc24_total
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

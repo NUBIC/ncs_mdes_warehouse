@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class HouseholdInventoryAge
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -23,6 +24,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :p_fname,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..30 }
+
+    mdes_order :psu_id, :hh_inventory_id, :p_id, :household_inventory_age_id, :p_age, :p_fname
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

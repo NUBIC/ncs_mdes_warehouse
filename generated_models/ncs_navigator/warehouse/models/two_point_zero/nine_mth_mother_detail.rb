@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class NineMthMotherDetail
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -131,6 +132,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_4,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :nine_mth_id, :p_id, :nine_mth_detail_id, :child_qnum, :child_sex, :resp_rel, :resp_rel_oth, :cname_confirm, :c_fname, :c_lname, :cdob_confirm, :child_dob, :time_stamp_2, :eyes_follow, :smile, :reach_1, :feed, :wave, :grab, :switch_hands, :pickup, :hold, :sound_3, :speak_1, :speak_2, :headup, :roll_2, :situp, :stand, :stand_alone, :walk, :scribble, :fork_spoon, :time_stamp_3, :c_health, :r_hcare, :last_visit, :visit_wt, :same_care, :hcare_sick, :time_stamp_4
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

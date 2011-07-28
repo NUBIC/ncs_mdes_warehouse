@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Tsu
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :sc_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -17,6 +18,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :tsu_name,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..100 }
+
+    mdes_order :sc_id, :psu_id, :tsu_id, :tsu_name
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

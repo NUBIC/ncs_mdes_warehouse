@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class TapWaterTwfBlankCollected
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -17,6 +18,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :reas_twf_bl_n_collected,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-5", "-3", "-4"] }
+
+    mdes_order :psu_id, :tap_water_twf_id, :tap_water_twf_blank_coll_id, :reas_twf_bl_n_collected
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

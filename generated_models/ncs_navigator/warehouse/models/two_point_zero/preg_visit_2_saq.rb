@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PregVisit2Saq
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -104,6 +105,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_16,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :pv2_saq_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_15, :learn, :help, :incent, :research, :envir, :community, :know_others, :family, :doctor, :staff, :opin_spouse, :opin_family, :opin_friend, :opin_dr, :experience, :improve, :int_length, :int_stress, :int_repeat, :time_stamp_16
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

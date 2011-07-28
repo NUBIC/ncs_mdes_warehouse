@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class ThreeMthMother
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -77,6 +78,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :person_lang_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
+
+    mdes_order :psu_id, :three_mth_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :mult_child, :child_num, :maristat, :educ, :ethnicity, :hh_members, :num_child, :income_4cat, :time_stamp_3, :hh_primary_lang, :person_lang_oth
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

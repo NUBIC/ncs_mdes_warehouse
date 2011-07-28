@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class LinkContact
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -29,6 +30,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     belongs_to :provider,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Provider',
                :child_key => [ :provider_id ]
+
+    mdes_order :psu_id, :contact_link_id, :contact_id, :event_id, :instrument_id, :staff_id, :person_id, :provider_id
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

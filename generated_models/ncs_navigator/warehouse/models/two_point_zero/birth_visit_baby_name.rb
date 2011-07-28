@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class BirthVisitBabyName
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -35,6 +36,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :baby_bwt_oz,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
+
+    mdes_order :psu_id, :bv_id, :baby_loop_id, :baby_name, :baby_fname, :baby_mname, :baby_lname, :baby_sex, :baby_bwt_lb, :baby_bwt_oz
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

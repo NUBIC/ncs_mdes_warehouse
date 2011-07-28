@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PpgCati
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -83,6 +84,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_3,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :ppg_cati_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :pregnant, :trying, :ppg_due_date_1, :date_period, :weeks_preg, :month_preg, :trimester, :med_unable, :time_stamp_2, :bst_nmbr, :phone_nbr, :phone_type, :time_stamp_3
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

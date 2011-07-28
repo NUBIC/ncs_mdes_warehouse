@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SampleReceiptStore
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -53,6 +54,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :temp_event_action_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
+
+    mdes_order :psu_id, :sample_id, :srsc_id, :staff_id, :sample_condition, :receipt_comment_oth, :receipt_dt, :cooler_temp_cond, :equip_id, :placed_in_storage_dt, :storage_compartment_area, :storage_comment_oth, :removed_from_storage_dt, :temp_event_occurred, :temp_event_action, :temp_event_action_oth
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

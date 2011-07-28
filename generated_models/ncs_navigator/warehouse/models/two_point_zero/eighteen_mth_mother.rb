@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class EighteenMthMother
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -335,6 +336,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_15,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :eighteen_mth_mother_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :mult_child, :child_num, :pregnant, :orig_due_date, :time_stamp_2, :maristat, :maristat_oth, :hhcomp_change, :hhcomp_change_specify, :hh_members, :num_child, :income, :time_stamp_9, :work_last_contact, :work_currently, :work_hrs, :r_smoke, :num_smoker, :smoke_rules, :time_stamp_10, :pets, :pet_meds, :pet_med_time, :time_stamp_11, :removal, :method, :method_oth, :open_window, :roach, :water, :mold, :renovate, :time_stamp_12, :recent_move, :age_home, :length_reside, :length_reside_unit, :water_drink, :water_drink_oth, :water_cook, :water_cook_oth, :neigh_defn, :neigh_fam, :neigh_friend, :neighbors, :neigh_num_talk, :neigh_help, :neigh_talk, :neigh_watch_1, :neigh_watch_2, :neigh_close, :neigh_trust, :neigh_safe_1, :neigh_safe_2, :neigh_safe_3, :time_stamp_13, :comm_email, :have_email, :email_2, :email_3, :email, :comm_cell, :cell_phone_1, :cell_phone_2, :cell_phone_3, :cell_phone_4, :cell_phone, :time_stamp_14, :comm_contact, :contact_1, :contact_fname_1, :contact_lname_1, :contact_relate_1, :contact_relate1_oth, :c_addr1_id, :c_addr1_1, :c_addr_2_1, :c_unit_1, :c_city_1, :c_state_1, :c_zipcode_1, :c_zip4_1, :contact_phone_1, :contact_fname_2, :contact_lname_2, :contact_relate_2, :contact_relate2_oth, :c_addr2_id, :c_addr1_2, :c_addr_2_2, :c_unit_2, :c_city_2, :c_state_2, :c_zipcode_2, :c_zip4_2, :contact_phone_2, :time_stamp_15
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

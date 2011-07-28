@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PpgSaq
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -80,6 +81,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :email,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..100 }
+
+    mdes_order :psu_id, :ppg_saq_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :date, :pregnant, :ppg_due_date, :trying, :contact, :home_address, :mail_address, :phone, :home_phone, :work_phone, :cell_phone, :other_phone, :email
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

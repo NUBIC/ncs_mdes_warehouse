@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Institution
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -56,6 +57,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :institute_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :institute_id, :institute_type, :institute_name, :institute_type_oth, :institute_relation, :institute_relation_oth, :institute_owner, :institute_owner_oth, :institute_size, :institute_unit, :institute_unit_oth, :institute_info_source, :institute_info_source_oth, :institute_info_date, :institute_info_update, :institute_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class ThreeMthMotherChildHabits
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -173,6 +174,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_6,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :three_mth_id, :p_id, :three_month_habits_loop_id, :sleep_place_1, :sleep_place_2, :sleep_place_2_oth, :sleep_position_night, :sleep_hrs_day, :sleep_hrs_night, :sleep_difficult, :cry_more, :cry_console, :cry_colic, :colic_freq, :cry_problem, :calm, :worried, :social, :angry, :shy, :stubborn, :happy, :eyes_follow, :smile, :reach_1, :feed, :wave, :reach_2, :grab, :switch_hands, :pickup, :hold, :sound_2, :sound_3, :speak_1, :speak_2, :headup, :roll_1, :roll_2, :time_stamp_4, :childcare, :family_care_hrs, :homecare_hrs, :daycare_hrs, :time_stamp_5, :c_health, :r_hcare, :last_visit, :visit_wt, :same_care, :hcare_sick, :hospital, :diagnosis, :diagnosis_specify, :time_stamp_6
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

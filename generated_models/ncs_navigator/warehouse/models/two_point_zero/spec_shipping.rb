@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SpecShipping
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -44,6 +45,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :shipment_issues_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
+
+    mdes_order :psu_id, :storage_container_id, :spsc_id, :staff_id, :shipper_id, :shipper_destination, :shipment_date, :shipment_temperature, :shipment_tracking_no, :shipment_receipt_confirmed, :shipment_receipt_dt, :shipment_issues, :shipment_issues_oth
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

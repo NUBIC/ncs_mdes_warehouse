@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class EnvEquipmentProbLog
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -38,6 +39,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     belongs_to :staff_id_reviewer,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
                :child_key => [ :staff_id_reviewer ]
+
+    mdes_order :psu_id, :srsc_id, :equip_id, :problem_id, :equipment_type, :equipment_type_oth, :staff_id, :problem_dt, :equip_issue, :equip_action, :staff_id_reviewer
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

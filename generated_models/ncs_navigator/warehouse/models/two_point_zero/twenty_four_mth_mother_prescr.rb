@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class TwentyFourMthMotherPrescr
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -35,6 +36,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :prescrip_freq,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
+
+    mdes_order :psu_id, :twenty_four_mth_mother_id, :p_id, :twenty_four_mth_mother_prescr_id, :prescrmed, :prescr_admin, :prescrip_freq_unit, :prescr_admin_oth, :prescr_takestill, :prescrip_freq
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PregScreenPb
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -359,6 +360,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_14,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :ps_pb_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :female_1, :best_ttc_1, :best_ttc_2, :best_ttc_3, :phone, :r_phone_1, :time_stamp_2, :time_stamp_3, :r_fname, :r_lname, :person_dob, :age, :age_range, :age_elig, :time_stamp_4, :address_id, :address_1, :address_2, :unit, :city, :state, :zip, :zip4, :du_elig_confirm, :time_stamp_5, :know_ncs, :how_know_ncs_oth, :elig, :time_stamp_6, :pregnant, :orig_due_date, :date_period, :weeks_preg, :month_preg, :trimester, :time_stamp_7, :trying, :hyster, :ovaries, :tubes_tied, :menopause, :med_unable, :med_unable_oth, :time_stamp_8, :maristat, :educ, :employ, :employ_oth, :ethnicity, :race_oth, :person_lang, :person_lang_oth, :time_stamp_9, :hh_members, :num_child, :income_4cat, :time_stamp_10, :phone_nbr, :phone_nbr_oth, :phone_type, :phone_type_oth, :home_phone, :cell_phone_1, :cell_phone_2, :cell_phone_3, :cell_phone_4, :cell_phone, :same_addr, :mail_address_id, :mail_address_1, :mail_address_2, :mail_unit, :mail_city, :mail_state, :mail_zip, :mail_zip4, :have_email, :email, :email_type, :email_share, :plan_move, :where_move, :move_info, :new_address_id, :new_address_1, :new_address_2, :new_unit, :new_city, :new_state, :new_zip, :new_zip4, :when_move, :date_move, :time_stamp_11, :ppg_first, :time_stamp_12, :other_female, :time_stamp_13, :english, :contact_lang, :contact_lang_oth, :interpret, :contact_interpret, :contact_interpret_oth, :time_stamp_14
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

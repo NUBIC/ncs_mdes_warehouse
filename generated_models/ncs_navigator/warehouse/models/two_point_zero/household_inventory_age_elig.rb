@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class HouseholdInventoryAgeElig
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -23,6 +24,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :age_elig_age,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
+
+    mdes_order :psu_id, :hh_inventory_id, :p_id, :household_inventory_age_elig_id, :age_elig_fname, :age_elig_age
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

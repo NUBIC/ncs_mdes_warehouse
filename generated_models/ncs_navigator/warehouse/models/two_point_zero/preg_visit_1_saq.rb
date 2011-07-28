@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PregVisit1Saq
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -176,6 +177,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :time_stamp_22,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+
+    mdes_order :psu_id, :pv1_saq_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_18, :planned, :month_try, :wanted, :timing, :time_stamp_19, :past_preg, :num_preg, :age_first, :premature, :miscarry, :time_stamp_20, :cig_past, :cig_past_freq, :cig_past_num, :cig_now, :cig_now_freq, :cig_now_num, :drink_past, :drink_past_num, :drink_past_5, :drink_now, :drink_now_num, :drink_now_5, :time_stamp_21, :learn, :help, :incent, :research, :envir, :community, :know_others, :family, :doctor, :staff, :opin_spouse, :opin_family, :opin_friend, :opin_dr, :experience, :improve, :int_length, :int_stress, :int_repeat, :time_stamp_22
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

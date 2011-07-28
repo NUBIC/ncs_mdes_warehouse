@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class SpecReceipt
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -65,6 +66,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     belongs_to :equip,
                'NcsNavigator::Warehouse::Models::TwoPointZero::SpecEquipment',
                :child_key => [ :equip_id ]
+
+    mdes_order :psu_id, :specimen_id, :spsc_id, :staff_id, :receipt_comment, :receipt_comment_oth, :receipt_dt, :cooler_temp, :monitor_status, :upper_trigger, :upper_trigger_lvl, :lower_trigger_cold, :lower_trigger_ambient, :storage_container_id, :centrifuge_comment, :centrifuge_comment_oth, :centrifuge_st, :centrifuge_et, :centrifuge_staff_id, :equip_id
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

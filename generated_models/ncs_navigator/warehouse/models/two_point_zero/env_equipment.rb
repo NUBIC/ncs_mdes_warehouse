@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class EnvEquipment
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -35,6 +36,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :retired_reason_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
+
+    mdes_order :psu_id, :srsc_id, :equip_id, :equipment_type, :equipment_type_oth, :serial_no, :government_asset_tag_no, :retired_date, :retired_reason, :retired_reason_oth
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

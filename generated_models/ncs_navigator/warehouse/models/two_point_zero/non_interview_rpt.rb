@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class NonInterviewRpt
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -116,6 +117,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :nir_other,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :nir_id, :contact_id, :nir, :du_id, :person_id, :nir_vac_info, :nir_vac_info_oth, :nir_noaccess, :nir_noaccess_oth, :nir_access_attempt, :nir_access_attempt_oth, :nir_type_person, :nir_type_person_oth, :cog_inform_relation, :cog_inform_relation_oth, :cog_dis_desc, :perm_disability, :deceased_inform_relation, :deceased_inform_oth, :yod, :state_death, :who_refused, :who_refused_oth, :refuser_strength, :ref_action, :lt_illness_desc, :perm_ltr, :reason_unavail, :reason_unavail_oth, :date_available, :date_moved, :moved_length_time, :moved_unit, :moved_inform_relation, :moved_relation_oth, :nir_other
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero

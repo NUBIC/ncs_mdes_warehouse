@@ -4,6 +4,7 @@ require 'ncs_navigator/warehouse'
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class Instrument
     include DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
@@ -62,6 +63,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :instru_comment,
                NcsNavigator::Warehouse::DataMapper::NcsText,
                { :pii => :possible, :length => 0..8000 }
+
+    mdes_order :psu_id, :instrument_id, :event_id, :instrument_type, :instrument_type_oth, :instrument_version, :instrument_repeat_key, :ins_start_time, :ins_end_time, :ins_date_start, :ins_date_end, :ins_breakoff, :ins_status, :ins_mode, :ins_mode_oth, :ins_method, :sup_review, :data_problem, :instru_comment
 
   end # class
 end # module NcsNavigator::Warehouse::Models::TwoPointZero
