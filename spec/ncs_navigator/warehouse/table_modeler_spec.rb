@@ -87,6 +87,13 @@ module NcsNavigator::Warehouse
       model_class.mdes_order.should == [:tableau_id, :age_span]
     end
 
+    it 'preserves non-reversible table names' do
+      table.instance_eval { @name = 'generational_tableau_1' }
+      subject.load!
+      Spec::ModeledTables::GenerationalTableau1.
+        storage_names[:default].should == 'generational_tableau_1'
+    end
+
     describe 'the main entry file' do
       before do
         subject.generate!

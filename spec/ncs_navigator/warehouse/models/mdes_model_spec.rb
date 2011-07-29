@@ -21,6 +21,8 @@ module NcsNavigator::Warehouse::Models
         include ::DataMapper::Resource
         include MdesModel
 
+        storage_names[:default] = 'generational_tableau'
+
         property   :tableau_id, NcsNavigator::Warehouse::DataMapper::NcsString, :key => true
         property   :age_span,
                    NcsNavigator::Warehouse::DataMapper::NcsString,

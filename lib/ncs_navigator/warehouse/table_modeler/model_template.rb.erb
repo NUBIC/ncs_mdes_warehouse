@@ -6,6 +6,8 @@ module <%= module_name %>
     include DataMapper::Resource
     include NcsNavigator::Warehouse::Models::MdesModel
 
+    storage_names[:default] = '<%= t.name %>'
+
 <% t.wh_variables.each do |v| -%>
 <% if v.table_reference -%>
     belongs_to :<%= v.name.sub(/_id$/, '') %>,
