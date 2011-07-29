@@ -12,12 +12,19 @@ require 'pp'
 require 'active_support/ordered_hash'
 require 'benchmark'
 
+require File.expand_path('../mdes_loader.rb', __FILE__)
+require File.expand_path('../db_initializer.rb', __FILE__)
+
+init = DatabaseInitializer.new(:local_postgresql)
+
 $stderr.puts "Loading MDES models"
 $stderr.puts Benchmark.measure('load time') { require 'ncs_navigator/warehouse/models/two_point_zero' }
 
-require File.expand_path('../mdes_loader.rb', __FILE__)
+init.init_schema!
 
-l = MdesLoader.new('/Volumes/VDR Data/NORC Submissions/COOK20JUL11.xml').load!
+# fn = '/Volumes/VDR Data/constructed/20110720_cook_listings_out.xml'
+fn = '/Volumes/VDR Data/NORC Submissions/COOK27JUL11.xml'
+l = MdesLoader.new(fn).load!
 
 puts "\r%d seconds total -- %3.1f records/sec#{' ' * 30}" % [l.load_time, l.load_rate]
 puts "Breakdown:"

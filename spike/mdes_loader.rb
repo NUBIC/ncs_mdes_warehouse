@@ -8,6 +8,10 @@ class MdesLoader
     @path = mdes_xml_path
   end
 
+  def m
+    NcsNavigator::Warehouse::Models::TwoPointZero
+  end
+
   def good
     @good ||= []
   end
@@ -19,44 +23,49 @@ class MdesLoader
   def load!
     $stderr.puts "Reading #{path}"
     @start = Time.now
-    File.open(path) do |f|
-      Nokogiri::XML::Reader(f).each do |node|
-        # 1 is an open element
-        # 15 is a close
-        next unless [1, 15].include?(node.node_type)
-        if self.in_table_section
-          if self.current_model_class
-            if node.local_name == self.current_model_class.mdes_table_name
-              # on the way out
-              build_current_instance!
+    m::StudyCenter.transaction do
+      File.open(path) do |f|
+        Nokogiri::XML::Reader(f).each do |node|
+          # 1 is an open element
+          # 15 is a close
+          next unless [1, 15].include?(node.node_type)
+          if self.in_table_section
+            if self.current_model_class
+              if node.local_name == self.current_model_class.mdes_table_name
+                # on the way out
+                build_current_instance!
+              else
+                var = node.local_name.to_sym
+                val = node.inner_xml.strip
+                node.read # skip contents
+                node.read # skip close
+                next if var == :transaction_type
+                if val == '-3' && current_model_class.relationships.detect { |r| r.child_key.collect(&:name).include?(var) }
+                  # $stderr.puts "Skipping fk #{var.inspect} on #{current_model_class.mdes_table_name} with value #{val.inspect}"
+                  next
+                end
+                self.current_parameter_values[var] = val
+              end
             else
-              var = node.local_name.to_sym
-              val = node.inner_xml.strip
-              node.read # skip contents
-              node.read # skip close
-              next if var == :transaction_type
-              self.current_parameter_values[var] = val
+              if node.local_name == 'transmission_tables'
+                # on the way out
+                self.in_table_section = false
+              else
+                self.current_model_class =
+                  m.mdes_order.detect { |model| model.mdes_table_name == node.local_name }
+                self.current_model_class or fail "Could not find model for #{node.local_name.inspect}"
+                self.current_parameter_values = {}
+              end
             end
           else
             if node.local_name == 'transmission_tables'
-              # on the way out
-              self.in_table_section = false
-            else
-              self.current_model_class =
-                NcsNavigator::Warehouse::Models::TwoPointZero.
-                mdes_order.detect { |model| model.mdes_table_name == node.local_name }
-              self.current_model_class or fail "Could not find model for #{node.local_name}"
-              self.current_parameter_values = {}
+              self.in_table_section = true
             end
-          end
-        else
-          if node.local_name == 'transmission_tables'
-            self.in_table_section = true
           end
         end
       end
+      @end = Time.now
     end
-    @end = Time.now
 
     self
   end
@@ -82,8 +91,7 @@ class MdesLoader
   def build_current_instance!
     instance = current_model_class.new(current_parameter_values)
     if instance.valid?
-      # TODO: insertion order correction
-      #instance.save
+      instance.save
       self.good << instance
       $stderr.write "#{clear_line}%6d records (%3.1f per second); up to #{current_model_class.mdes_table_name}" % [good.size, load_rate]
       $stderr.flush
