@@ -6,6 +6,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     include DataMapper::Resource
     include NcsNavigator::Warehouse::Models::MdesModel
 
+    storage_names[:default] = 'pre_preg_pdecorate_room'
+
     property   :decorate_room_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
