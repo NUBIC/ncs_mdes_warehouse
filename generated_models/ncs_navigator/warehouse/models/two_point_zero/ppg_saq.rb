@@ -58,7 +58,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-3", "-4"] }
     property   :contact,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..100 }
+               { :omittable => true, :pii => true, :length => 0..100 }
     property   :home_address,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..100 }
@@ -67,7 +67,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => true, :length => 0..100 }
     property   :phone,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..10 }
+               { :omittable => true, :pii => true, :length => 0..10 }
     property   :home_phone,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..10 }

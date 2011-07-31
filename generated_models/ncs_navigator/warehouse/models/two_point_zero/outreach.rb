@@ -25,10 +25,10 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
     property   :outreach_target,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "-5", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "-5", "-4"] }
     property   :outreach_target_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => :possible, :length => 0..255 }
+               { :omittable => true, :pii => :possible, :length => 0..255 }
     property   :outreach_mode,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "-5", "-4"] }
@@ -49,7 +49,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-4"] }
     property   :outreach_lang2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "-1", "-5", "-6", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "-1", "-5", "-6", "-4"] }
     property   :outreach_lang_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
@@ -58,10 +58,10 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-3", "-4"] }
     property   :outreach_race2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-5", "-7", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-5", "-7", "-4"] }
     property   :outreach_race_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => :possible, :length => 0..255 }
+               { :omittable => true, :pii => :possible, :length => 0..255 }
     property   :outreach_culture1,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-3", "-4"] }

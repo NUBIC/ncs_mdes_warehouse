@@ -277,7 +277,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                :child_key => [ :c_addr1_id ], :required => false
     property   :contact_addr_1,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..100 }
+               { :omittable => true, :pii => true, :length => 0..100 }
     property   :c_addr1_1,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..100 }
@@ -304,7 +304,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => true, :length => 0..10 }
     property   :contact_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..60 }
+               { :omittable => true, :pii => true, :length => 0..60 }
     property   :contact_fname_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..30 }
@@ -322,7 +322,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                :child_key => [ :c_addr2_id ], :required => false
     property   :contact_addr_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..100 }
+               { :omittable => true, :pii => true, :length => 0..100 }
     property   :c_addr1_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..100 }
@@ -352,67 +352,67 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
     property   :time_stamp_13,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+               { :omittable => true, :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
     property   :learn,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
     property   :help,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
     property   :incent,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
     property   :research,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
     property   :envir,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
     property   :community,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
     property   :know_others,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
     property   :family,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
     property   :doctor,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
     property   :staff,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
     property   :opin_spouse,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "4", "5", "-7", "-3", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-7", "-3", "-4"] }
     property   :opin_family,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "4", "5", "-7", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-7", "-4"] }
     property   :opin_friend,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "4", "5", "-7", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-7", "-4"] }
     property   :opin_dr,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "4", "5", "-7", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-7", "-4"] }
     property   :experience,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "4", "5", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-4"] }
     property   :improve,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "4", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "4", "-4"] }
     property   :int_length,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "-4"] }
     property   :int_stress,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "3", "4", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "3", "4", "-4"] }
     property   :int_repeat,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 1..2, :set => ["1", "2", "-4"] }
+               { :omittable => true, :length => 1..2, :set => ["1", "2", "-4"] }
     property   :time_stamp_14,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+               { :omittable => true, :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
 
     mdes_order :psu_id, :pp_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :name_confirm, :r_fname, :r_lname, :dob_confirm, :person_dob, :age_elig, :time_stamp_2, :health, :ever_preg, :asthma, :highbp, :diabetes_1, :diabetes_2, :diabetes_3, :thyroid_1, :thyroid_2, :vitamin, :hlth_care, :time_stamp_3, :insure, :ins_employ, :ins_medicaid, :ins_tricare, :ins_ihs, :ins_medicare, :ins_oth, :time_stamp_4, :recent_move, :own_home, :own_home_oth, :age_home, :length_reside, :length_reside_unit, :main_heat, :main_heat_oth, :cooling, :time_stamp_5, :water, :mold, :time_stamp_6, :renovate, :decorate, :time_stamp_7, :water_drink, :water_drink_oth, :water_cook, :water_cook_oth, :time_stamp_8, :educ, :working, :hours, :shift_work, :time_stamp_9, :maristat, :sp_educ, :sp_ethnicity, :time_stamp_10, :hh_members, :num_child, :income, :time_stamp_11, :have_email, :email_2, :email_3, :email, :cell_phone_1, :cell_phone_2, :cell_phone_3, :cell_phone_4, :cell_phone, :contact_1, :contact_fname_1, :contact_lname_1, :contact_relate_1, :contact_relate1_oth, :c_addr1_id, :contact_addr_1, :c_addr1_1, :c_addr_2_1, :c_unit_1, :c_city_1, :c_state_1, :c_zipcode_1, :c_zip4_1, :contact_phone_1, :contact_2, :contact_fname_2, :contact_lname_2, :contact_relate_2, :contact_relate2_oth, :c_addr2_id, :contact_addr_2, :c_addr1_2, :c_addr_2_2, :c_unit_2, :c_city_2, :c_state_2, :c_zipcode_2, :c_zip4_2, :contact_phone_2, :time_stamp_12, :time_stamp_13, :learn, :help, :incent, :research, :envir, :community, :know_others, :family, :doctor, :staff, :opin_spouse, :opin_family, :opin_friend, :opin_dr, :experience, :improve, :int_length, :int_stress, :int_repeat, :time_stamp_14
 

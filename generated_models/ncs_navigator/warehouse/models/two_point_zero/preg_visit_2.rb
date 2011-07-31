@@ -367,7 +367,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => :possible, :length => 0..255 }
     property   :contact_addr_1,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..100 }
+               { :omittable => true, :pii => true, :length => 0..100 }
     belongs_to :c_addr1,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Address',
                :child_key => [ :c_addr1_id ], :required => false
@@ -397,7 +397,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => true, :length => 0..10 }
     property   :contact_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..60 }
+               { :omittable => true, :pii => true, :length => 0..60 }
     property   :contact_fname_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..30 }
@@ -412,7 +412,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                { :pii => :possible, :length => 0..255 }
     property   :contact_addr_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..100 }
+               { :omittable => true, :pii => true, :length => 0..100 }
     belongs_to :c_addr2,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Address',
                :child_key => [ :c_addr2_id ], :required => false
