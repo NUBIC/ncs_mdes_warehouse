@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib", "generated_models"]
 
-  s.add_dependency 'ncs_mdes', '~> 0.4'
+  s.add_dependency 'ncs_mdes', '~> 0.4', '>= 0.4.1'
   s.add_dependency 'activesupport', '~> 3.0.9'
   s.add_dependency 'i18n', '~> 0.6' # required by activesupport
 

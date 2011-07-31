@@ -6,14 +6,15 @@ module NcsNavigator::Warehouse
     module NcsType
       def self.included(into)
         into.class_eval do
-          accept_options :pii
-          attr_reader :pii
+          accept_options :pii, :omittable
+          attr_reader :pii, :omittable
         end
       end
 
       def initialize(model, name, options = {})
         super
         @pii = options[:pii]
+        @omittable = options[:omittable]
       end
     end
 

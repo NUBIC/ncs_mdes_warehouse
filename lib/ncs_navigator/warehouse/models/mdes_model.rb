@@ -17,9 +17,18 @@ module NcsNavigator::Warehouse::Models
         :indent => options[:indent] || 2, :margin => options[:margin])
       io << builder.tag!(self.class.mdes_table_name) { |xml|
         self.class.mdes_order.each do |variable_name|
-          v = self.send(variable_name)
-          if v && (self.class.properties[variable_name].pii != true || options[:pii])
-            xml.tag!(variable_name, v)
+          prop = self.class.properties[variable_name]
+          is_hidden_pii = !options[:pii] && prop.pii == true
+          content =
+            unless is_hidden_pii
+              self.send(variable_name)
+            end
+          if !content && prop.options[:set]
+            content = %w(-3 -6).detect { |c| prop.options[:set].include?(c) }
+          end
+          # Omit if blank and omittable, otherwise have a blast
+          if !content.blank? || !prop.omittable
+            xml.tag!(variable_name, content)
           end
         end
       } << "\n"

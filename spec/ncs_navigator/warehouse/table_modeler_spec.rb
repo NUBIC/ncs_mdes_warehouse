@@ -28,6 +28,7 @@ module NcsNavigator::Warehouse
           NcsNavigator::Mdes::Variable.new(variable_name.to_s).tap do |v|
             v.type = NcsNavigator::Mdes::VariableType.new.tap do |vt|
               vt.base_type = :string
+              v.required = false
             end
           end,
           NcsNavigator::Mdes::Variable.new('transaction_type').tap do |v|
@@ -337,6 +338,13 @@ end
 
         model_property.pii.should == :possible
       end
+
+      it 'preserves the omittableness' do
+        variable.omittable = true
+        subject.load!
+
+        model_property.omittable.should be_true
+      end
     end
 
     describe 'key detection' do
@@ -431,6 +439,7 @@ end
           v.table_reference = parent_table
           v.type = NcsNavigator::Mdes::VariableType.new('foreignKeyRequiredType').tap do |vt|
             vt.base_type = :string
+            v.required = false
           end
         end
         tables << parent_table
