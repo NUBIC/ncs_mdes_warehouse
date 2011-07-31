@@ -14,6 +14,7 @@ require 'benchmark'
 
 require File.expand_path('../mdes_loader.rb', __FILE__)
 require File.expand_path('../db_initializer.rb', __FILE__)
+require File.expand_path('../xml_emitter.rb', __FILE__)
 
 init = DatabaseInitializer.new(:local_postgresql)
 

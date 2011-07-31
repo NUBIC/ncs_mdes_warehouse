@@ -30,6 +30,7 @@ class DatabaseInitializer
   def initialize(bcdatabase_group)
     @bcdatabase_group = bcdatabase_group
 
+    DataMapper::Logger.new(File.open('datamapper.log', 'w'), :debug)
     @adapter = DataMapper.setup(:default, pg_url)
 
     @adapter.resource_naming_convention =
