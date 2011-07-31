@@ -18,6 +18,7 @@ module NcsNavigator::Warehouse::Models
       io << builder.tag!(self.class.mdes_table_name) { |xml|
         self.class.mdes_order.each do |variable_name|
           prop = self.class.properties[variable_name]
+
           is_hidden_pii = !options[:pii] && prop.pii == true
           content =
             unless is_hidden_pii
@@ -26,11 +27,14 @@ module NcsNavigator::Warehouse::Models
           if !content && prop.options[:set]
             content = %w(-3 -6).detect { |c| prop.options[:set].include?(c) }
           end
+
           # Omit if blank and omittable, otherwise have a blast
           if !content.blank? || !prop.omittable
             xml.tag!(variable_name, content)
           end
         end
+
+        xml.transaction_type(:'xsi:nil' => true)
       } << "\n"
     end
 

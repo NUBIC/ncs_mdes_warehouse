@@ -82,7 +82,7 @@ module NcsNavigator::Warehouse::Models
       end
 
       it 'emits the expected number of columns' do
-        xml.root.elements.size.should == 6
+        xml.root.elements.size.should == 7
       end
 
       it 'produces XML omitting PII by default' do
@@ -93,9 +93,15 @@ module NcsNavigator::Warehouse::Models
         xml.xpath('//age_span').first.text.strip.should_not be_empty
       end
 
+      it 'always emits a transaction_type entry last since the schema requires it, even though it is meaningless' do
+        last = xml.root.elements.last
+        last.name.should == 'transaction_type'
+        last['nil'].should == 'true'
+      end
+
       it 'emits the columns according to the mdes_order' do
         xml.root.elements.collect(&:name).
-          should == %w(tableau_id age_span context_id ssn color_scale size)
+          should == %w(tableau_id age_span context_id ssn color_scale size transaction_type)
       end
 
       it 'emits the property values as expected' do
