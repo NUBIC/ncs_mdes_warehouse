@@ -31,7 +31,7 @@ class DatabaseInitializer
     @bcdatabase_group = bcdatabase_group
 
     DataMapper::Logger.new(File.open('datamapper.log', 'w'), :debug)
-    @adapter = DataMapper.setup(:default, pg_url)
+    @adapter = DataMapper.setup(:default, params.merge('adapter' => 'postgres'))
 
     @adapter.resource_naming_convention =
       lambda { |name| DataMapper::Inflector.underscore(DataMapper::Inflector.demodulize(name)) }
@@ -44,12 +44,6 @@ class DatabaseInitializer
       $stderr.puts "Initialize schema"
       DataMapper.auto_migrate!
     end)
-  end
-
-  def pg_url
-    credentials = [params['username'], params['password']].compact.join(':')
-    server = [params['host'] || 'localhost', params['port']].compact.join(':')
-    "postgres://#{credentials}@#{server}/#{params['database']}"
   end
 
   def params
