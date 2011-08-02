@@ -87,5 +87,5 @@ if __FILE__ == $0
   require File.expand_path('../db_initializer', __FILE__)
   DatabaseInitializer.new(:local_postgresql)
 
-  XmlEmitter.new('cook-20110731-initial.xml').emit!
+  XmlEmitter.new('cook-20110802-staff_portal.xml').emit!
 end

@@ -7,19 +7,19 @@ class StaffPortalTransformer
 
   bcdatabase :name => :ncs_staff_portal
 
-  def prefix_id(base)
+  def self.prefix_id(base)
     "staff_portal-#{base}"
   end
 
-  def staff_id(row)
+  def self.staff_id(row)
     prefix_id(row.username)
   end
 
-  def staff_yob(birth_date)
+  def self.staff_yob(birth_date)
     birth_date.try(:year).to_s
   end
 
-  def staff_age_range(birth_date)
+  def self.staff_age_range(birth_date)
     return "-6" unless birth_date
     age = (Date.today - birth_date) / 365.25
     case
@@ -33,13 +33,29 @@ class StaffPortalTransformer
     end.to_s
   end
 
+  ###### SSU
+
+  produce_records(:ncs_ssus) { |row|
+    Ssu.new(
+      :sc_id => '20000029',
+      :ssu_id => row.ssu_id,
+      :psu_id => row.psu_id
+    ) unless Ssu.get(row.ssu_id)
+  }
+
   ###### STAFF
 
   def self.staff_subtable_with_username(subtable_name)
-    %Q{SELECT sub.*, s.username FROM #{subtable_name} sub INNER JOIN staff s ON sub.staff_id=s.id}
+    %Q{
+      SELECT sub.*, s.username
+      FROM #{subtable_name} sub INNER JOIN staff s ON sub.staff_id=s.id
+      WHERE s.zipcode IS NOT NULL
+    }
   end
 
-  produce_records(:staff) do |row|
+  produce_records(
+    :staff, 'SELECT * FROM staff WHERE zipcode IS NOT NULL'
+  ) do |row|
     Staff.new(
       :staff_id        => staff_id(row),
       :staff_type      => row.staff_type_code,
@@ -62,7 +78,7 @@ class StaffPortalTransformer
     staff_subtable_with_username('staff_languages')
   ) do |row|
     StaffLanguage.new(
-      :staff_language_id => prefix_id(row.staff_language_id),
+      :staff_language_id => prefix_id(row.id),
       :staff_id          => staff_id(row),
       :staff_lang        => row.lang_code,
       :staff_lang_oth    => row.lang_other
@@ -104,10 +120,10 @@ class StaffPortalTransformer
       :weekly_exp_id           => prefix_id(row.id),
       :staff_id                => staff_id(row),
       :week_start_date         => row.week_start_date,
-      :staff_pay               => row.rate,
-      :staff_hours             => row.hours,
-      :staff_expenses          => row.expenses,
-      :staff_miles             => row.miles,
+      :staff_pay               => ("%.2f" % row.rate if row.rate),
+      :staff_hours             => ("%.2f" % row.hours if row.hours),
+      :staff_expenses          => ("%.2f" % row.expenses if row.expenses),
+      :staff_miles             => ("%.2f" % row.miles if row.miles),
       :weekly_expenses_comment => row.comment
     )
   end
@@ -120,7 +136,7 @@ class StaffPortalTransformer
       :staff_weekly_expense_id => prefix_id(row.staff_weekly_expense_id),
       :mgmt_task_type          => row.task_type_code,
       :mgmt_task_type_oth      => row.task_type_other,
-      :mgmt_task_hrs           => row.hours,
+      :mgmt_task_hrs           => ("%.2f" % row.hours if row.hours),
       :mgmt_task_comment       => row.comment
     )
   end
@@ -137,8 +153,12 @@ class StaffPortalTransformer
     }
   end
 
-  def outreach_event_id(row)
+  def self.outreach_event_id(row)
     prefix_id([row.outreach_event_id, row.ssu_id].join('_'))
+  end
+
+  def self.outreach_table_id(row)
+    prefix_id([row.id, row.ssu_id].join('_'))
   end
 
   produce_records(
@@ -159,22 +179,24 @@ class StaffPortalTransformer
 
     Outreach.new(
       :outreach_event_id    => outreach_event_id(row),
+      :ssu_id               => row.ssu_id,
       :outreach_event_date  => row.event_date,
       :outreach_mode        => row.mode_code,
       :outreach_mode_oth    => row.mode_other,
       :outreach_type        => row.outreach_type_code,
       :outreach_type_oth    => row.outreach_type_other,
       :outreach_tailored    => row.tailored_code,
-      :outreach_lang1       => is_tailored ? row.language_specific_code : '2', # No if untailored
+      :outreach_lang1       => is_tailored ? (row.language_specific_code || '-4') : '2', # No if untailored
       :outreach_lang_oth    => row.language_other,
-      :outreach_race1       => is_tailored ? row.race_specific_code : '2',     # No if untailored
-      :outreach_culture1    => is_tailored ? row.culture_specific_code : '2',  # No if untailored
-      :outreach_culture2    => is_tailored ? row.culture_code : '-7',          # NA if untailored
+      :outreach_race1       => is_tailored ? (row.race_specific_code || '-4') : '2',     # No if untailored
+      :outreach_culture1    => is_tailored ? (row.culture_specific_code || '-4') : '2',  # No if untailored
+      :outreach_culture2    => is_tailored ? (row.culture_code || '-4') : '-7',          # NA if untailored
       :outreach_culture_oth => row.culture_other,
       :outreach_cost        => row.cost,
       :outreach_staffing    => row.no_of_staff,
       :outreach_eval_result => row.evaluation_result_code,
-      :outreach_quantity    => row.letters_quantity.to_i + row.attendees_quantity.to_i
+      :outreach_quantity    => row.letters_quantity.to_i + row.attendees_quantity.to_i,
+      :outreach_incident    => "2" # until incident support is added
     )
   end
 
@@ -183,7 +205,7 @@ class StaffPortalTransformer
     outreach_join('outreach_languages')
   ) do |row|
     OutreachLang2.new(
-      :outreach_lang2_id => prefix_id(row.id),
+      :outreach_lang2_id => outreach_table_id(row),
       :outreach_event_id => outreach_event_id(row),
       :outreach_lang2    => row.language_code
     )
@@ -194,24 +216,24 @@ class StaffPortalTransformer
     outreach_join('outreach_races')
   ) do |row|
     OutreachRace.new(
-      :outreach_race_id    => prefix_id(row.id),
-      :outreach_event_id   => outreach_event_id(row),
-      :outreach_race2      => row.race_code,
-      :outreach_race_other => row.race_other
+      :outreach_race_id  => outreach_table_id(row),
+      :outreach_event_id => outreach_event_id(row),
+      :outreach_race2    => row.race_code,
+      :outreach_race_oth => row.race_other
     )
   end
 
   produce_records(
     :outreach_untailored_language_race,
     %q{
-       SELECT oe.id, ns.ssu_id
+       SELECT oe.id outreach_event_id, ns.ssu_id
        FROM outreach_events oe
          INNER JOIN outreach_segments os ON oe.id=os.outreach_event_id
          INNER JOIN ncs_area_ssus ns ON os.ncs_area_id=ns.ncs_area_id
        WHERE oe.tailored_code=2
     }
   ) do |row|
-    id = prefix_id([row.id, 'untailored'].join('-'))
+    id = prefix_id([row.outreach_event_id, row.ssu_id, 'untailored'].join('-'))
 
     [
       OutreachLang2.new(
@@ -232,7 +254,7 @@ class StaffPortalTransformer
     outreach_join('outreach_targets')
   ) do |row|
     OutreachTarget.new(
-      :outreach_target_id     => prefix_id(row.id),
+      :outreach_target_id     => outreach_table_id(row),
       :outreach_event_id      => outreach_event_id(row),
       :outreach_target_ms     => row.target_code,
       :outreach_target_ms_oth => row.target_other
@@ -242,12 +264,12 @@ class StaffPortalTransformer
   produce_records(
     :outreach_evaluations,
     outreach_join('outreach_evaluations')
- ) do |row|
+  ) do |row|
     OutreachEval.new(
-      :outreach_event_eval_id => prefix_id(row.id),
+      :outreach_event_eval_id => outreach_table_id(row),
       :outreach_event_id      => outreach_event_id(row),
-      :outreach_eval          => row.target_code,
-      :outreach_eval_oth      => row.target_other
+      :outreach_eval          => row.evaluation_code,
+      :outreach_eval_oth      => row.evaluation_other
     )
   end
 
@@ -255,8 +277,8 @@ class StaffPortalTransformer
     :outreach_staff_members,
     outreach_join('outreach_staff_members', :staff => true)
   ) do |row|
-    OutreachEval.new(
-      :outreach_event_staff_id => prefix_id(row.id),
+    OutreachStaff.new(
+      :outreach_event_staff_id => outreach_table_id(row),
       :outreach_event_id       => outreach_event_id(row),
       :staff_id                => staff_id(row)
     )
