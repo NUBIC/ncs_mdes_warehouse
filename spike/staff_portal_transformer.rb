@@ -195,7 +195,7 @@ class StaffPortalTransformer
       :outreach_culture1    => is_tailored ? (row.culture_specific_code || '-4') : '2',  # No if untailored
       :outreach_culture2    => is_tailored ? (row.culture_code || '-4') : '-7',          # NA if untailored
       :outreach_culture_oth => row.culture_other,
-      :outreach_cost        => row.cost,
+      :outreach_cost        => ('%.2f' % row.cost if row.cost),
       :outreach_staffing    => row.no_of_staff,
       :outreach_eval_result => row.evaluation_result_code,
       :outreach_quantity    => row.letters_quantity.to_i + row.attendees_quantity.to_i,
