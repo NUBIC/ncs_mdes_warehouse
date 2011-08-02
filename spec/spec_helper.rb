@@ -6,6 +6,11 @@ require 'ncs_navigator/warehouse'
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
+  config.before(:all) do
+    NcsNavigator::Warehouse.bcdatabase =
+      Bcdatabase.load(File.expand_path('../bcdatabase', __FILE__))
+  end
+
   config.after do
     FileUtils.rm_rf @tmpdir if @tmpdir && !ENV['KEEP_TMP']
   end

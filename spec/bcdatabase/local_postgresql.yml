@@ -1,0 +1,7 @@
+defaults:
+  adapter: postgresql # AR name; what will be in there most of the time
+  datamapper_adapter: postgres
+ncs_staff_portal:
+  database: ncs_sp
+ncs_staff_portal_test:
+  database: ncs_sp_test
