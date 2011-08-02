@@ -35,12 +35,15 @@ class StaffPortalTransformer
 
   ###### SSU
 
-  produce_records(:ncs_ssus) { |row|
+  produce_records(
+    :ssus,
+    'SELECT DISTINCT ssu_id FROM ncs_area_ssus'
+  ) { |ssu_id|
     Ssu.new(
-      :sc_id => '20000029',
-      :ssu_id => row.ssu_id,
-      :psu_id => row.psu_id
-    ) unless Ssu.get(row.ssu_id)
+      :sc_id  => '20000029',
+      :ssu_id => ssu_id,
+      :psu_id => '20000030'
+    ) unless Ssu.get(ssu_id)
   }
 
   ###### STAFF
