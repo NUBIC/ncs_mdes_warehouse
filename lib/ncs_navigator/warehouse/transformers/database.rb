@@ -104,7 +104,7 @@ module NcsNavigator::Warehouse::Transformers
 
       def bcdatabase(name_and_group={})
         if name_and_group.empty?
-          @bcdatabase ||= { :group => 'local_postgresql' }
+          @bcdatabase ||= { :group => NcsNavigator::Warehouse.default_bcdatabase_group }
         else
           @bcdatabase = (self.bcdatabase || {}).merge(name_and_group)
         end
@@ -128,7 +128,7 @@ module NcsNavigator::Warehouse::Transformers
         transformer.repository.adapter.select(self.query).each do |row|
           transformer.row_encountered(name)
           begin
-            [*row_processor.call(row)].each do |rec|
+            [*row_processor.call(row)].compact.each do |rec|
               if rec.respond_to?('psu_id')
                 unless rec.psu_id
                   rec.psu_id = '20000030'

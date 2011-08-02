@@ -1,6 +1,7 @@
 require 'bcdatabase'
 require 'data_mapper'
 require 'benchmark'
+require 'ncs_navigator/warehouse'
 
 require 'dm-constraints/adapters/dm-do-adapter'
 
@@ -27,8 +28,8 @@ class DatabaseInitializer
     @bcdb ||= Bcdatabase.load
   end
 
-  def initialize(bcdatabase_group)
-    @bcdatabase_group = bcdatabase_group
+  def initialize(bcdatabase_group=nil)
+    @bcdatabase_group = bcdatabase_group || NcsNavigator::Warehouse.default_bcdatabase_group
 
     DataMapper::Logger.new(File.open('datamapper.log', 'w'), :debug)
     @adapter = DataMapper.setup(:default, params.merge('adapter' => 'postgres'))

@@ -15,7 +15,7 @@ require 'benchmark'
 require File.expand_path('../mdes_loader.rb', __FILE__)
 require File.expand_path('../db_initializer.rb', __FILE__)
 
-init = DatabaseInitializer.new(:local_postgresql)
+init = DatabaseInitializer.new
 
 $stderr.puts "Loading MDES models"
 $stderr.puts Benchmark.measure('load time') { require 'ncs_navigator/warehouse/models/two_point_zero' }
