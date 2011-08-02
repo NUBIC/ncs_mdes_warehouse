@@ -133,7 +133,14 @@ class StaffPortalTransformer
   end
 
   produce_records(
-    :management_tasks
+    :management_tasks,
+    %Q{
+      SELECT mt.*
+      FROM management_tasks mt
+        INNER JOIN staff_weekly_expenses swe ON mt.staff_weekly_expense_id=swe.id
+        INNER JOIN staff s ON swe.staff_id=s.id
+      WHERE s.zipcode IS NOT NULL
+    }
   ) do |row|
     StaffExpMngmntTasks.new(
       :staff_exp_mgmt_task_id  => prefix_id(row.id),
