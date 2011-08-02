@@ -48,11 +48,11 @@ class StaffPortalTransformer
 
   ###### STAFF
 
-  def self.staff_subtable_with_username(subtable_name)
+  def self.staff_subtable_with_username(subtable_name, options={})
     %Q{
       SELECT sub.*, s.username
       FROM #{subtable_name} sub INNER JOIN staff s ON sub.staff_id=s.id
-      WHERE s.zipcode IS NOT NULL
+      WHERE s.zipcode IS NOT NULL#{" AND #{options[:where]}" if options[:where]}
     }
   end
 
@@ -78,7 +78,7 @@ class StaffPortalTransformer
 
   produce_records(
     :staff_languages,
-    staff_subtable_with_username('staff_languages')
+    staff_subtable_with_username('staff_languages', :where => 'lang_code != -5')
   ) do |row|
     StaffLanguage.new(
       :staff_language_id => prefix_id(row.id),
