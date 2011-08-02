@@ -117,6 +117,7 @@ class StaffPortalTransformer
           SELECT staff_weekly_expense_id, SUM(hours) hours, SUM(expenses) expenses, SUM(miles) miles
           FROM management_tasks mt GROUP BY staff_weekly_expense_id
         ) mt ON swe.id=mt.staff_weekly_expense_id
+      WHERE s.zipcode IS NOT NULL
     }
   ) do |row|
     StaffWeeklyExpense.new(
@@ -153,6 +154,7 @@ class StaffPortalTransformer
         INNER JOIN outreach_segments os ON ot.outreach_event_id=os.outreach_event_id
         INNER JOIN ncs_area_ssus ns ON os.ncs_area_id=ns.ncs_area_id
         #{'INNER JOIN staff s ON ot.staff_id=s.id' if options[:staff]}
+      #{'WHERE s.zipcode IS NOT NULL' if options[:staff]}
     }
   end
 
