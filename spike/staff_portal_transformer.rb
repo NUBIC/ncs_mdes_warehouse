@@ -88,22 +88,22 @@ class StaffPortalTransformer
     )
   end
 
-  produce_records(
-    :staff_cert_trainings,
-    staff_subtable_with_username('staff_cert_trainings')
-  ) do |row|
-    StaffCertTraining.new(
-      :staff_cert_list_id  => prefix_id(row.id),
-      :staff_id            => staff_id(row),
-      :cert_train_type     => row.certificate_type_code,
-      :cert_completed      => row.complete_code,
-      :cert_date           => row.cert_date,
-      :staff_bgcheck_lvl   => row.background_check_code,
-      :cert_type_frequency => row.frequency,
-      :cert_type_exp_date  => row.expiration_date,
-      :cert_comment        => row.comment
-    )
-  end
+#  produce_records(
+#    :staff_cert_trainings,
+#    staff_subtable_with_username('staff_cert_trainings')
+#  ) do |row|
+#    StaffCertTraining.new(
+#      :staff_cert_list_id  => prefix_id(row.id),
+#      :staff_id            => staff_id(row),
+#      :cert_train_type     => row.certificate_type_code,
+#      :cert_completed      => row.complete_code,
+#      :cert_date           => row.cert_date,
+#      :staff_bgcheck_lvl   => row.background_check_code,
+#      :cert_type_frequency => row.frequency,
+#      :cert_type_exp_date  => row.expiration_date,
+#      :cert_comment        => row.comment
+#    )
+#  end
 
   ###### EXPENSES
 
