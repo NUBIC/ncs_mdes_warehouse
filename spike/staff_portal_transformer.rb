@@ -182,7 +182,7 @@ class StaffPortalTransformer
          INNER JOIN ncs_area_ssus ns ON os.ncs_area_id=ns.ncs_area_id
          LEFT JOIN (
            SELECT outreach_event_id, language_other
-           FROM outreach_languages WHERE language_other IS NOT NULL
+           FROM outreach_languages WHERE language_other IS NOT NULL AND length(trim(language_other)) > 0
          ) ol ON oe.id=ol.outreach_event_id
     }
   ) do |row|
