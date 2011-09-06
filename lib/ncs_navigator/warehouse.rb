@@ -58,6 +58,8 @@ module NcsNavigator
         case env
         when 'development'
           :local_postgresql
+        when 'ci'
+          :public_ci_postgresql9
         when 'staging'
           :ncsdb_staging
         when 'production'

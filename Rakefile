@@ -1,7 +1,9 @@
 require 'bundler/gem_tasks'
 
 require 'rspec/core/rake_task'
-require 'active_support/core_ext/string'
+require 'ci/reporter/rake/rspec'
+
+# require 'active_support/core_ext/string'
 require 'ncs_navigator/mdes'
 
 $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
@@ -19,4 +21,12 @@ namespace :generate do
       :path => 'generated_models'
     ).model!
   end
+end
+
+namespace :ci do
+  ENV["CI_REPORTS"] = "reports/spec-xml"
+
+  task :all => :spec
+
+  task :spec => ['ci:setup:rspec', 'rake:spec']
 end

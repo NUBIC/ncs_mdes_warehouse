@@ -4,11 +4,13 @@ module NcsNavigator
   describe Warehouse do
     before do
       # clear for testing
-      @original_env, Warehouse.env = Warehouse.env, nil
+      @original_wh_env, Warehouse.env = Warehouse.env, nil
+      @original_env_var, ENV['NCS_NAVIGATOR_ENV'] = ENV['NCS_NAVIGATOR_ENV'], nil
     end
 
     after do
-      Warehouse.env = @original_env
+      ENV['NCS_NAVIGATOR_ENV'] = @original_env_var
+      Warehouse.env = @original_wh_env
     end
 
     describe '.env' do
@@ -49,6 +51,7 @@ module NcsNavigator
 
       [
         %w(local_postgresql development),
+        %w(public_ci_postgresql9 ci),
         %w(ncsdb_staging staging),
         %w(ncsdb_prod production),
       ].collect { |exp, env| [exp.to_sym, env] }.each do |expected, environment|
