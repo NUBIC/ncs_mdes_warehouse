@@ -24,9 +24,7 @@ module NcsNavigator::Warehouse::Transformers
     def connection_parameters
       @params ||=
         begin
-          NcsNavigator::Warehouse.bcdatabase[bcdatabase[:group], bcdatabase[:name]].tap do |p|
-            p['adapter'] = p['datamapper_adapter'] if p['datamapper_adapter']
-          end
+          NcsNavigator::Warehouse.bcdatabase[bcdatabase[:group], bcdatabase[:name]]
         end
     end
 

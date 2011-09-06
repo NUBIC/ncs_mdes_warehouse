@@ -36,7 +36,7 @@ module NcsNavigator
       # @return [Bcdatabase::DatabaseConfigurations] the set of
       #   bcdatabase configurations to use throughout the warehouse.
       def bcdatabase
-        @bcdatabase ||= Bcdatabase.load
+        @bcdatabase ||= Bcdatabase.load(:transforms => [:datamapper])
       end
 
       ##

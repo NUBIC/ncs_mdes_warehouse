@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'builder', '~> 3.0'
 
   s.add_dependency 'data_mapper', '~> 1.1.0'
-  s.add_dependency 'bcdatabase', '~> 1.0.6'
+  s.add_dependency 'bcdatabase', '~> 1.1'
   s.add_dependency 'dm-postgres-adapter', '~> 1.1.0'
 
   s.add_development_dependency 'rspec', '~> 2.6'

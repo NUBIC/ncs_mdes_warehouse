@@ -8,7 +8,7 @@ RSpec.configure do |config|
 
   config.before(:all) do
     NcsNavigator::Warehouse.bcdatabase =
-      Bcdatabase.load(File.expand_path('../bcdatabase', __FILE__))
+      Bcdatabase.load(File.expand_path('../bcdatabase', __FILE__), :transforms => [:datamapper])
   end
 
   config.after do

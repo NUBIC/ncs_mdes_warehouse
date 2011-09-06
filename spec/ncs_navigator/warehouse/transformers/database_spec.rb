@@ -51,10 +51,6 @@ module NcsNavigator::Warehouse::Transformers
           cls.new(:bcdatabase => { :name => 'ncs_staff_portal_test' }).
             connection_parameters['database'].should == 'ncs_sp_test'
         end
-
-        it 'replaces the adapter with datamapper_adapter, if present' do
-          cls.new.connection_parameters['adapter'].should == 'postgres'
-        end
       end
     end
 
