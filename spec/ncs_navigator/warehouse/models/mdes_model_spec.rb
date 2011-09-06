@@ -62,7 +62,9 @@ module NcsNavigator::Warehouse::Models
     end
 
     describe '#write_mdes_xml' do
-      require 'pp'
+      before do
+        pending 'XML generation testing does not work on JRuby' if RUBY_PLATFORM == 'java'
+      end
 
       subject {
         Spec::Sample::GenerationalTableau.new(
