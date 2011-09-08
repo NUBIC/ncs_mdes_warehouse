@@ -7,6 +7,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     include NcsNavigator::Warehouse::Models::MdesModel
 
     storage_names[:default] = 'tap_water_twf_reason_filled2'
+    storage_names[:mdes_warehouse_reporting] =
+      storage_names[:mdes_warehouse_working] = storage_names[:default]
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,

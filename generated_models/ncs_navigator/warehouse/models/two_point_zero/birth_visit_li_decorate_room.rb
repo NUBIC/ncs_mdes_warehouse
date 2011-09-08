@@ -7,6 +7,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     include NcsNavigator::Warehouse::Models::MdesModel
 
     storage_names[:default] = 'birth_visit_li_decorate_room'
+    storage_names[:mdes_warehouse_reporting] =
+      storage_names[:mdes_warehouse_working] = storage_names[:default]
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,

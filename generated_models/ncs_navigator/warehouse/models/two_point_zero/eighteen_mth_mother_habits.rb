@@ -7,6 +7,8 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     include NcsNavigator::Warehouse::Models::MdesModel
 
     storage_names[:default] = 'eighteen_mth_mother_habits'
+    storage_names[:mdes_warehouse_reporting] =
+      storage_names[:mdes_warehouse_working] = storage_names[:default]
 
     property   :psu_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
