@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+# Allow this executable to be run directly from the source as well as
+# from an installed gem.
+begin
+  %w(lib generated_models).each do |p|
+    lib = File.expand_path("../../#{p}", __FILE__)
+    unless $LOAD_PATH.include?(lib)
+      $LOAD_PATH << lib
+    end
+  end
+end
+
+require 'ncs_navigator/warehouse'
+
+begin
+  NcsNavigator::Warehouse::CLI.start
+rescue Interrupt => e
+  $stderr.puts "Interrupted"
+  exit 1
+end

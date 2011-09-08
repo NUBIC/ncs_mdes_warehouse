@@ -2,10 +2,12 @@ require 'bcdatabase'
 
 module NcsNavigator
   module Warehouse
-    autoload :DataMapper,   'ncs_navigator/warehouse/data_mapper'
-    autoload :Models,       'ncs_navigator/warehouse/models'
-    autoload :TableModeler, 'ncs_navigator/warehouse/table_modeler'
-    autoload :Transformers, 'ncs_navigator/warehouse/transformers'
+    autoload :CLI,                 'ncs_navigator/warehouse/cli'
+    autoload :DataMapper,          'ncs_navigator/warehouse/data_mapper'
+    autoload :DatabaseInitializer, 'ncs_navigator/warehouse/database_initializer'
+    autoload :Models,              'ncs_navigator/warehouse/models'
+    autoload :TableModeler,        'ncs_navigator/warehouse/table_modeler'
+    autoload :Transformers,        'ncs_navigator/warehouse/transformers'
 
     class << self
       ##
@@ -43,7 +45,7 @@ module NcsNavigator
       # Specify a set of bcdatabase configurations to use. (Mostly
       # intended for testing.)
       #
-      # @param [Bcdatabase::Configurations] bcdb
+      # @param [Bcdatabase::DatabaseConfigurations] bcdb
       def bcdatabase=(bcdb)
         @bcdatabase = bcdb
       end

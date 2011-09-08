@@ -3,3 +3,5 @@ Gemfile.lock
 .yardoc
 docs
 reports
+*.xml
+*.zip

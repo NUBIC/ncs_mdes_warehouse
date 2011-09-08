@@ -7,6 +7,8 @@ module <%= module_name %>
     include NcsNavigator::Warehouse::Models::MdesModel
 
     storage_names[:default] = '<%= t.name %>'
+    storage_names[:mdes_warehouse_reporting] =
+      storage_names[:mdes_warehouse_working] = storage_names[:default]
 
 <% t.wh_variables.each do |v| -%>
 <% if v.table_reference -%>

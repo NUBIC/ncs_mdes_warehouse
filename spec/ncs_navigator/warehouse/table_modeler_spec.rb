@@ -95,6 +95,13 @@ module NcsNavigator::Warehouse
         storage_names[:default].should == 'generational_tableau_1'
     end
 
+    [:default, :mdes_warehouse_working, :mdes_warehouse_reporting].each do |repo|
+      it "sets the storage name for the #{repo} repo" do
+        subject.load!
+        model_class.storage_names[repo].should == 'generational_tableau'
+      end
+    end
+
     describe 'the main entry file' do
       before do
         subject.generate!
