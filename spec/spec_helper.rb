@@ -3,6 +3,8 @@ require 'rspec'
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'ncs_navigator/warehouse'
 
+require 'data_mapper'
+
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
@@ -23,5 +25,9 @@ RSpec.configure do |config|
     else
       File.join(@tmpdir, *path).tap { |p| FileUtils.mkdir_p p }
     end
+  end
+
+  def reset_models
+    ::DataMapper::Model.descendants.clear
   end
 end

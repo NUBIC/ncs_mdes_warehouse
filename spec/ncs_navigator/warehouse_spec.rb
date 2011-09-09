@@ -66,5 +66,28 @@ module NcsNavigator
         lambda { subject }.should raise_error(/unknown environment the_moon/i)
       end
     end
+
+    describe '.use_mdes_version' do
+      context 'for a known version' do
+        after(:all) do
+          reset_models
+        end
+
+        let!(:subject) { Warehouse.use_mdes_version('2.0') }
+
+        it 'makes the models available' do
+          ::DataMapper::Model.descendants.to_a.size.should == 264
+        end
+
+        it 'returns the module' do
+          subject.name.should == 'NcsNavigator::Warehouse::Models::TwoPointZero'
+        end
+      end
+
+      it 'throws an exception for an unknown version' do
+        lambda { Warehouse.use_mdes_version('42.42') }.
+          should raise_error /No warehouse models exist for MDES version 42.42/
+      end
+    end
   end
 end

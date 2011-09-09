@@ -70,6 +70,22 @@ module NcsNavigator
           raise "Unknown environment #{env}. Please set the bcdatabase group yourself."
         end
       end
+
+      ##
+      # Selects and loads a set of models based on the given warehouse
+      # version. Returns the module that namespaces the modules.
+      def use_mdes_version(version_number)
+        module_name = TableModeler.version_module_name(version_number)
+        module_require = "ncs_navigator/warehouse/models/#{module_name.underscore}"
+
+        begin
+          require module_require
+        rescue LoadError => e
+          raise LoadError, "No warehouse models exist for MDES version #{version_number}: #{e}"
+        end
+
+        NcsNavigator::Warehouse::Models.const_get module_name
+      end
     end
   end
 end

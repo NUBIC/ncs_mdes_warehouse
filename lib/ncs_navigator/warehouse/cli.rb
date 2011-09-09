@@ -7,7 +7,7 @@ module NcsNavigator::Warehouse
     desc 'create-schema', '(Re)builds the schema in the working database'
     def create_schema
       # TODO: this should be configurable somehow
-      require 'ncs_navigator/warehouse/models/two_point_zero'
+      NcsNavigator::Warehouse.use_mdes_version('2.0')
 
       db = DatabaseInitializer.new
       db.set_up_repository(:working)

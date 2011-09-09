@@ -29,14 +29,14 @@ module NcsNavigator::Warehouse
         TableModeler.new(mdes.transmission_tables, :module => module_name, :path => options[:path])
       end
 
-      private
-
       VERSION_CHAR_TO_MODULE_NAME_PART = {
         '.' => 'Point'
       }.merge(
         Hash[(0..9).to_a.collect(&:to_s).zip(%w(Zero One Two Three Four Five Six Seven Eight Nine))]
       )
 
+      ##
+      # @return [String] the name of the module to use or create for the given version.
       def version_module_name(version_string)
         version_string.split('').collect { |c| VERSION_CHAR_TO_MODULE_NAME_PART[c] }.join('')
       end
