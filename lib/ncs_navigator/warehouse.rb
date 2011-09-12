@@ -88,7 +88,7 @@ module NcsNavigator
 
         self.mdes = NcsNavigator::Mdes(version_number)
 
-        NcsNavigator::Warehouse::Models.const_get module_name
+        @models_module = NcsNavigator::Warehouse::Models.const_get module_name
       end
 
       ##
@@ -98,6 +98,14 @@ module NcsNavigator
         @mdes or fail "Call use_mdes_version first to select an MDES version"
       end
       attr_writer :mdes
+
+      ##
+      # @return [Module] the module namespacing the models for the
+      #   active MDES version.
+      def models_module
+        @models_module or fail "Call use_mdes_version first to load the models"
+      end
+      attr_writer :models_module
     end
   end
 end
