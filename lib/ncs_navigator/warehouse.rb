@@ -1,4 +1,5 @@
 require 'bcdatabase'
+require 'ncs_navigator/mdes'
 
 module NcsNavigator
   module Warehouse
@@ -73,7 +74,8 @@ module NcsNavigator
 
       ##
       # Selects and loads a set of models based on the given warehouse
-      # version. Returns the module that namespaces the modules.
+      # version. Returns the module that namespaces the modules. Also
+      # initializes {.mdes}.
       def use_mdes_version(version_number)
         module_name = TableModeler.version_module_name(version_number)
         module_require = "ncs_navigator/warehouse/models/#{module_name.underscore}"
@@ -84,8 +86,18 @@ module NcsNavigator
           raise LoadError, "No warehouse models exist for MDES version #{version_number}: #{e}"
         end
 
+        self.mdes = NcsNavigator::Mdes(version_number)
+
         NcsNavigator::Warehouse::Models.const_get module_name
       end
+
+      ##
+      # @return [NcsNavigator::Mdes::Specification] the specification
+      #   (provided by `ncs_mdes`) for the active MDES version.
+      def mdes
+        @mdes or fail "Call use_mdes_version first to select an MDES version"
+      end
+      attr_writer :mdes
     end
   end
 end
