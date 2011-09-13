@@ -1,16 +1,9 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
 module NcsNavigator
-  describe Warehouse do
+  describe Warehouse, :modifies_warehouse_state  do
     before do
-      # clear for testing
-      @original_wh_env, Warehouse.env = Warehouse.env, nil
-      @original_env_var, ENV['NCS_NAVIGATOR_ENV'] = ENV['NCS_NAVIGATOR_ENV'], nil
-    end
-
-    after do
-      ENV['NCS_NAVIGATOR_ENV'] = @original_env_var
-      Warehouse.env = @original_wh_env
+      clear_warehouse_state
     end
 
     describe '.env' do
@@ -30,18 +23,7 @@ module NcsNavigator
     end
 
     describe '.bcdatabase' do
-      before do
-        # preserve the value set for other tests
-        @original = Warehouse.bcdatabase
-        Warehouse.bcdatabase = nil
-      end
-
-      after do
-        Warehouse.bcdatabase = @original
-      end
-
       it 'has a default value' do
-        Warehouse.bcdatabase = nil
         Warehouse.bcdatabase.should be_a Bcdatabase::DatabaseConfigurations
       end
     end
@@ -69,12 +51,6 @@ module NcsNavigator
 
     describe '.use_mdes_version' do
       context 'for a known version' do
-        after(:all) do
-          reset_models
-          Warehouse.mdes = nil
-          Warehouse.models_module = nil
-        end
-
         let!(:subject) { Warehouse.use_mdes_version('2.0') }
 
         it 'makes the models available' do

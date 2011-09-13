@@ -1,7 +1,13 @@
 require 'rspec'
 
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.push File.expand_path('../../lib', __FILE__)
+
 require 'ncs_navigator/warehouse'
+require 'ncs_navigator/configuration'
+
+$LOAD_PATH.push File.expand_path('..', __FILE__)
+
+require 'global_state_helper'
 
 require 'data_mapper'
 
@@ -11,6 +17,18 @@ RSpec.configure do |config|
   config.before(:all) do
     NcsNavigator::Warehouse.bcdatabase =
       Bcdatabase.load(File.expand_path('../bcdatabase', __FILE__), :transforms => [:datamapper])
+  end
+
+  config.before(:each, :modifies_warehouse_state) do
+    @global_state_preserver = NcsNavigator::Warehouse::Spec::GlobalStatePreserver.new.save
+  end
+
+  def clear_warehouse_state
+    @global_state_preserver.clear
+  end
+
+  config.after(:each, :modifies_warehouse_state) do
+    @global_state_preserver.restore
   end
 
   config.after do
@@ -26,8 +44,7 @@ RSpec.configure do |config|
       File.join(@tmpdir, *path).tap { |p| FileUtils.mkdir_p p }
     end
   end
-
-  def reset_models
-    ::DataMapper::Model.descendants.clear
-  end
 end
+
+NcsNavigator.configuration =
+  NcsNavigator::Configuration.new(File.expand_path('../navigator.ini', __FILE__))

@@ -16,7 +16,7 @@ module NcsNavigator::Warehouse
     end
   end
 
-  describe TableModeler do
+  describe TableModeler, :modifies_warehouse_state do
     let(:table) {
       NcsNavigator::Mdes::TransmissionTable.new('generational_tableau').tap do |t|
         t.variables = [
