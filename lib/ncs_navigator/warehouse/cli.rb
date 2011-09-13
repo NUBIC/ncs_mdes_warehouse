@@ -4,7 +4,7 @@ require 'thor'
 
 module NcsNavigator::Warehouse
   class CLI < Thor
-    class_option 'mdes-version', :type => :string, :default => '2.0',
+    class_option 'mdes-version', :type => :string, :default => DEFAULT_MDES_VERSION,
       :desc => 'The MDES version for the warehouse in use', :banner => 'X.Y'
 
     no_tasks {

@@ -3,6 +3,10 @@ require 'ncs_navigator/mdes'
 
 module NcsNavigator
   module Warehouse
+    ##
+    # The default version of MDES for this version of the warehouse.
+    DEFAULT_MDES_VERSION = '2.0'
+
     autoload :CLI,                 'ncs_navigator/warehouse/cli'
     autoload :DataMapper,          'ncs_navigator/warehouse/data_mapper'
     autoload :DatabaseInitializer, 'ncs_navigator/warehouse/database_initializer'

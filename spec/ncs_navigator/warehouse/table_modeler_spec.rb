@@ -497,10 +497,10 @@ end
       end
     end
 
-    describe 'with the real MDES', :slow do
+    describe "with the real MDES (#{spec_mdes_version})", :slow do
       before do
         tables.clear
-        tables.concat(NcsNavigator::Mdes('2.0').transmission_tables)
+        tables.concat(NcsNavigator::Mdes(spec_mdes_version).transmission_tables)
       end
 
       it 'does not raise any errors' do
@@ -541,8 +541,8 @@ end
       end
 
       it 'takes the tables from the appropriate ncs_mdes Specification' do
-        TableModeler.for_version('2.0', :path => '.').tables.collect(&:name).
-          should == NcsNavigator::Mdes('2.0').transmission_tables.collect(&:name)
+        TableModeler.for_version(spec_mdes_version, :path => '.').tables.collect(&:name).
+          should == NcsNavigator::Mdes(spec_mdes_version).transmission_tables.collect(&:name)
       end
     end
   end

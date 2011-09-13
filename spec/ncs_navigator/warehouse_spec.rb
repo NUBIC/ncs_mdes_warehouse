@@ -49,24 +49,25 @@ module NcsNavigator
       end
     end
 
-    describe '.use_mdes_version' do
+    describe '.use_mdes_version', :slow do
       context 'for a known version' do
-        let!(:subject) { Warehouse.use_mdes_version('2.0') }
+        let!(:subject) { Warehouse.use_mdes_version(spec_mdes_version) }
 
         it 'makes the models available' do
-          ::DataMapper::Model.descendants.to_a.size.should == 264
+          ::DataMapper::Model.descendants.
+            collect { |m| m.name.demodulize }.should include('Address')
         end
 
         it 'returns the module' do
-          subject.name.should == 'NcsNavigator::Warehouse::Models::TwoPointZero'
+          subject.name.should =~ /^NcsNavigator::Warehouse::Models::\w+$/
         end
 
         it 'makes the MDES specification available' do
-          Warehouse.mdes.version.should == '2.0'
+          Warehouse.mdes.version.should == spec_mdes_version
         end
 
         it 'makes the models module available' do
-          Warehouse.models_module.should == NcsNavigator::Warehouse::Models::TwoPointZero
+          Warehouse.models_module.name.should =~ /^NcsNavigator::Warehouse::Models::\w+$/
         end
       end
 
