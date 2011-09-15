@@ -80,5 +80,27 @@ module NcsNavigator::Warehouse
         $?.should == 0
       end
     end
+
+    describe 'the default filename' do
+      subject { XmlEmitter.new(nil).filename }
+
+      before do
+        # Need an actual PSU ID for the default filename code to work
+        NcsNavigator.configuration.psus.first.id = '20000216'
+
+        # Time.parse uses Time.now internally, so this needs to be
+        # defined before starting to register the mock.
+        t = Time.parse('2011-07-28')
+        Time.should_receive(:now).and_return(t)
+      end
+
+      it 'is county_name-DATE.xml' do
+        subject.to_s.should == 'bear_lake-20110728.xml'
+      end
+
+      it 'is a Pathname' do
+        subject.should be_a Pathname
+      end
+    end
   end
 end

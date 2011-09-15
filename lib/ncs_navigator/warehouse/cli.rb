@@ -11,6 +11,10 @@ module NcsNavigator::Warehouse
       def use_mdes
         NcsNavigator::Warehouse.use_mdes_version(options[:'mdes-version'])
       end
+
+      def use_database(which=:reporting)
+        NcsNavigator::Warehouse::DatabaseInitializer.new.set_up_repository(which)
+      end
     }
 
     desc 'create-schema', '(Re)builds the schema in the working database'
@@ -21,7 +25,22 @@ module NcsNavigator::Warehouse
       db.set_up_repository(:working)
       db.replace_schema
     end
-    map 'create-schema' => 'create_schema'
+
+    desc 'emit-xml [FILENAME]', 'Generates the VDR submission XML'
+    method_option :quiet, :type => :boolean, :default => false, :aliases => %w(-q),
+      :desc => 'Suppress the status messages printed to standard error'
+    long_desc <<-DESC
+Generates and zips the vanguard data repository submission XML from
+the contents of the current reporting database. The default name for
+the XML file is the county name for the PSU plus the date; e.g.,
+cook-20110728.xml.
+DESC
+    def emit_xml(filename=nil)
+      use_mdes
+      use_database
+
+      XmlEmitter.new(filename, options).emit_xml
+    end
   end
 end
 

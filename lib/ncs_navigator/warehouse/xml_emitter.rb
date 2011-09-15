@@ -34,8 +34,33 @@ XML_ERB
 </ncs:recruitment_substudy_transmission_envelope>
 XML
 
+    def self.default_filename
+      psu_type = NcsNavigator::Warehouse.mdes.types.detect { |type| type.name =~ /^psu_cl/ }
+      unless psu_type
+        fail 'Cannot find the PSU code list. Please specify a filename manually.'
+      end
+
+      psu_id = NcsNavigator.configuration.psus.first.id
+      psu_entry =  psu_type.code_list.detect { |cle| cle.value == psu_id }
+      unless psu_entry
+        fail "Cannot find PSU #{psu_id} in #{psu_type.name}. Please specify a filename manually"
+      end
+
+      Pathname.new '%s-%s.xml' % [
+        psu_entry.label.split(',', 2).first.downcase.gsub(/\s*county\s*/, '').strip.gsub(' ', '_'),
+        Time.now.iso8601.split('T').first.gsub('-', '')
+      ]
+    end
+
     def initialize(filename, options={})
-      @filename = Pathname === filename ? filename : Pathname.new(filename.to_s)
+      @filename = case filename
+                  when Pathname
+                    filename
+                  when nil
+                    self.class.default_filename
+                  else
+                    Pathname.new(filename.to_s)
+                  end
       @shell = options[:quiet] ? UpdatingShell::Quiet.new : UpdatingShell.new($stderr)
       @record_count = 0
     end
