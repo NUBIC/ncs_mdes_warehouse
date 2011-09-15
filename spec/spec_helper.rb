@@ -54,16 +54,17 @@ RSpec.configure do |config|
   ###### tmpdir
 
   config.after do
-    FileUtils.rm_rf @tmpdir if @tmpdir && !ENV['KEEP_TMP']
+    @tmpdir.rmtree if @tmpdir && !ENV['KEEP_TMP']
   end
 
+  # @return [Pathname] the path to an existing temporary director
   def tmpdir(*path)
-    @tmpdir ||= File.expand_path('../../tmp', __FILE__).
-      tap { |p| FileUtils.mkdir_p p }
+    @tmpdir ||= Pathname.new(File.expand_path('../../tmp', __FILE__)).
+      tap { |p| p.mkpath }
     if path.empty?
       @tmpdir
     else
-      File.join(@tmpdir, *path).tap { |p| FileUtils.mkdir_p p }
+      @tmpdir.join(*path).tap { |p| p.mkpath }
     end
   end
 end
