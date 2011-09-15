@@ -36,31 +36,48 @@ XML
 
     def initialize(filename, options={})
       @filename = Pathname === filename ? filename : Pathname.new(filename.to_s)
+      @shell = options[:quiet] ? UpdatingShell::Quiet.new : UpdatingShell.new($stderr)
+      @record_count = 0
     end
 
     def emit_xml
+      @shell.say_line("Exporting to #{filename}")
+
+      @start = Time.now
       filename.open('w') do |f|
         f.write HEADER_TEMPLATE.result(binding)
 
         NcsNavigator::Warehouse.models_module.mdes_order.each do |model|
+          @shell.clear_line_then_say('Writing XML for %33s' % model.mdes_table_name)
+
           write_all_xml_for_model(f, model)
         end
 
         f.write FOOTER_TEMPLATE
       end
+      @end = Time.now
+      @shell.clear_line_then_say(
+        "%d records written in %d seconds (%.1f/sec).\n" % [@record_count, emit_time, emit_rate])
 
-      FileUtils.cd filename.dirname do
-        Zip::ZipFile.open(filename.basename.to_s + '.zip', Zip::ZipFile::CREATE) do |zf|
-          zf.add(filename.basename, filename.basename)
-        end
+      @shell.say_line("Zipping to #{zip_filename}")
+      Zip::ZipFile.open(zip_filename, Zip::ZipFile::CREATE) do |zf|
+        zf.add(filename.basename, filename)
       end
+    end
+
+    def zip_filename
+      @zip_filename ||= filename.to_s + '.zip'
     end
 
     private
 
     def write_all_xml_for_model(f, model)
+      @shell.say(' %20s' % '[loading]')
       model.all.each do |instance|
         instance.write_mdes_xml(f, :indent => 3, :margin => 1)
+        @record_count += 1
+
+        @shell.back_up_and_say(20, '%5d (%5.1f/sec)' % [@record_count, emit_rate])
       end
     end
 
@@ -74,6 +91,14 @@ XML
 
     def specification_version
       NcsNavigator::Warehouse.mdes.specification_version
+    end
+
+    def emit_time
+      (@end || Time.now) - @start
+    end
+
+    def emit_rate
+      @record_count / emit_time
     end
   end
 end
