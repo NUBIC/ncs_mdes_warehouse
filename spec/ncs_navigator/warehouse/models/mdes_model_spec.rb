@@ -15,7 +15,7 @@ module NcsNavigator::Warehouse::Models
     end
   end
 
-  describe MdesModel do
+  describe MdesModel, :modifies_warehouse_state do
     before do
       class Spec::Sample::GenerationalTableau
         include ::DataMapper::Resource
@@ -50,7 +50,6 @@ module NcsNavigator::Warehouse::Models
     end
 
     after do
-      ::DataMapper::Model.descendants.clear
       Spec::Sample.clear
     end
 

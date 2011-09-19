@@ -81,8 +81,7 @@ module NcsNavigator
 
       ##
       # Selects and loads a set of models based on the given warehouse
-      # version. Returns the module that namespaces the modules. Also
-      # initializes {.mdes}.
+      # version. Also initializes {.mdes} and  {.models_module}.
       def use_mdes_version(version_number)
         module_name = TableModeler.version_module_name(version_number)
         module_require = "ncs_navigator/warehouse/models/#{module_name.underscore}"

@@ -21,20 +21,6 @@ RSpec.configure do |config|
       Bcdatabase.load(File.expand_path('../bcdatabase', __FILE__), :transforms => [:datamapper])
   end
 
-  ###### modifies_warehouse_state
-
-  config.before(:each, :modifies_warehouse_state) do
-    @global_state_preserver = NcsNavigator::Warehouse::Spec::GlobalStatePreserver.new.save
-  end
-
-  def clear_warehouse_state
-    @global_state_preserver.clear
-  end
-
-  config.after(:each, :modifies_warehouse_state) do
-    @global_state_preserver.restore
-  end
-
   ###### MDES model loading
 
   # Each test run can only operate against one version of the MDES at
@@ -49,6 +35,20 @@ RSpec.configure do |config|
     unless NcsNavigator::Warehouse.instance_eval { @mdes }
       NcsNavigator::Warehouse.use_mdes_version(spec_mdes_version)
     end
+  end
+
+  ###### modifies_warehouse_state
+
+  config.before(:each, :modifies_warehouse_state) do
+    @global_state_preserver = NcsNavigator::Warehouse::Spec::GlobalStatePreserver.new.save
+  end
+
+  def clear_warehouse_state
+    @global_state_preserver.clear
+  end
+
+  config.after(:each, :modifies_warehouse_state) do
+    @global_state_preserver.restore
   end
 
   ###### tmpdir
