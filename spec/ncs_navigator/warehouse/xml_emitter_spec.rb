@@ -76,7 +76,7 @@ module NcsNavigator::Warehouse
         `which unzip`
         pending "unzip is not available" unless $? == 0
 
-        `unzip -l #{expected_zipfile} 2>&1`.should =~ /#{filename.basename}\s/
+        `unzip -l '#{expected_zipfile}' 2>&1`.should =~ /#{filename.basename}\s/
         $?.should == 0
       end
     end
