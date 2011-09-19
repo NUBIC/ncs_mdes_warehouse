@@ -85,6 +85,8 @@ module NcsNavigator::Warehouse
       subject { XmlEmitter.new(nil).filename }
 
       before do
+        pending "ncs_mdes doesn't work on JRuby" if RUBY_PLATFORM == 'java'
+
         # Need an actual PSU ID for the default filename code to work
         NcsNavigator.configuration.psus.first.id = '20000216'
 
