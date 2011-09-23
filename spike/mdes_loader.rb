@@ -40,9 +40,14 @@ class MdesLoader
                 node.read # skip contents
                 node.read # skip close
                 next if var == :transaction_type
-                if val == '-3' && current_model_class.relationships.detect { |r| r.child_key.collect(&:name).include?(var) }
-                  # $stderr.puts "Skipping fk #{var.inspect} on #{current_model_class.mdes_table_name} with value #{val.inspect}"
-                  next
+                # if it's a key to another table
+                if current_model_class.relationships.detect { |r| r.child_key.collect(&:name).include?(var) }
+                  # and it is -3 (unknown) or blank
+                  if val == '-3' || val.strip.empty?
+                    $stderr.puts "Skipping fk #{var.inspect} on #{current_model_class.mdes_table_name} with value #{val.inspect}"
+                    # skip it
+                    next
+                  end
                 end
                 self.current_parameter_values[var] = val
               end
