@@ -44,7 +44,6 @@ class MdesLoader
                 if current_model_class.relationships.detect { |r| r.child_key.collect(&:name).include?(var) }
                   # and it is -3 (unknown) or blank
                   if val == '-3' || val.strip.empty?
-                    $stderr.puts "Skipping fk #{var.inspect} on #{current_model_class.mdes_table_name} with value #{val.inspect}"
                     # skip it
                     next
                   end
