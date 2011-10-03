@@ -126,8 +126,8 @@ class StaffPortalTransformer
       :week_start_date         => row.week_start_date,
       :staff_pay               => ("%.2f" % row.rate if row.rate),
       :staff_hours             => ("%.2f" % row.hours if row.hours),
-      :staff_expenses          => ("%.2f" % row.expenses if row.expenses),
-      :staff_miles             => ("%.2f" % row.miles if row.miles),
+      :staff_expenses          => ("%.2f" % (row.expenses || 0)),
+      :staff_miles             => ("%.2f" % (row.miles || 0)),
       :weekly_expenses_comment => row.comment
     )
   end
@@ -204,7 +204,7 @@ class StaffPortalTransformer
       :outreach_culture1    => is_tailored ? (row.culture_specific_code || '-4') : '2',  # No if untailored
       :outreach_culture2    => is_tailored ? (row.culture_code || '-4') : '-7',          # NA if untailored
       :outreach_culture_oth => row.culture_other,
-      :outreach_cost        => ('%.2f' % row.cost if row.cost),
+      :outreach_cost        => ('%.2f' % (row.cost || 0)),
       :outreach_staffing    => row.no_of_staff,
       :outreach_eval_result => row.evaluation_result_code,
       :outreach_quantity    => row.letters_quantity.to_i + row.attendees_quantity.to_i,
