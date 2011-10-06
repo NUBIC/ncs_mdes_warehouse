@@ -125,7 +125,7 @@ class StaffPortalTransformer
       :staff_id                => staff_id(row),
       :week_start_date         => row.week_start_date,
       :staff_pay               => ("%.2f" % row.rate if row.rate),
-      :staff_hours             => ("%.2f" % row.hours if row.hours),
+      :staff_hours             => ("%.2f" % (row.hours || 0)),
       :staff_expenses          => ("%.2f" % (row.expenses || 0)),
       :staff_miles             => ("%.2f" % (row.miles || 0)),
       :weekly_expenses_comment => row.comment
