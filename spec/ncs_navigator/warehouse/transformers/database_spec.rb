@@ -54,22 +54,80 @@ module NcsNavigator::Warehouse::Transformers
       end
     end
 
-    describe '#initialize' do
-      it 'sets up the repository'
+    shared_context 'people_pro' do
+      let(:database_file) { 'people_pro.sqlite3' }
+
+      before do
+        FileUtils.rm_rf database_file
+      end
+
+      after do
+        FileUtils.rm_rf database_file
+      end
     end
 
-    describe 'transform' do
-      it 'runs the entire transformation in a transaction'
+    describe '#repository' do
+      include_context 'people_pro'
+
+      let(:enum) do
+        sample_class do
+          repository :sample_foo
+
+          bcdatabase :group => 'test_sqlite', :name => 'people_pro'
+        end.new
+      end
+
+      it 'sets up the repository' do
+        lambda {
+          enum.repository.adapter.options['path'].should == 'people_pro.sqlite3'
+        }.should_not raise_error
+      end
+    end
+
+    describe '#each' do
+      include_context 'people_pro'
 
       describe 'of .produce_records' do
-        it 'uses the production name as a table name by default'
-        it 'uses an explicit query if given'
-        it 'wraps each row in a proxy'
-        it 'saves multiple results per row'
-        it 'saves one result per row'
-        it 'records a validation failure'
-        it 'attempts all transformations, even when some produce invalid results'
-        it 'fails the transformation if there were any validation failures'
+        let(:enumerator_def) do
+          sample_class do
+            bcdatabase :group => 'test_sqlite', :name => 'people_pro'
+            repository :people_pro
+
+            produce_records :people do |row|
+              row.id
+            end
+
+            produce_records :other_persons, :query => 'SELECT * FROM more_people' do |row|
+              [
+                row.id + 'X',
+                row.id + 'Y'
+              ]
+            end
+          end
+        end
+
+        let(:enumerator) { enumerator_def.new }
+
+        it 'uses the production name as a table name by default' do
+          enumerator_def.record_producers[0].query.should == 'SELECT * FROM people'
+        end
+
+        it 'uses an explicit query if given' do
+          enumerator_def.record_producers[1].query.should == 'SELECT * FROM more_people'
+        end
+
+        it 'can return multiple results per row' do
+          [
+            "CREATE TABLE people (id VARCHAR(24), name VARCHAR(255))",
+            "CREATE TABLE more_people (id VARCHAR(24), name VARCHAR(255))",
+            "INSERT INTO people (id) VALUES ('A')",
+            "INSERT INTO more_people (id) VALUES ('S')"
+          ].each do |stmt|
+            enumerator.repository.adapter.execute stmt
+          end
+
+          enumerator.to_a.should == %w(A SX SY)
+        end
       end
     end
   end

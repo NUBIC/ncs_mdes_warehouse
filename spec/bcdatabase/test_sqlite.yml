@@ -1,0 +1,5 @@
+defaults:
+  adapter: sqlite3
+  datamapper_adapter: sqlite
+people_pro:
+  database: people_pro.sqlite3

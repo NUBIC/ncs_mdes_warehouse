@@ -4,6 +4,8 @@ require 'active_support/core_ext/string'
 
 module NcsNavigator::Warehouse::Transformers
   module Database
+    include Enumerable
+
     def self.included(cls)
       cls.extend ClassMethods
     end
@@ -28,6 +30,24 @@ module NcsNavigator::Warehouse::Transformers
         end
     end
 
+    def repository
+      @repository ||=
+        begin
+          ::DataMapper.setup(repository_name, connection_parameters)
+          ::DataMapper.repository(repository_name)
+        end
+    end
+
+    def each
+      self.class.record_producers.each do |rp|
+        repository.adapter.select(rp.query).each do |row|
+          [*rp.row_processor.call(row)].each do |result|
+            yield result
+          end
+        end
+      end
+    end
+
     module ClassMethods
       ##
       # @param [Symbol] repo_name the data mapper repository to use in
@@ -47,6 +67,20 @@ module NcsNavigator::Warehouse::Transformers
         else
           @bcdatabase = (self.bcdatabase || {}).merge(name_and_group)
         end
+      end
+
+      def record_producers
+        @record_producers ||= []
+      end
+
+      def produce_records(name, options={}, &contents)
+        record_producers << RecordProducer.new(name, options[:query], contents)
+      end
+    end
+
+    class RecordProducer < Struct.new(:name, :query, :row_processor)
+      def query
+        super || "SELECT * FROM #{name}"
       end
     end
   end
