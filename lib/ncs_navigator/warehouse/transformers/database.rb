@@ -50,6 +50,7 @@ module NcsNavigator::Warehouse::Transformers
 
     def self.included(cls)
       cls.extend DSL
+      cls.extend Factory
     end
 
     def initialize(options={})
@@ -173,6 +174,18 @@ module NcsNavigator::Warehouse::Transformers
     class RecordProducer < Struct.new(:name, :query, :row_processor)
       def query
         super || "SELECT * FROM #{name}"
+      end
+    end
+
+    ##
+    # Methods to assist with using classes that mix in {Database}.
+    module Factory
+      ##
+      # @return [#transform] a full transformer that uses this
+      #   enumerable.
+      # @see EnumTransformer
+      def create_transformer(options={})
+        EnumTransformer.new(new(options))
       end
     end
   end

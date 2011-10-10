@@ -154,5 +154,26 @@ module NcsNavigator::Warehouse::Transformers
         end
       end
     end
+
+    describe '.create_transformer' do
+      let(:enumerator_def) { sample_class }
+      subject { enumerator_def.create_transformer }
+
+      it 'creates an EnumTransformer' do
+        subject.should be_an EnumTransformer
+      end
+
+      it 'creates an enumerator from the source class' do
+        subject.enum.should be_an enumerator_def
+      end
+
+      describe 'with options' do
+        subject { enumerator_def.create_transformer(:repository => :alpha) }
+
+        it 'passes the options to the enumerable constructor' do
+          subject.enum.repository_name.should == :alpha
+        end
+      end
+    end
   end
 end
