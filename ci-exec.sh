@@ -2,7 +2,7 @@
 
 export NCS_NAVIGATOR_ENV=ci
 
-BUNDLER_VERSION=1.0.18
+BUNDLER_VERSION=1.1.rc
 GEMSET=ncs_mdes_warehouse
 
 if [ -z $CI_RUBY ]; then
