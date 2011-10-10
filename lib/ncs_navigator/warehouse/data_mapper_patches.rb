@@ -5,6 +5,7 @@
 # https://github.com/datamapper/dm-constraints/pull/13
 
 require 'dm-constraints/adapters/dm-do-adapter'
+# @private
 module DataMapper::Constraints::Adapters::DataObjectsAdapter::SQL
   private
 

@@ -7,12 +7,22 @@ module NcsNavigator::Warehouse::Transformers
   # array, or it might be a custom class that streams through
   # thousands of instances without having them all in memory at once.
   class EnumTransformer
+    ##
+    # @return [Enumerable] the enumeration that will be transformed.
     attr_reader :enum
 
+    ##
+    # @param [Enumerable] enum
     def initialize(enum)
       @enum = enum
     end
 
+    ##
+    # Takes each in-memory record provided by the configured
+    # `Enumerable`, validates it, and saves it if it is valid.
+    #
+    # @param [TransformStatus] status
+    # @return [void]
     def transform(status)
       enum.each do |record|
         if record.valid?

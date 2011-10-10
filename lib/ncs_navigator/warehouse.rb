@@ -55,14 +55,15 @@ module NcsNavigator
       # intended for testing.)
       #
       # @param [Bcdatabase::DatabaseConfigurations] bcdb
+      # @return [void]
       def bcdatabase=(bcdb)
         @bcdatabase = bcdb
       end
 
       ##
       # The bcdatabase group the warehouse will use to find its own
-      # databases and which is used by default in {database
-      # transformers Transformers::Database}.
+      # databases and which is used by default in
+      # {Transformers::Database database transformers}.
       #
       # @return [Symbol]
       def default_bcdatabase_group
@@ -83,6 +84,8 @@ module NcsNavigator
       ##
       # Selects and loads a set of models based on the given warehouse
       # version. Also initializes {.mdes} and  {.models_module}.
+      #
+      # @return [void]
       def use_mdes_version(version_number)
         module_name = TableModeler.version_module_name(version_number)
         module_require = "ncs_navigator/warehouse/models/#{module_name.underscore}"

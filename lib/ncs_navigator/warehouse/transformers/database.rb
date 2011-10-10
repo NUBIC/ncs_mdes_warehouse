@@ -58,10 +58,16 @@ module NcsNavigator::Warehouse::Transformers
       @bcdatabase = (self.class.bcdatabase.merge(options.delete(:bcdatabase) || {}))
     end
 
+    ##
+    # @return [Symbol] the name of the repository to use / set up for
+    #   this instance.
     def repository_name
       @repository_name ||= self.class.repository_name
     end
 
+    ##
+    # @return [Hash] the bcdatabase group and name to use to set up
+    #   the repository for the application.
     def bcdatabase
       @bcdatabase ||= self.class.bcdatabase
     end
@@ -75,6 +81,9 @@ module NcsNavigator::Warehouse::Transformers
         end
     end
 
+    ##
+    # @return [DataMapper::Repository] the repository to use for
+    #   querying application data.
     def repository
       @repository ||=
         begin
@@ -91,24 +100,31 @@ module NcsNavigator::Warehouse::Transformers
     # @param [Array<Symbol>] producers if listed, only execute the
     #   named producers. Intended for isolated testing of each defined
     #   producer.
+    #
+    # @return [void]
     def each(*producers)
-      rps =
-        if producers.empty?
-          self.class.record_producers
-        else
-          producers.collect do |p_name|
-            self.class.record_producers.detect { |rp| rp.name == p_name } ||
-             fail("No producer named #{p_name.inspect} in #{self.class}")
-          end
-        end
-      rps.each do |rp|
+      selected_producers(producers).each do |rp|
         repository.adapter.select(rp.query).each do |row|
           [*rp.row_processor.call(row)].each do |result|
             yield result
           end
         end
       end
+
+      nil
     end
+
+    def selected_producers(producer_names)
+      if producer_names.empty?
+        self.class.record_producers
+      else
+        producer_names.collect do |p_name|
+          self.class.record_producers.detect { |rp| rp.name == p_name } ||
+            fail("No producer named #{p_name.inspect} in #{self.class}")
+        end
+      end
+    end
+    private :selected_producers
 
     ##
     # The DSL available when a class mixes in the {@link Database} module.

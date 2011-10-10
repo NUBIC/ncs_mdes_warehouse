@@ -1,10 +1,10 @@
 require 'active_support/core_ext/string'
 require 'active_support/ordered_hash'
 
-##
-# Extensions to the models provided by the ncs_mdes gem to assist in
-# model generation.
 module NcsNavigator
+  ##
+  # Extensions to the models provided by the ncs_mdes gem to assist in
+  # model generation.
   module Mdes
     ##
     # Extends ActiveSupport's OrderedHash to produce an inspection
