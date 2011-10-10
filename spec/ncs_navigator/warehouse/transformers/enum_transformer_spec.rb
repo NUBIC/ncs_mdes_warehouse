@@ -28,6 +28,8 @@ module NcsNavigator::Warehouse::Transformers
         transform_status.errors.should be_empty
       end
 
+      it 'automatically sets the PSU ID if the object accepts it'
+
       describe 'with an invalid instance' do
         before do
           records[0].should_receive(:save).and_return(true)
