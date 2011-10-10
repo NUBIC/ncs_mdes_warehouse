@@ -135,7 +135,7 @@ module NcsNavigator::Warehouse::Transformers
       # @return [void]
       def bcdatabase(name_and_group={})
         if name_and_group.empty?
-          @bcdatabase ||= { :group => 'local_postgresql' }
+          @bcdatabase ||= { :group => NcsNavigator::Warehouse.default_bcdatabase_group }
         else
           @bcdatabase = (self.bcdatabase || {}).merge(name_and_group)
         end

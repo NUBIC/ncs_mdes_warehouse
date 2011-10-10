@@ -34,9 +34,7 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     describe '#connection_parameters' do
-      describe 'from bcdatabase' do
-        it 'defaults the group from the environment'
-
+      describe 'from bcdatabase', :modifies_warehouse_state do
         let(:cls) {
           sample_class do
             bcdatabase :name => 'ncs_staff_portal'
@@ -50,6 +48,11 @@ module NcsNavigator::Warehouse::Transformers
         it 'can be overridden at the instance level' do
           cls.new(:bcdatabase => { :name => 'ncs_staff_portal_test' }).
             connection_parameters['database'].should == 'ncs_sp_test'
+        end
+
+        it 'defaults the group from the environment' do
+          NcsNavigator::Warehouse.env = 'staging'
+          cls.new.bcdatabase[:group].should == :ncsdb_staging
         end
       end
     end
