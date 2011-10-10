@@ -57,11 +57,7 @@ module NcsNavigator::Warehouse::Transformers
     shared_context 'people_pro' do
       let(:database_file) { 'people_pro.sqlite3' }
 
-      before do
-        FileUtils.rm_rf database_file
-      end
-
-      after do
+      after(:all) do
         FileUtils.rm_rf database_file
       end
     end
@@ -71,7 +67,7 @@ module NcsNavigator::Warehouse::Transformers
 
       let(:enum) do
         sample_class do
-          repository :sample_foo
+          repository :people_pro
 
           bcdatabase :group => 'test_sqlite', :name => 'people_pro'
         end.new
@@ -108,6 +104,21 @@ module NcsNavigator::Warehouse::Transformers
 
         let(:enumerator) { enumerator_def.new }
 
+        before do
+          execute_sql(
+            "CREATE TABLE people (id VARCHAR(24), name VARCHAR(255))",
+            "CREATE TABLE more_people (id VARCHAR(24), name VARCHAR(255))"
+          )
+        end
+
+        after do
+          execute_sql("DROP TABLE people", "DROP TABLE more_people")
+        end
+
+        def execute_sql(*stmts)
+          stmts.each { |stmt| enumerator.repository.adapter.execute stmt }
+        end
+
         it 'uses the production name as a table name by default' do
           enumerator_def.record_producers[0].query.should == 'SELECT * FROM people'
         end
@@ -117,16 +128,26 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         it 'can return multiple results per row' do
-          [
-            "CREATE TABLE people (id VARCHAR(24), name VARCHAR(255))",
-            "CREATE TABLE more_people (id VARCHAR(24), name VARCHAR(255))",
+          execute_sql(
             "INSERT INTO people (id) VALUES ('A')",
             "INSERT INTO more_people (id) VALUES ('S')"
-          ].each do |stmt|
-            enumerator.repository.adapter.execute stmt
-          end
+          )
 
           enumerator.to_a.should == %w(A SX SY)
+        end
+
+        it 'can execute just one producer' do
+          execute_sql(
+            "INSERT INTO people (id) VALUES ('A')",
+            "INSERT INTO more_people (id) VALUES ('S')"
+          )
+
+          acc = []
+          enumerator.each(:people) do |r|
+            acc << r
+          end
+
+          acc.should == %w(A)
         end
       end
     end

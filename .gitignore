@@ -3,3 +3,4 @@ Gemfile.lock
 .yardoc
 docs
 reports
+*.sqlite3

@@ -38,8 +38,17 @@ module NcsNavigator::Warehouse::Transformers
         end
     end
 
-    def each
-      self.class.record_producers.each do |rp|
+    def each(*producers)
+      rps =
+        if producers.empty?
+          self.class.record_producers
+        else
+          producers.collect do |p_name|
+            self.class.record_producers.detect { |rp| rp.name == p_name } ||
+             fail("No producer named #{p_name.inspect} in #{self.class}")
+          end
+        end
+      rps.each do |rp|
         repository.adapter.select(rp.query).each do |row|
           [*rp.row_processor.call(row)].each do |result|
             yield result
