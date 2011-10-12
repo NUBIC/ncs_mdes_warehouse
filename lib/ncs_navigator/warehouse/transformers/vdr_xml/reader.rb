@@ -10,13 +10,15 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
   class Reader
     include Enumerable
 
+    attr_reader :configuration
     attr_reader :filename
 
     ##
     # @return [Fixnum] the number of records that have been read so far.
     attr_reader :record_count
 
-    def initialize(filename_or_io, options={})
+    def initialize(config, filename_or_io, options={})
+      @configuration = config
       @filename, @io = case filename_or_io
                        when String
                          [filename_or_io, File.open(filename_or_io)]
@@ -84,7 +86,7 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       elsif @in_table_section && is_open
         # in tables, but no current model, means this node is the
         # opening tag of a new table record
-        @current_model_class = NcsNavigator::Warehouse.models_module.mdes_order.
+        @current_model_class = configuration.models_module.mdes_order.
           detect { |model| model.mdes_table_name == node.local_name }
         fail "Could not find model for #{node.local_name.inspect}" unless @current_model_class
         @current_parameter_values = {}

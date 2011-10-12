@@ -4,7 +4,7 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
   describe Reader, :use_mdes do
     describe '#each' do
       let(:filename) { File.expand_path('../made_up_vdr_xml.xml', __FILE__) }
-      let(:reader) { Reader.new(filename, :quiet => true) }
+      let(:reader) { Reader.new(spec_config, filename, :quiet => true) }
       let(:ssu)          { reader.detect { |rec| rec.class.name =~ /Ssu$/ } }
       let(:person)       { reader.detect { |rec| rec.class.name =~ /Person$/ } }
       let(:link_contact) { reader.detect { |rec| rec.class.name =~ /LinkContact$/ } }

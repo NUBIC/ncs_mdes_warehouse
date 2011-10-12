@@ -6,16 +6,16 @@ module NcsNavigator::Warehouse
   describe XmlEmitter, :use_mdes do
     let(:filename) { tmpdir + 'export.xml' }
     let(:xml) {
-      XmlEmitter.new(filename, :quiet => true).emit_xml
+      XmlEmitter.new(spec_config, filename, :quiet => true).emit_xml
       Nokogiri::XML(File.read(filename))
     }
 
     def person_model
-      NcsNavigator::Warehouse.models_module.const_get(:Person)
+      spec_config.models_module.const_get(:Person)
     end
 
     before do
-      NcsNavigator::Warehouse.models_module.mdes_order.each do |model|
+      spec_config.models_module.mdes_order.each do |model|
         model.stub!(:all).and_return([])
       end
     end
@@ -32,7 +32,7 @@ module NcsNavigator::Warehouse
 
       it 'includes the appropriate specification version' do
         xml.xpath('//specification_version').text.
-          should == NcsNavigator::Warehouse.mdes.specification_version
+          should == spec_config.mdes.specification_version
       end
 
       describe 'with actual data' do
@@ -82,7 +82,7 @@ module NcsNavigator::Warehouse
     end
 
     describe 'the default filename' do
-      subject { XmlEmitter.new(nil).filename }
+      subject { XmlEmitter.new(spec_config, nil).filename }
 
       before do
         pending "ncs_mdes doesn't work on JRuby" if RUBY_PLATFORM == 'java'

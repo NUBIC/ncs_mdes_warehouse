@@ -3,8 +3,6 @@ module NcsNavigator::Warehouse::Spec
     PRESERVED_WH_ATTRIBUTES = [
       :@env,
       :@bcdatabase,
-      :@mdes,
-      :@models_module
     ]
 
     PRESERVED_ENV_VARIABLES = %w(

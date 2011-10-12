@@ -8,6 +8,7 @@ module NcsNavigator
     DEFAULT_MDES_VERSION = '2.0'
 
     autoload :CLI,                 'ncs_navigator/warehouse/cli'
+    autoload :Configuration,       'ncs_navigator/warehouse/configuration'
     autoload :DataMapper,          'ncs_navigator/warehouse/data_mapper'
     autoload :DatabaseInitializer, 'ncs_navigator/warehouse/database_initializer'
     autoload :VdrXmlReader,        'ncs_navigator/warehouse/vdr_xml_reader'
@@ -80,42 +81,6 @@ module NcsNavigator
           raise "Unknown environment #{env}. Please set the bcdatabase group yourself."
         end
       end
-
-      ##
-      # Selects and loads a set of models based on the given warehouse
-      # version. Also initializes {.mdes} and  {.models_module}.
-      #
-      # @return [void]
-      def use_mdes_version(version_number)
-        module_name = TableModeler.version_module_name(version_number)
-        module_require = "ncs_navigator/warehouse/models/#{module_name.underscore}"
-
-        begin
-          require module_require
-        rescue LoadError => e
-          raise LoadError, "No warehouse models exist for MDES version #{version_number}: #{e}"
-        end
-
-        self.mdes = NcsNavigator::Mdes(version_number)
-
-        @models_module = NcsNavigator::Warehouse::Models.const_get module_name
-      end
-
-      ##
-      # @return [NcsNavigator::Mdes::Specification] the specification
-      #   (provided by `ncs_mdes`) for the active MDES version.
-      def mdes
-        @mdes or fail "Call use_mdes_version first to select an MDES version"
-      end
-      attr_writer :mdes
-
-      ##
-      # @return [Module] the module namespacing the models for the
-      #   active MDES version.
-      def models_module
-        @models_module or fail "Call use_mdes_version first to load the models"
-      end
-      attr_writer :models_module
     end
   end
 end

@@ -57,52 +57,5 @@ module NcsNavigator
       end
     end
 
-    describe '.use_mdes_version', :slow, :use_mdes do
-      context 'for a known version' do
-        it 'makes the models available' do
-          ::DataMapper::Model.descendants.
-            collect { |m| m.name.demodulize }.should include('Address')
-        end
-
-        it 'makes the MDES specification available' do
-          Warehouse.mdes.version.should == spec_mdes_version
-        end
-
-        it 'makes the models module available' do
-          Warehouse.models_module.name.should =~ /^NcsNavigator::Warehouse::Models::\w+$/
-        end
-      end
-
-      it 'throws an exception for an unknown version' do
-        lambda { Warehouse.use_mdes_version('42.42') }.
-          should raise_error /No warehouse models exist for MDES version 42.42/
-      end
-    end
-
-    describe '.mdes' do
-      before do
-        clear_warehouse_state
-      end
-
-      it 'throws an exception when called before use_mdes_version' do
-        lambda { Warehouse.mdes }.
-          should raise_error(/Call use_mdes_version first to select an MDES version/)
-      end
-
-      # see above for positive test
-    end
-
-    describe '.models_module' do
-      before do
-        clear_warehouse_state
-      end
-
-      it 'throws an exception when called before use_mdes_version' do
-        lambda { Warehouse.models_module }.
-          should raise_error(/Call use_mdes_version first to load the models/)
-      end
-
-      # see above for positive test
-    end
   end
 end

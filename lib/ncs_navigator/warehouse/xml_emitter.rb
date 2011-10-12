@@ -8,6 +8,7 @@ require 'fileutils'
 
 module NcsNavigator::Warehouse
   class XmlEmitter
+    attr_reader :configuration
     attr_reader :filename
 
     HEADER_TEMPLATE = ERB.new(<<-XML_ERB)
@@ -34,8 +35,8 @@ XML_ERB
 </ncs:recruitment_substudy_transmission_envelope>
 XML
 
-    def self.default_filename
-      psu_type = NcsNavigator::Warehouse.mdes.types.detect { |type| type.name =~ /^psu_cl/ }
+    def self.default_filename(configuration)
+      psu_type = configuration.mdes.types.detect { |type| type.name =~ /^psu_cl/ }
       unless psu_type
         fail 'Cannot find the PSU code list. Please specify a filename manually.'
       end
@@ -52,12 +53,13 @@ XML
       ]
     end
 
-    def initialize(filename, options={})
+    def initialize(config, filename, options={})
+      @configuration = config
       @filename = case filename
                   when Pathname
                     filename
                   when nil
-                    self.class.default_filename
+                    self.class.default_filename(configuration)
                   else
                     Pathname.new(filename.to_s)
                   end
@@ -72,7 +74,7 @@ XML
       filename.open('w') do |f|
         f.write HEADER_TEMPLATE.result(binding)
 
-        NcsNavigator::Warehouse.models_module.mdes_order.each do |model|
+        configuration.models_module.mdes_order.each do |model|
           @shell.clear_line_then_say('Writing XML for %33s' % model.mdes_table_name)
 
           write_all_xml_for_model(f, model)
@@ -115,7 +117,7 @@ XML
     end
 
     def specification_version
-      NcsNavigator::Warehouse.mdes.specification_version
+      configuration.mdes.specification_version
     end
 
     def emit_time

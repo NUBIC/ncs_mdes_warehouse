@@ -31,9 +31,17 @@ RSpec.configure do |config|
     ENV['SPEC_MDES_VERSION'] || NcsNavigator::Warehouse::DEFAULT_MDES_VERSION
   end
 
+  ##
+  # A mostly-default configuration to use in tests of objects that
+  # rely on the MDES specification so as to avoid initializing it
+  # multiple times.
+  def spec_config
+    @spec_config || fail("Flag specs that use spec_config with :use_mdes")
+  end
+
   config.before(:each, :use_mdes) do
-    unless NcsNavigator::Warehouse.instance_eval { @mdes }
-      NcsNavigator::Warehouse.use_mdes_version(spec_mdes_version)
+    @spec_config ||= NcsNavigator::Warehouse::Configuration.new.tap do |c|
+      c.mdes_version = spec_mdes_version
     end
   end
 
