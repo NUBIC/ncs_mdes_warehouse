@@ -93,9 +93,26 @@ configuration key and the two `mdes_warehouse_*` entries.
 
 [bcdatabase]: http://rubydoc.info/gems/bcdatabase/frames
 
-### Configure transformers
+### Configure warehouse
 
-TODO.
+The warehouse takes its base configuration from a file under the
+directory `/etc/nubic/ncs/warehouse`. The name of the file should be
+`${NCS_NAVIGATOR_ENV}.rb`; e.g., for the production environment, the
+full path would be `/etc/nubic/ncs/warehouse/production.rb`.
+
+The minimum contents of this file is a list of transformers, which are
+components that translate data from some source system or systems:
+
+    transformer VdrXml.from_most_recent_file(Dir['/var/lib/ncs/mdes/COOK*.xml'])
+    transformer StaffPortal.create_transformer
+
+The warehouse includes some transformers. Others are included with the
+NCS Navigator suite applications themselves. See below for more
+information (TODO).
+
+The warehouse configuration file may optionally include other
+overrides to MDES warehouse defaults. See the documentation for
+{NcsNavigator::Warehouse::Configuration::DSL} for details.
 
 ### Verify your settings
 
