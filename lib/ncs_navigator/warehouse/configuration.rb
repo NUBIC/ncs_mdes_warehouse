@@ -2,6 +2,29 @@ require 'ncs_navigator/warehouse'
 
 module NcsNavigator::Warehouse
   class Configuration
+    Error = Class.new(::StandardError)
+
+    def transformers
+      @transformers ||= []
+    end
+
+    ##
+    # Adds a transformer to the list for this warehouse instance.
+    #
+    # @return [void]
+    # @param [#transform] the transformer object.
+    def add_transformer(candidate)
+      if candidate.respond_to?(:transform)
+        self.transformers << candidate
+      else
+        if candidate.respond_to?(:new)
+          raise Error, "#{candidate.inspect} does not have a transform method. Perhaps you meant #{candidate.inspect}.new?"
+        else
+          raise Error, "#{candidate.inspect} does not have a transform method."
+        end
+      end
+    end
+
     ##
     # Selects and loads a set of models based on the given warehouse
     # version. Also initializes {#mdes} and  {#models_module}.
@@ -14,7 +37,7 @@ module NcsNavigator::Warehouse
       begin
         require module_require
       rescue LoadError => e
-        raise LoadError, "No warehouse models exist for MDES version #{version_number}: #{e}"
+        raise Error, "No warehouse models exist for MDES version #{version_number}: #{e}"
       end
 
       self.mdes = NcsNavigator::Mdes(version_number)
@@ -38,6 +61,51 @@ module NcsNavigator::Warehouse
       @models_module or fail 'Set an MDES version first to load the models'
     end
     attr_writer :models_module
+
+    ##
+    # @return [:normal, :quiet] the desired terminal output
+    #   level. This does not affect logging. Default is `:normal`.
+    def output_level
+      @output_level ||= :normal
+    end
+
+    ##
+    # Set the desired terminal output level.
+    #
+    # @return [void]
+    # @param [:normal, :quiet] level
+    def output_level=(level)
+      level = level.try(:to_sym)
+      if [:normal, :quiet].include?(level)
+        @output_level = level
+      else
+        fail Error, "#{level.inspect} is not a valid value for output_level."
+      end
+    end
+
+    ##
+    # The IO to use for terminal monitoring output. Defaults to
+    # standard error. Use {#shell} to actually write to it.
+    def shell_io
+      @shell_io ||= $stderr
+    end
+    attr_writer :shell_io
+
+    ##
+    # The terminal output shell for command line components to use.
+    # It will be an {UpdatingShell} or something which behaves like
+    # one.
+    def shell
+      @shell ||=
+        case output_level
+        when :normal
+          UpdatingShell.new(shell_io)
+        when :quiet
+          UpdatingShell::Quiet.new
+        else
+          fail "Unexpected output_level #{output_level.inspect}"
+        end
+    end
   end
 end
 

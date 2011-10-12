@@ -5,8 +5,6 @@ module NcsNavigator::Warehouse
     let(:config) { Configuration.new }
 
     describe 'add_transformer' do
-      before { pending 'TODO' }
-
       let(:transformer) {
         Object.new.tap do |o|
           class << o
@@ -25,7 +23,7 @@ module NcsNavigator::Warehouse
       describe 'with an object without a #transform method' do
         it 'gives a helpful message if the object is constructable' do
           lambda { config.add_transformer(String) }.
-            should raise_error('String does not have a #transform method. Perhaps you meant String.new?')
+            should raise_error('String does not have a transform method. Perhaps you meant String.new?')
         end
 
         it 'gives a helpful message if the object is just an instance' do
@@ -43,8 +41,8 @@ module NcsNavigator::Warehouse
       end
     end
 
-    describe '#mdes_version=', :slow, :use_mdes, :modifies_warehouse_state do
-      context 'for a known version' do
+    describe '#mdes_version=' do
+      context 'for a known version', :slow, :use_mdes, :modifies_warehouse_state  do
         it 'makes the models available' do
           ::DataMapper::Model.descendants.
             collect { |m| m.name.demodulize }.should include('Address')
@@ -84,16 +82,12 @@ module NcsNavigator::Warehouse
     end
 
     describe '#output_level' do
-      before { pending 'TODO' }
-
       it 'defaults to :normal' do
         config.output_level.should == :normal
       end
     end
 
     describe '#output_level=' do
-      before { pending 'TODO' }
-
       it 'accepts :normal' do
         lambda { config.output_level = :normal }.should_not raise_error
       end
@@ -114,6 +108,36 @@ module NcsNavigator::Warehouse
       it 'rejects other values' do
         lambda { config.output_level = :noisy }.
           should raise_error(':noisy is not a valid value for output_level.')
+      end
+    end
+
+    describe '#shell' do
+      it 'is an updating shell by default' do
+        config.shell.should be_a UpdatingShell
+      end
+
+      it 'uses the configured shell_io' do
+        io = StringIO.new
+        config.shell_io = io
+        config.shell.say 'Hello'
+        io.string.should == 'Hello'
+      end
+
+      it 'is a quiet shell with output level quiet' do
+        config.output_level = :quiet
+        config.shell.should be_a UpdatingShell::Quiet
+      end
+    end
+
+    describe '#shell_io' do
+      it 'is $stderr by default' do
+        config.shell_io.should be(STDERR)
+      end
+
+      it 'can be set' do
+        expected = StringIO.new
+        config.shell_io = expected
+        config.shell_io.should be expected
       end
     end
   end
