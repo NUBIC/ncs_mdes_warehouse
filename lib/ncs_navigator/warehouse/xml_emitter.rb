@@ -1,6 +1,5 @@
 require 'ncs_navigator/warehouse'
 
-require 'ncs_navigator/configuration'
 require 'erb'
 require 'zip/zip'
 require 'pathname'
@@ -41,7 +40,7 @@ XML
         fail 'Cannot find the PSU code list. Please specify a filename manually.'
       end
 
-      psu_id = NcsNavigator.configuration.psus.first.id
+      psu_id = configuration.navigator.psus.first.id
       psu_entry =  psu_type.code_list.detect { |cle| cle.value == psu_id }
       unless psu_entry
         fail "Cannot find PSU #{psu_id} in #{psu_type.name}. Please specify a filename manually"
@@ -109,11 +108,11 @@ XML
     end
 
     def sc_id
-      NcsNavigator.configuration.sc_id
+      configuration.navigator.sc_id
     end
 
     def psu_id
-      NcsNavigator.configuration.psus.first.id
+      configuration.navigator.psus.first.id
     end
 
     def specification_version

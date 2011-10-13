@@ -1,8 +1,14 @@
 require 'ncs_navigator/warehouse'
+require 'ncs_navigator/configuration'
+require 'ncs_navigator/mdes'
 
 module NcsNavigator::Warehouse
   class Configuration
     Error = Class.new(::StandardError)
+
+    ####
+    #### Transformers
+    ####
 
     def transformers
       @transformers ||= []
@@ -24,6 +30,10 @@ module NcsNavigator::Warehouse
         end
       end
     end
+
+    ####
+    #### MDES version
+    ####
 
     ##
     # Selects and loads a set of models based on the given warehouse
@@ -61,6 +71,32 @@ module NcsNavigator::Warehouse
       @models_module or fail 'Set an MDES version first to load the models'
     end
     attr_writer :models_module
+
+    ####
+    #### Suite configuration
+    ####
+
+    ##
+    # @return [NcsNavigator::Configuration] a suite configuration
+    #   object. Defaults to the global default instance
+    #   (`NcsNavigator.configuration`) which is loaded from
+    #   `/etc/nubic/ncs/navigator.ini`.
+    def navigator
+      @navigator ||= NcsNavigator.configuration
+    end
+    attr_writer :navigator
+
+    ##
+    # @param [String] ini_file an INI file that is compatible with
+    #   `NcsNavigator::Configuration`.
+    # @return [void]
+    def navigator_ini=(ini_file)
+      @navigator = NcsNavigator::Configuration.new(ini_file)
+    end
+
+    ####
+    #### Terminal output
+    ####
 
     ##
     # @return [:normal, :quiet] the desired terminal output

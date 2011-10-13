@@ -81,6 +81,18 @@ module NcsNavigator::Warehouse
       # see above for positive test
     end
 
+    describe '#navigator' do
+      it 'defaults to the global default instance' do
+        config.navigator.should be(NcsNavigator.configuration)
+      end
+
+      it 'can be overridden by setting a path' do
+        config.navigator_ini = File.expand_path('../../../navigator.ini', __FILE__)
+        config.navigator.should_not be(NcsNavigator.configuration)
+        config.navigator.should_not be_nil
+      end
+    end
+
     describe '#output_level' do
       it 'defaults to :normal' do
         config.output_level.should == :normal
