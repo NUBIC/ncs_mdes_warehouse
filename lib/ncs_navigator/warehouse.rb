@@ -1,5 +1,4 @@
 require 'bcdatabase'
-require 'ncs_navigator/mdes'
 
 module NcsNavigator
   module Warehouse
@@ -11,7 +10,6 @@ module NcsNavigator
     autoload :Configuration,       'ncs_navigator/warehouse/configuration'
     autoload :DataMapper,          'ncs_navigator/warehouse/data_mapper'
     autoload :DatabaseInitializer, 'ncs_navigator/warehouse/database_initializer'
-    autoload :VdrXmlReader,        'ncs_navigator/warehouse/vdr_xml_reader'
     autoload :Models,              'ncs_navigator/warehouse/models'
     autoload :TableModeler,        'ncs_navigator/warehouse/table_modeler'
     autoload :Transformers,        'ncs_navigator/warehouse/transformers'
