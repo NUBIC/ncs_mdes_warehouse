@@ -152,5 +152,59 @@ module NcsNavigator::Warehouse
         config.shell_io.should be expected
       end
     end
+
+    describe 'bcdatabase' do
+      describe 'group', :modifies_warehouse_state do
+        subject { config.bcdatabase_group }
+
+        [
+          %w(local_postgresql development),
+          %w(public_ci_postgresql9 ci),
+          %w(ncsdb_staging staging),
+          %w(ncsdb_prod production),
+        ].collect { |exp, env| [exp.to_sym, env] }.each do |expected, environment|
+          it "is #{expected} for #{environment}" do
+            NcsNavigator::Warehouse.env = environment
+            subject.should == expected
+          end
+        end
+
+        it 'throws an exception for an unknown environment' do
+          NcsNavigator::Warehouse.env = 'the_moon'
+          lambda { subject }.should raise_error(/unknown environment the_moon/i)
+        end
+
+        it 'can be set manually' do
+          config.bcdatabase_group = 'custom'
+          subject.should == 'custom'
+        end
+      end
+
+      describe 'entries' do
+        describe ':working' do
+          it 'defaults to :mdes_warehouse_working' do
+            config.bcdatabase_entries[:working].should == :mdes_warehouse_working
+          end
+        end
+
+        describe ':reporting' do
+          it 'defaults to :mdes_warehouse_reporting' do
+            config.bcdatabase_entries[:reporting].should == :mdes_warehouse_reporting
+          end
+        end
+
+        describe 'merge' do
+          it 'accepts a change for one without changing the other' do
+            config.merge_bcdatabase_entries(:working => :custom_working)
+            config.bcdatabase_entries[:reporting].should == :mdes_warehouse_reporting
+          end
+
+          it 'changes the specified keys' do
+            config.merge_bcdatabase_entries(:working => :custom_working)
+            config.bcdatabase_entries[:working].should == :custom_working
+          end
+        end
+      end
+    end
   end
 end

@@ -95,6 +95,64 @@ module NcsNavigator::Warehouse
     end
 
     ####
+    #### Bcdatabase
+    ####
+
+    ##
+    # @return [Symbol] the bcdatabase group to use when locating the
+    #   database configuration for this instance. It will also be used
+    #   by default in {Transformers::Database} transformers.
+    def bcdatabase_group
+      @bcdatabase_group || default_bcdatabase_group
+    end
+    attr_writer :bcdatabase_group
+
+    def default_bcdatabase_group
+      case env
+      when 'development'
+        :local_postgresql
+      when 'ci'
+        :public_ci_postgresql9
+      when 'staging'
+        :ncsdb_staging
+      when 'production'
+        :ncsdb_prod
+      else
+        raise "Unknown environment #{env}. Please set the bcdatabase group yourself."
+      end
+    end
+    private :default_bcdatabase_group
+
+    def env
+      NcsNavigator::Warehouse.env
+    end
+    private :env
+
+    ##
+    # @return [Hash<Symbol, Symbol>] the bcdatabase entries to use
+    #   when locating the database configurations for this
+    #   instance. It must have the keys `:working` and
+    #   `:reporting`.
+    def bcdatabase_entries
+      @bcdatabase_entries ||= default_bcdatabase_entries
+    end
+
+    ##
+    # @param [Hash<Symbol, Symbol>] the new entry or entries.
+    # @return [void]
+    def merge_bcdatabase_entries(new_entries)
+      @bcdatabase_entries = bcdatabase_entries.merge(new_entries)
+    end
+
+    def default_bcdatabase_entries
+      {
+        :working   => :mdes_warehouse_working,
+        :reporting => :mdes_warehouse_reporting
+      }
+    end
+    private :default_bcdatabase_entries
+
+    ####
     #### Terminal output
     ####
 

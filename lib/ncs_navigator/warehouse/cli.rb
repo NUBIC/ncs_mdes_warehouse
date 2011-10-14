@@ -8,20 +8,20 @@ module NcsNavigator::Warehouse
       :desc => 'The MDES version for the warehouse in use', :banner => 'X.Y'
 
     no_tasks {
-      def use_mdes
-        NcsNavigator::Warehouse.use_mdes_version(options[:'mdes-version'])
+      def configuration
+        @configuration ||= Configuration.new.tap do |c|
+          c.mdes_version = options['mdes-version']
+        end
       end
 
       def use_database(which=:reporting)
-        NcsNavigator::Warehouse::DatabaseInitializer.new.set_up_repository(which)
+        NcsNavigator::Warehouse::DatabaseInitializer.new(configuration).set_up_repository(which)
       end
     }
 
     desc 'create-schema', '(Re)builds the schema in the working database'
     def create_schema
-      use_mdes
-
-      db = DatabaseInitializer.new
+      db = DatabaseInitializer.new(configuration)
       db.set_up_repository(:working)
       db.replace_schema
     end
@@ -36,7 +36,6 @@ the XML file is the county name for the PSU plus the date; e.g.,
 cook-20110728.xml.
 DESC
     def emit_xml(filename=nil)
-      use_mdes
       use_database
 
       XmlEmitter.new(filename, options).emit_xml

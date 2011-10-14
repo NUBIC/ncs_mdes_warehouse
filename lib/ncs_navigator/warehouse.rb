@@ -58,27 +58,6 @@ module NcsNavigator
       def bcdatabase=(bcdb)
         @bcdatabase = bcdb
       end
-
-      ##
-      # The bcdatabase group the warehouse will use to find its own
-      # databases and which is used by default in
-      # {Transformers::Database database transformers}.
-      #
-      # @return [Symbol]
-      def default_bcdatabase_group
-        case env
-        when 'development'
-          :local_postgresql
-        when 'ci'
-          :public_ci_postgresql9
-        when 'staging'
-          :ncsdb_staging
-        when 'production'
-          :ncsdb_prod
-        else
-          raise "Unknown environment #{env}. Please set the bcdatabase group yourself."
-        end
-      end
     end
   end
 end

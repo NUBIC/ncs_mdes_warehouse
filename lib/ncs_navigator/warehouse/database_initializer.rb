@@ -15,7 +15,7 @@ module NcsNavigator::Warehouse
   #     # Require the appropriate model version for the warehouse
   #     # you're using
   #     require 'ncs_navigator/warehouse/models/two_point_zero'
-  #     DatabaseInitializer.new.set_up_repository
+  #     DatabaseInitializer.new(Configuration.new).set_up_repository
   #
   # This sets up the `:default` DataMapper repository to point to the
   # reporting database for your current {NcsNavigator.env}.
@@ -23,8 +23,10 @@ module NcsNavigator::Warehouse
   # You can also set up connections to the working database if needed;
   # see below.
   class DatabaseInitializer
-    def initialize(bcdb_group=nil)
-      @bcdb_group = bcdb_group || NcsNavigator::Warehouse.default_bcdatabase_group
+    attr_reader :configuration
+
+    def initialize(config)
+      @configuration = config
     end
 
     ##
@@ -54,7 +56,10 @@ module NcsNavigator::Warehouse
     private :connect_one
 
     def params(which_one)
-      NcsNavigator::Warehouse.bcdatabase[@bcdb_group, "mdes_warehouse_#{which_one}"]
+      NcsNavigator::Warehouse.bcdatabase[
+        configuration.bcdatabase_group,
+        configuration.bcdatabase_entries[which_one]
+      ]
     end
     private :params
 
