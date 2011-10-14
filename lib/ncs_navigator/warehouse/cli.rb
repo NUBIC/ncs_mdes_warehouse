@@ -6,11 +6,14 @@ module NcsNavigator::Warehouse
   class CLI < Thor
     class_option 'mdes-version', :type => :string, :default => DEFAULT_MDES_VERSION,
       :desc => 'The MDES version for the warehouse in use', :banner => 'X.Y'
+    class_option :quiet, :type => :boolean, :default => false, :aliases => %w(-q),
+      :desc => 'Suppress the status messages printed to standard error'
 
     no_tasks {
       def configuration
         @configuration ||= Configuration.new.tap do |c|
           c.mdes_version = options['mdes-version']
+          c.output_level = :quiet if options['quiet']
         end
       end
 
@@ -27,8 +30,6 @@ module NcsNavigator::Warehouse
     end
 
     desc 'emit-xml [FILENAME]', 'Generates the VDR submission XML'
-    method_option :quiet, :type => :boolean, :default => false, :aliases => %w(-q),
-      :desc => 'Suppress the status messages printed to standard error'
     long_desc <<-DESC
 Generates and zips the vanguard data repository submission XML from
 the contents of the current reporting database. The default name for
@@ -38,7 +39,7 @@ DESC
     def emit_xml(filename=nil)
       use_database
 
-      XmlEmitter.new(filename, options).emit_xml
+      XmlEmitter.new(configuration, filename).emit_xml
     end
   end
 end

@@ -4,11 +4,16 @@ require 'erb'
 require 'zip/zip'
 require 'pathname'
 require 'fileutils'
+require 'forwardable'
 
 module NcsNavigator::Warehouse
   class XmlEmitter
+    extend Forwardable
+
     attr_reader :configuration
     attr_reader :filename
+
+    def_delegator :@configuration, :shell
 
     HEADER_TEMPLATE = ERB.new(<<-XML_ERB)
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -52,7 +57,7 @@ XML
       ]
     end
 
-    def initialize(config, filename, options={})
+    def initialize(config, filename)
       @configuration = config
       @filename = case filename
                   when Pathname
@@ -62,19 +67,18 @@ XML
                   else
                     Pathname.new(filename.to_s)
                   end
-      @shell = options[:quiet] ? UpdatingShell::Quiet.new : UpdatingShell.new($stderr)
       @record_count = 0
     end
 
     def emit_xml
-      @shell.say_line("Exporting to #{filename}")
+      shell.say_line("Exporting to #{filename}")
 
       @start = Time.now
       filename.open('w') do |f|
         f.write HEADER_TEMPLATE.result(binding)
 
         configuration.models_module.mdes_order.each do |model|
-          @shell.clear_line_then_say('Writing XML for %33s' % model.mdes_table_name)
+          shell.clear_line_then_say('Writing XML for %33s' % model.mdes_table_name)
 
           write_all_xml_for_model(f, model)
         end
@@ -82,10 +86,10 @@ XML
         f.write FOOTER_TEMPLATE
       end
       @end = Time.now
-      @shell.clear_line_then_say(
+      shell.clear_line_then_say(
         "%d records written in %d seconds (%.1f/sec).\n" % [@record_count, emit_time, emit_rate])
 
-      @shell.say_line("Zipping to #{zip_filename}")
+      shell.say_line("Zipping to #{zip_filename}")
       Zip::ZipFile.open(zip_filename, Zip::ZipFile::CREATE) do |zf|
         zf.add(filename.basename, filename)
       end
@@ -98,12 +102,12 @@ XML
     private
 
     def write_all_xml_for_model(f, model)
-      @shell.say(' %20s' % '[loading]')
+      shell.say(' %20s' % '[loading]')
       model.all.each do |instance|
         instance.write_mdes_xml(f, :indent => 3, :margin => 1)
         @record_count += 1
 
-        @shell.back_up_and_say(20, '%5d (%5.1f/sec)' % [@record_count, emit_rate])
+        shell.back_up_and_say(20, '%5d (%5.1f/sec)' % [@record_count, emit_rate])
       end
     end
 

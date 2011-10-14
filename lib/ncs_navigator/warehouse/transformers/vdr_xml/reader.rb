@@ -1,6 +1,7 @@
 require 'ncs_navigator/warehouse'
 
 require 'nokogiri'
+require 'forwardable'
 
 class NcsNavigator::Warehouse::Transformers::VdrXml
   ##
@@ -9,9 +10,12 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
   # yields it to a provided collaborator.
   class Reader
     include Enumerable
+    extend Forwardable
 
     attr_reader :configuration
     attr_reader :filename
+
+    def_delegator :@configuration, :shell
 
     ##
     # @return [Fixnum] the number of records that have been read so far.
@@ -25,9 +29,6 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
                        else
                          [nil, filename_or_io]
                        end
-      @shell = options[:quiet] ?
-        NcsNavigator::Warehouse::UpdatingShell::Quiet.new :
-        NcsNavigator::Warehouse::UpdatingShell.new($stderr)
       @record_count = 0
     end
 
@@ -41,7 +42,7 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
     # @yield a series of model instances
     # @return [void]
     def each(&block)
-      @shell.say_line("Beginning VDR XML read#{" of #{filename}" if filename}")
+      shell.say_line("Beginning VDR XML read#{" of #{filename}" if filename}")
       @start = Time.now
 
       Nokogiri::XML::Reader(@io).each do |node|
@@ -52,7 +53,7 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
 
       @end = Time.now
 
-      @shell.clear_line_then_say(
+      shell.clear_line_then_say(
         "Completed read of %6d records in %d seconds (%3.1f per second)\n" %
         [@record_count, load_time, load_rate])
     ensure
@@ -70,7 +71,7 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
           yield build_current_instance
           @current_model_class = nil
           @record_count += 1
-          @shell.clear_line_then_say('%6d records (%3.1f per second); up to %s' %
+          shell.clear_line_then_say('%6d records (%3.1f per second); up to %s' %
             [@record_count, load_rate, node.local_name])
         else
           # node is the start tag of a table variable

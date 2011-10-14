@@ -3,6 +3,7 @@ require 'ncs_navigator/warehouse'
 require 'bcdatabase'
 require 'data_mapper'
 require 'benchmark'
+require 'forwardable'
 
 require 'ncs_navigator/warehouse/data_mapper_patches'
 
@@ -23,7 +24,11 @@ module NcsNavigator::Warehouse
   # You can also set up connections to the working database if needed;
   # see below.
   class DatabaseInitializer
+    extend Forwardable
+
     attr_reader :configuration
+
+    def_delegator :@configuration, :shell
 
     def initialize(config)
       @configuration = config
@@ -72,12 +77,12 @@ module NcsNavigator::Warehouse
     #
     # @return [void]
     def replace_schema
-      # TODO: log to log, not stderr
-      $stderr.puts(Benchmark.measure do
-        $stderr.puts "Drop everything"
+      # TODO: actual logging, too
+      shell.say_line(Benchmark.measure do
+        shell.say_line "Drop everything"
         ::DataMapper.repository(:mdes_warehouse_working).adapter.
           execute("DROP OWNED BY #{params(:working)['username']}")
-        $stderr.puts "Initialize schema"
+        shell.say_line "Initialize schema"
         ::DataMapper.auto_migrate!(:mdes_warehouse_working)
       end)
     end

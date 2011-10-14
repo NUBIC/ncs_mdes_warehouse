@@ -42,6 +42,7 @@ RSpec.configure do |config|
   config.before(:each, :use_mdes) do
     @spec_config ||= NcsNavigator::Warehouse::Configuration.new.tap do |c|
       c.mdes_version = spec_mdes_version
+      c.output_level = :quiet
     end
   end
 

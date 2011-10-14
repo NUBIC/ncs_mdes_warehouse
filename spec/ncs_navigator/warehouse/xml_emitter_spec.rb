@@ -6,7 +6,7 @@ module NcsNavigator::Warehouse
   describe XmlEmitter, :use_mdes do
     let(:filename) { tmpdir + 'export.xml' }
     let(:xml) {
-      XmlEmitter.new(spec_config, filename, :quiet => true).emit_xml
+      XmlEmitter.new(spec_config, filename).emit_xml
       Nokogiri::XML(File.read(filename))
     }
 
