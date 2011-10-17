@@ -103,16 +103,16 @@ full path would be `/etc/nubic/ncs/warehouse/production.rb`.
 The minimum contents of this file is a list of transformers, which are
 components that translate data from some source system or systems:
 
-    transformer VdrXml.from_most_recent_file(Dir['/var/lib/ncs/mdes/COOK*.xml'])
-    transformer StaffPortal.create_transformer
+    c.add_transformer VdrXml.from_most_recent_file(c, Dir['/var/lib/ncs/mdes/COOK*.xml'])
+    c.add_transformer StaffPortal.create_transformer(c)
 
 The warehouse includes some transformers. Others are included with the
 NCS Navigator suite applications themselves. See below for more
 information (TODO).
 
 The warehouse configuration file may optionally include other
-overrides to MDES warehouse defaults. See the documentation for
-{NcsNavigator::Warehouse::Configuration::DSL} for details.
+overrides to MDES warehouse defaults. See the
+{file:sample_configuration.rb} for details.
 
 ### Verify your settings
 
