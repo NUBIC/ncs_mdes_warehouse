@@ -29,12 +29,9 @@ c.add_transformer Bar.new(configuration)
 
 # Select the bcdatabase entries to use to locate database
 # information and credentials. MDES Warehouse uses two
-# databases. This entry shows the default values. You can
-# you can also override only one or the other.
-#c.merge_bcdatabase_entries(
-#  :working => :mdes_warehouse_working,
-#  :reporting => :mdes_warehouse_reporting
-#)
+# databases.
+#c.bcdatabase_entries[:working] = :mdes_warehouse_working
+#c.bcdatabase_entries[:reporting] = :mdes_warehouse_reporting
 
 # The path to the basic configuration of the suite.
 # The default is '/etc/nubic/ncs/navigator.ini'. It's unlikely

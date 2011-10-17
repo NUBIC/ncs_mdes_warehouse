@@ -153,13 +153,6 @@ module NcsNavigator::Warehouse
       @bcdatabase_entries ||= default_bcdatabase_entries
     end
 
-    ##
-    # @param [Hash<Symbol, Symbol>] new_entries the new entry or entries.
-    # @return [void]
-    def merge_bcdatabase_entries(new_entries)
-      @bcdatabase_entries = bcdatabase_entries.merge(new_entries)
-    end
-
     def default_bcdatabase_entries
       {
         :working   => :mdes_warehouse_working,

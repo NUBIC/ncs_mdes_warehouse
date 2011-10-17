@@ -193,16 +193,9 @@ module NcsNavigator::Warehouse
           end
         end
 
-        describe 'merge' do
-          it 'accepts a change for one without changing the other' do
-            config.merge_bcdatabase_entries(:working => :custom_working)
-            config.bcdatabase_entries[:reporting].should == :mdes_warehouse_reporting
-          end
-
-          it 'changes the specified keys' do
-            config.merge_bcdatabase_entries(:working => :custom_working)
-            config.bcdatabase_entries[:working].should == :custom_working
-          end
+        it 'can be updated' do
+          config.bcdatabase_entries[:working] = :custom_working
+          config.bcdatabase_entries[:working].should == :custom_working
         end
       end
     end
