@@ -25,7 +25,7 @@ c.add_transformer Bar.new(configuration)
 # Select a bcdatabase group to use to locate database access
 # information and credentials. The default is defined by the
 # environment.
-#c.bcdatabase_group = :custom
+#c.bcdatabase_group = :some_other_group
 
 # Select the bcdatabase entries to use to locate database
 # information and credentials. MDES Warehouse uses two

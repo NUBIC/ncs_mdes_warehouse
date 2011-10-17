@@ -3,13 +3,24 @@ require 'ncs_navigator/configuration'
 require 'ncs_navigator/mdes'
 
 module NcsNavigator::Warehouse
+  ##
+  # The configuration profile for the warehouse in a particular
+  # environment. An instance of this class is derived from the
+  # environment script under
+  # `/etc/nubic/ncs/warehouse/{env_name}.rb`.
+  #
+  # @see file:sample_configuration.rb
   class Configuration
-    Error = Class.new(::StandardError)
+    ##
+    # The error raised on a configuration problem.
+    class Error < ::StandardError; end
 
     ####
     #### Transformers
     ####
 
+    ##
+    # @return [Array<#transform>] the configured transformer objects.
     def transformers
       @transformers ||= []
     end
@@ -39,6 +50,7 @@ module NcsNavigator::Warehouse
     # Selects and loads a set of models based on the given warehouse
     # version. Also initializes {#mdes} and  {#models_module}.
     #
+    # @param [String] version_number the version of the MDES to use.
     # @return [void]
     def mdes_version=(version_number)
       module_name = TableModeler.version_module_name(version_number)
@@ -87,8 +99,12 @@ module NcsNavigator::Warehouse
     attr_writer :navigator
 
     ##
-    # @param [String] ini_file an INI file that is compatible with
-    #   `NcsNavigator::Configuration`.
+    # Set the suite configuration file to use in this warehouse
+    # environment.
+    #
+    # @see {#navigator}
+    # @param [String] ini_file the name of an INI file that is
+    #   compatible with `NcsNavigator::Configuration`.
     # @return [void]
     def navigator_ini=(ini_file)
       @navigator = NcsNavigator::Configuration.new(ini_file)
@@ -138,7 +154,7 @@ module NcsNavigator::Warehouse
     end
 
     ##
-    # @param [Hash<Symbol, Symbol>] the new entry or entries.
+    # @param [Hash<Symbol, Symbol>] new_entries the new entry or entries.
     # @return [void]
     def merge_bcdatabase_entries(new_entries)
       @bcdatabase_entries = bcdatabase_entries.merge(new_entries)
@@ -180,6 +196,8 @@ module NcsNavigator::Warehouse
     ##
     # The IO to use for terminal monitoring output. Defaults to
     # standard error. Use {#shell} to actually write to it.
+    #
+    # @return [IO]
     def shell_io
       @shell_io ||= $stderr
     end
