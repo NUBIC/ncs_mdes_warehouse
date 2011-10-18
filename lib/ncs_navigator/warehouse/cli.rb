@@ -4,17 +4,25 @@ require 'thor'
 
 module NcsNavigator::Warehouse
   class CLI < Thor
-    class_option 'mdes-version', :type => :string, :default => DEFAULT_MDES_VERSION,
-      :desc => 'The MDES version for the warehouse in use', :banner => 'X.Y'
+    class_option 'mdes-version', :type => :string,
+      :desc => 'Override the MDES version for the environment', :banner => 'X.Y'
     class_option :quiet, :type => :boolean, :default => false, :aliases => %w(-q),
       :desc => 'Suppress the status messages printed to standard error'
+    class_option 'config', :type => :string, :aliases => %w(-c),
+      :desc => 'Supply an alternate configuration file instead of the default /etc/nubic/ncs/warehouse/{env_name}.rb'
 
     no_tasks {
       def configuration
-        @configuration ||= Configuration.new.tap do |c|
-          c.mdes_version = options['mdes-version']
-          c.output_level = :quiet if options['quiet']
-        end
+        @configuration ||=
+          begin
+            base = options['config'] ?
+              Configuration.from_file(options['config']) :
+              Configuration.for_environment
+            base.tap do |c|
+              c.mdes_version = options['mdes-version'] if options['mdes-version']
+              c.output_level = :quiet if options['quiet']
+            end
+          end
       end
 
       def use_database(which=:reporting)

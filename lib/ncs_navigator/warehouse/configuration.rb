@@ -2,6 +2,8 @@ require 'ncs_navigator/warehouse'
 require 'ncs_navigator/configuration'
 require 'ncs_navigator/mdes'
 
+require 'active_support/core_ext/object/try'
+
 module NcsNavigator::Warehouse
   ##
   # The configuration profile for the warehouse in a particular
@@ -36,8 +38,18 @@ module NcsNavigator::Warehouse
       # @return [Configuration] the configuration loaded from the
       #   configuration file for the named environment.
       # @param [#to_s] env_name
-      def for_environment(env_name)
-        from_file("/etc/nubic/ncs/warehouse/#{env_name}.rb")
+      def for_environment(env_name=nil)
+        fn = environment_file env_name
+        if File.exist?(fn)
+          from_file(fn)
+        else
+          new
+        end
+      end
+
+      def environment_file(env_name=nil)
+        env_name ||= NcsNavigator::Warehouse.env
+        "/etc/nubic/ncs/warehouse/#{env_name}.rb"
       end
     end
 
@@ -98,7 +110,8 @@ module NcsNavigator::Warehouse
     # @return [NcsNavigator::Mdes::Specification] the specification
     #   (provided by `ncs_mdes`) for the active MDES version.
     def mdes
-      @mdes or fail 'Set an MDES version first'
+      set_default_mdes_version unless @mdes
+      @mdes
     end
     attr_writer :mdes
 
@@ -106,9 +119,15 @@ module NcsNavigator::Warehouse
     # @return [Module] the module namespacing the models for the
     #   active MDES version.
     def models_module
-      @models_module or fail 'Set an MDES version first to load the models'
+      set_default_mdes_version unless @models_module
+      @models_module
     end
     attr_writer :models_module
+
+    def set_default_mdes_version
+      self.mdes_version = NcsNavigator::Warehouse::DEFAULT_MDES_VERSION
+    end
+    private :set_default_mdes_version
 
     ####
     #### Suite configuration

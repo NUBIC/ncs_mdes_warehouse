@@ -63,22 +63,20 @@ module NcsNavigator::Warehouse
       end
     end
 
-    describe '#mdes' do
-      it 'throws an exception when called before mdes_version=' do
-        lambda { config.mdes }.
-          should raise_error(/Set an MDES version first/)
+    describe '#mdes', :slow, :modifies_warehouse_state do
+      it 'Uses the default MDES version if called before mdes_version=' do
+        config.mdes.version.should == NcsNavigator::Warehouse::DEFAULT_MDES_VERSION
       end
 
-      # see above for positive test
+      # see above for test of non-default value
     end
 
-    describe '#models_module' do
-      it 'throws an exception when called before mdes_version=' do
-        lambda { config.models_module }.
-          should raise_error(/Set an MDES version first to load the models/)
+    describe '#models_module', :slow, :modifies_warehouse_state do
+      it 'Uses the default MDES version if called before mdes_version=' do
+        config.models_module.mdes_version.should == NcsNavigator::Warehouse::DEFAULT_MDES_VERSION
       end
 
-      # see above for positive test
+      # see above for test of non-default value
     end
 
     describe '#navigator' do
@@ -247,10 +245,34 @@ module NcsNavigator::Warehouse
       end
     end
 
-    describe '.for_environment' do
-      it 'reads from the default path' do
-        Configuration.should_receive(:from_file).with('/etc/nubic/ncs/warehouse/prod.rb')
-        Configuration.for_environment('prod')
+    describe '.for_environment', :modifies_warehouse_state do
+      include FakeFS::SpecHelpers
+
+      before do
+        # In FakeFS
+        Pathname.new('/etc/nubic/ncs/warehouse').mkpath
+      end
+
+      it 'reads from the default path for the named environment' do
+        File.open('/etc/nubic/ncs/warehouse/prod.rb', 'w') do |f|
+          f.puts 'c.output_level = :quiet'
+        end
+        Configuration.for_environment('prod').output_level.should == :quiet
+      end
+
+      it 'defaults to the config for the current environment' do
+        NcsNavigator::Warehouse.env = 'development'
+        File.open('/etc/nubic/ncs/warehouse/development.rb', 'w') do |f|
+          f.puts 'c.output_level = :quiet'
+        end
+
+        Configuration.for_environment.output_level.should == :quiet
+      end
+
+      it 'returns a blank configuration when the file is missing' do
+        FakeFS.deactivate!
+
+        Configuration.for_environment('made-up-one').output_level.should == :normal
       end
     end
   end

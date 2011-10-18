@@ -1,4 +1,5 @@
 require 'rspec'
+require 'fakefs/spec_helpers'
 
 $LOAD_PATH.push File.expand_path('../../lib', __FILE__)
 
