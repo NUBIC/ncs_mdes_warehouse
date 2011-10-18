@@ -141,7 +141,7 @@ module NcsNavigator::Warehouse
 
     describe '#shell_io' do
       it 'is $stderr by default' do
-        config.shell_io.should be(STDERR)
+        config.shell_io.should be($stderr)
       end
 
       it 'can be set' do
