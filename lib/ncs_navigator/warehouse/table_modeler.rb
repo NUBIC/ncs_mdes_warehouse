@@ -10,9 +10,13 @@ module NcsNavigator::Warehouse
     attr_reader :path
     attr_reader :module_name
     attr_reader :tables
+    attr_reader :mdes_version
+    attr_reader :mdes_specification_version
 
-    def initialize(tables, options={})
+    def initialize(tables, version_string, specification_version_string, options={})
       @tables = tables
+      @mdes_version = version_string
+      @mdes_specification_version = specification_version_string
       @module_name = options.delete(:module).try(:to_s) or fail 'Please specify a target module'
       @path = options.delete(:path) or fail 'Please specify a path to which to generate the files'
       @path = File.join(path, module_name.underscore)
@@ -26,7 +30,8 @@ module NcsNavigator::Warehouse
         module_name = [self.name.split('::')[0..-2], 'Models', version_module_name(version_string)].
           flatten.join('::')
 
-        TableModeler.new(mdes.transmission_tables, :module => module_name, :path => options[:path])
+        TableModeler.new(mdes.transmission_tables, version_string, mdes.specification_version,
+          :module => module_name, :path => options[:path])
       end
 
       VERSION_CHAR_TO_MODULE_NAME_PART = {
@@ -85,6 +90,8 @@ module NcsNavigator::Warehouse
 
         f.puts
         f.puts(generate_code_in_module do
+          "mdes_version #{mdes_version.inspect}\n" +
+          "mdes_specification_version #{mdes_specification_version.inspect}\n" +
           "mdes_order #{tables.collect(&:wh_model_name).join(",\n  ")}"
         end)
 

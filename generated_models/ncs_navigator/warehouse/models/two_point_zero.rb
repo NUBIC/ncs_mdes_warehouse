@@ -277,6 +277,8 @@ module NcsNavigator
   module Warehouse
     module Models
       module TwoPointZero
+        mdes_version "2.0"
+        mdes_specification_version "2.0.01.02"
         mdes_order StudyCenter,
           Psu,
           Ssu,

@@ -54,7 +54,7 @@ module NcsNavigator::Warehouse
     }
 
     subject {
-      TableModeler.new(tables, options)
+      TableModeler.new(tables, '42.9', '42.9.03.09', options)
     }
 
     def reset_models
@@ -117,6 +117,14 @@ module NcsNavigator::Warehouse
       it 'sets the model order' do
         @contents.should =~
           %r{mdes_order GenerationalTableau}
+      end
+
+      it 'sets the MDES version' do
+        @contents.should =~ %r{mdes_version "42.9"}
+      end
+
+      it 'sets the MDES specification version' do
+        @contents.should =~ %r{mdes_specification_version "42.9.03.09"}
       end
 
       it 'defines the module' do
@@ -543,6 +551,11 @@ end
       it 'takes the tables from the appropriate ncs_mdes Specification' do
         TableModeler.for_version(spec_mdes_version, :path => '.').tables.collect(&:name).
           should == NcsNavigator::Mdes(spec_mdes_version).transmission_tables.collect(&:name)
+      end
+
+      it 'preserves the MDES version' do
+        TableModeler.for_version(spec_mdes_version, :path => '.').mdes_version.
+          should == spec_mdes_version
       end
     end
   end
