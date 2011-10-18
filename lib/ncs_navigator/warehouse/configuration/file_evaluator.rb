@@ -40,9 +40,15 @@ class NcsNavigator::Warehouse::Configuration
       begin
         base_configuration.send(name, *args)
       rescue Error => e
-        @errors << [e, caller[1].split(':')[1]]
+        @errors << [e, find_calling_line_number]
       end
     end
+
+    def find_calling_line_number
+      file_offset = RUBY_VERSION < '1.9' ? 1 : 2
+      caller[file_offset].split(':')[1]
+    end
+    private :find_calling_line_number
 
     def finish
       unless @errors.empty?
