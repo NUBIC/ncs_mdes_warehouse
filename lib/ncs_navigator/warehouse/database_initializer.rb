@@ -45,6 +45,8 @@ module NcsNavigator::Warehouse
     #   configured in.
     # @return [void]
     def set_up_repository(mode=:reporting)
+      ::DataMapper::Logger.new(STDOUT, :debug)
+
       fail "Invalid mode #{mode.inspect}" unless [:reporting, :working, :both].include?(mode)
       modes = case mode
               when :both then [:reporting, :working]
@@ -83,7 +85,11 @@ module NcsNavigator::Warehouse
         ::DataMapper.repository(:mdes_warehouse_working).adapter.
           execute("DROP OWNED BY #{params(:working)['username']}")
         shell.say_line "Initialize schema"
-        ::DataMapper.auto_migrate!(:mdes_warehouse_working)
+        # In DM 1.2, DataMapper.auto_migrate! only works for the
+        # :default repo
+        configuration.models_module.mdes_order.each do |m|
+          m.auto_migrate!(:mdes_warehouse_working)
+        end
       end)
     end
   end

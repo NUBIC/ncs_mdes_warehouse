@@ -154,7 +154,7 @@ end
           variable.type.code_list << NcsNavigator::Mdes::VariableType::CodeListEntry.new('60336')
           variable.type.code_list << NcsNavigator::Mdes::VariableType::CodeListEntry.new('-4')
 
-          subject.load!
+          subject.model!
         end
 
         it 'allows a matching value' do
@@ -175,7 +175,7 @@ end
           before do
             variable.type.min_length = 5
 
-            subject.load!
+            subject.model!
           end
 
           it 'blocks a too-short value' do
@@ -195,7 +195,7 @@ end
           before do
             variable.type.max_length = 5
 
-            subject.load!
+            subject.model!
           end
 
           it 'allows an empty value' do
@@ -220,7 +220,7 @@ end
             variable.type.min_length = 9
             variable.type.max_length = 36
 
-            subject.load!
+            subject.model!
           end
 
           it 'blocks a too-short value' do
@@ -248,7 +248,7 @@ end
       describe 'when required' do
         before do
           variable.required = true
-          subject.load!
+          subject.model!
         end
 
         it 'allows when set' do
@@ -263,7 +263,7 @@ end
       describe 'with a pattern' do
         before do
           variable.type.pattern = /foo/
-          subject.load!
+          subject.model!
         end
 
         it 'accepts a value that matches' do
