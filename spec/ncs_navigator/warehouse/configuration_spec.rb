@@ -199,5 +199,59 @@ module NcsNavigator::Warehouse
         end
       end
     end
+
+    describe '.from_file' do
+      let(:filename) { tmpdir + 'test.rb' }
+      subject { Configuration.from_file(filename) }
+
+      def write_file
+        File.open(filename, 'w') do |f|
+          yield f
+        end
+      end
+
+      it 'exposes "c" as the configuration' do
+        write_file do |f|
+          f.puts 'c.output_level = :quiet'
+        end
+        subject.output_level.should == :quiet
+      end
+
+      it 'exposes "configuration" as the configuration' do
+        write_file do |f|
+          f.puts 'configuration.bcdatabase_group = :custom'
+        end
+        subject.bcdatabase_group.should == :custom
+      end
+
+      describe 'with errors' do
+        before do
+          write_file do |f|
+            f.puts 'c.add_transformer "not a transformer"'
+            f.puts '# another line'
+            f.puts 'c.output_level = :noisy'
+          end
+        end
+
+        it 'reports the first error' do
+          lambda { subject }.should raise_error(/not a transformer/)
+        end
+
+        it 'reports the second error' do
+          lambda { subject }.should raise_error(/:noisy/)
+        end
+
+        it 'includes the line numbers' do
+          lambda { subject }.should raise_error(/line 3:.*?:noisy/)
+        end
+      end
+    end
+
+    describe '.for_environment' do
+      it 'reads from the default path' do
+        Configuration.should_receive(:from_file).with('/etc/nubic/ncs/warehouse/prod.rb')
+        Configuration.for_environment('prod')
+      end
+    end
   end
 end

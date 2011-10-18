@@ -15,6 +15,32 @@ module NcsNavigator::Warehouse
     # The error raised on a configuration problem.
     class Error < ::StandardError; end
 
+    autoload :FileEvaluator, 'ncs_navigator/warehouse/configuration/file_evaluator'
+
+    class << self
+      ##
+      # Evaluates the given file to initialize a {Configuration}
+      # object. See {file:sample_configuration.ini} for an example.
+      #
+      # @return [Configuration] a configuration initialized from the
+      #   given file.
+      # @param [String] filename
+      def from_file(filename)
+        FileEvaluator.new(filename).result
+      end
+
+      ##
+      # Loads the configuration for the named environment from
+      # `/etc/nubic/ncs/warehouse/{env_name}.rb`.
+      #
+      # @return [Configuration] the configuration loaded from the
+      #   configuration file for the named environment.
+      # @param [#to_s] env_name
+      def for_environment(env_name)
+        from_file("/etc/nubic/ncs/warehouse/#{env_name}.rb")
+      end
+    end
+
     ####
     #### Transformers
     ####
