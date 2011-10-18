@@ -2,7 +2,7 @@ require File.expand_path('../../../../../spec_helper', __FILE__)
 
 class NcsNavigator::Warehouse::Transformers::VdrXml
   describe Reader, :use_mdes do
-    describe '#each' do
+    describe '#each', :slow do
       let(:filename) { File.expand_path('../made_up_vdr_xml.xml', __FILE__) }
       let(:reader) { Reader.new(spec_config, filename) }
       let(:ssu)          { reader.detect { |rec| rec.class.name =~ /Ssu$/ } }

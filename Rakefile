@@ -10,8 +10,18 @@ $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift File.expand_path('../generated_models', __FILE__)
 require 'ncs_navigator/warehouse'
 
-RSpec::Core::RakeTask.new do |t|
-  t.pattern = "spec/**/*_spec.rb"
+task :spec => 'spec:all'
+
+namespace :spec do
+  RSpec::Core::RakeTask.new(:fast) do |t|
+    t.pattern = "spec/**/*_spec.rb"
+    t.rspec_opts = %q(--format nested --tag ~slow)
+  end
+
+  RSpec::Core::RakeTask.new(:all) do |t|
+    t.pattern = "spec/**/*_spec.rb"
+    t.rspec_opts = %q(--format nested)
+  end
 end
 
 namespace :generate do

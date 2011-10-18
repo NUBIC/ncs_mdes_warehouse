@@ -21,7 +21,7 @@ module NcsNavigator::Warehouse
     end
 
     # Most of the details of the XML are tested on the MdesModel mixin
-    describe 'the generated XML' do
+    describe 'the generated XML', :slow do
       it 'includes the SC from the configuration' do
         xml.xpath('//sc_id').text.should == '2000042'
       end
@@ -53,7 +53,7 @@ module NcsNavigator::Warehouse
       end
     end
 
-    describe 'the generated ZIP file' do
+    describe 'the generated ZIP file', :slow do
       let(:expected_zipfile) { Pathname.new(filename.to_s + '.zip') }
 
       before do
@@ -81,7 +81,7 @@ module NcsNavigator::Warehouse
       end
     end
 
-    describe 'the default filename' do
+    describe 'the default filename', :slow, :use_mdes do
       subject { XmlEmitter.new(spec_config, nil).filename }
 
       before do
