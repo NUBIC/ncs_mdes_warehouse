@@ -10,26 +10,35 @@ module NcsNavigator::Warehouse::Transformers
       end
     end
 
+    let(:configuration) { NcsNavigator::Warehouse::Configuration.new }
+    let(:options) { {} }
+    let(:instance) { cls.new(configuration, options) }
+    let(:cls) { @cls }
+
     describe '#repository_name' do
       it 'defaults to the class name, underscored' do
-        cls = (FooBaz = sample_class)
-        cls.new.repository_name.should == :foo_baz
+        @cls = (FooBaz = sample_class)
+        instance.repository_name.should == :foo_baz
       end
 
       it 'can be overridden at the class level' do
-        cls = sample_class do
+        @cls = sample_class do
           repository :data_goes_here
         end
 
-        cls.new.repository_name.should == :data_goes_here
+        instance.repository_name.should == :data_goes_here
       end
 
       it 'can be overridden at the instance level with the :repository key' do
-        sample_class.new(:repository => :bazQuux).repository_name.should == :bazQuux
+        @cls = sample_class
+        options[:repository] = :bazQuux
+        instance.repository_name.should == :bazQuux
       end
 
       it 'can be overridden at the instance level with the :repository_name key' do
-        sample_class.new(:repository_name => :bazQuux).repository_name.should == :bazQuux
+        @cls = sample_class
+        options[:repository_name] = :bazQuux
+        instance.repository_name.should == :bazQuux
       end
     end
 
@@ -42,17 +51,17 @@ module NcsNavigator::Warehouse::Transformers
         }
 
         it 'uses the values set in the class' do
-          cls.new.connection_parameters['database'].should == 'ncs_sp'
+          instance.connection_parameters['database'].should == 'ncs_sp'
         end
 
         it 'can be overridden at the instance level' do
-          cls.new(:bcdatabase => { :name => 'ncs_staff_portal_test' }).
-            connection_parameters['database'].should == 'ncs_sp_test'
+          options[:bcdatabase] = { :name => 'ncs_staff_portal_test' }
+          instance.connection_parameters['database'].should == 'ncs_sp_test'
         end
 
         it 'defaults the group from the environment' do
           NcsNavigator::Warehouse.env = 'staging'
-          cls.new.bcdatabase[:group].should == :ncsdb_staging
+          instance.bcdatabase[:group].should == :ncsdb_staging
         end
       end
     end
@@ -68,17 +77,17 @@ module NcsNavigator::Warehouse::Transformers
     describe '#repository' do
       include_context 'people_pro'
 
-      let(:enum) do
+      let(:cls) do
         sample_class do
           repository :people_pro
 
           bcdatabase :group => 'test_sqlite', :name => 'people_pro'
-        end.new
+        end
       end
 
       it 'sets up the repository' do
         lambda {
-          enum.repository.adapter.options['path'].should == 'people_pro.sqlite3'
+          instance.repository.adapter.options['path'].should == 'people_pro.sqlite3'
         }.should_not raise_error
       end
     end
@@ -87,7 +96,7 @@ module NcsNavigator::Warehouse::Transformers
       include_context 'people_pro'
 
       describe 'of .produce_records' do
-        let(:enumerator_def) do
+        let(:cls) do
           sample_class do
             bcdatabase :group => 'test_sqlite', :name => 'people_pro'
             repository :people_pro
@@ -105,7 +114,8 @@ module NcsNavigator::Warehouse::Transformers
           end
         end
 
-        let(:enumerator) { enumerator_def.new }
+        let(:enumerator_def) { cls }
+        let(:enumerator) { instance }
 
         before do
           execute_sql(
@@ -157,7 +167,7 @@ module NcsNavigator::Warehouse::Transformers
 
     describe '.create_transformer' do
       let(:enumerator_def) { sample_class }
-      subject { enumerator_def.create_transformer }
+      subject { enumerator_def.create_transformer(configuration) }
 
       it 'creates an EnumTransformer' do
         subject.should be_an EnumTransformer
@@ -168,7 +178,7 @@ module NcsNavigator::Warehouse::Transformers
       end
 
       describe 'with options' do
-        subject { enumerator_def.create_transformer(:repository => :alpha) }
+        subject { enumerator_def.create_transformer(configuration, :repository => :alpha) }
 
         it 'passes the options to the enumerable constructor' do
           subject.enum.repository_name.should == :alpha

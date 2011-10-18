@@ -53,9 +53,10 @@ module NcsNavigator::Warehouse::Transformers
       cls.extend Factory
     end
 
-    def initialize(options={})
+    def initialize(configuration, options={})
       @repository_name = options.delete(:repository) || options.delete(:repository_name)
-      @bcdatabase = (self.class.bcdatabase.merge(options.delete(:bcdatabase) || {}))
+      @bcdatabase = { :group => configuration.bcdatabase_group }.
+        merge((self.class.bcdatabase.merge(options.delete(:bcdatabase) || {})))
     end
 
     ##
@@ -152,7 +153,7 @@ module NcsNavigator::Warehouse::Transformers
       # @return [void]
       def bcdatabase(name_and_group={})
         if name_and_group.empty?
-          @bcdatabase ||= { :group => NcsNavigator::Warehouse.default_bcdatabase_group }
+          @bcdatabase ||= { }
         else
           @bcdatabase = (self.bcdatabase || {}).merge(name_and_group)
         end
@@ -200,8 +201,8 @@ module NcsNavigator::Warehouse::Transformers
       # @return [#transform] a full transformer that uses this
       #   enumerable.
       # @see EnumTransformer
-      def create_transformer(options={})
-        EnumTransformer.new(new(options))
+      def create_transformer(configuration, options={})
+        EnumTransformer.new(new(configuration, options))
       end
     end
   end
