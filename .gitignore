@@ -4,3 +4,4 @@ Gemfile.lock
 docs
 reports
 *.sqlite3
+logs

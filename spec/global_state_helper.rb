@@ -9,9 +9,14 @@ module NcsNavigator::Warehouse::Spec
       NCS_NAVIGATOR_ENV
     )
 
+    PRESERVED_DM_ATTRIBUTES = [
+      :logger
+    ]
+
     def save
       store_wh_attributes
       store_env_variables
+      store_dm_attributes
       store_dm_models
 
       self
@@ -19,6 +24,7 @@ module NcsNavigator::Warehouse::Spec
 
     def restore
       restore_dm_models
+      restore_dm_attributes
       restore_env_variables
       restore_wh_attributes
 
@@ -28,6 +34,7 @@ module NcsNavigator::Warehouse::Spec
     def clear
       clear_wh_attributes
       clear_env_variables
+      clear_dm_attributes
       clear_dm_models
 
       self
@@ -51,6 +58,25 @@ module NcsNavigator::Warehouse::Spec
     def clear_wh_attributes
       PRESERVED_WH_ATTRIBUTES.each do |k|
         NcsNavigator::Warehouse.instance_eval { instance_variable_set k, nil }
+      end
+    end
+
+    def store_dm_attributes
+      @stored_dm_attributes = PRESERVED_DM_ATTRIBUTES.inject({}) do |attrs, k|
+        attrs.merge!(k => DataMapper.send(k))
+      end
+    end
+
+    def restore_dm_attributes
+      return unless @stored_dm_attributes
+      @stored_dm_attributes.each do |k, v|
+        DataMapper.send(:"#{k}=", v)
+      end
+    end
+
+    def clear_dm_attributes
+      PRESERVED_DM_ATTRIBUTES.each do |k|
+        DataMapper.send(:"#{k}=", nil)
       end
     end
 

@@ -45,8 +45,6 @@ module NcsNavigator::Warehouse
     #   configured in.
     # @return [void]
     def set_up_repository(mode=:reporting)
-      ::DataMapper::Logger.new(STDOUT, :debug)
-
       fail "Invalid mode #{mode.inspect}" unless [:reporting, :working, :both].include?(mode)
       modes = case mode
               when :both then [:reporting, :working]

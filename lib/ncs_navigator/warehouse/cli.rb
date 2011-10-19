@@ -23,6 +23,7 @@ module NcsNavigator::Warehouse
               if options.has_key?('quiet')
                 c.output_level = options['quiet'] ? :quiet : :normal
               end
+              c.set_up_logs
             end
           end
       end

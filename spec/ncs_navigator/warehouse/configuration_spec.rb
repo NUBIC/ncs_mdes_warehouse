@@ -151,6 +151,136 @@ module NcsNavigator::Warehouse
       end
     end
 
+    describe '#log_file', :modifies_warehouse_state do
+      before do
+        NcsNavigator::Warehouse.env = 'the_moon'
+      end
+
+      describe 'by default' do
+        it 'is /var/log/ncs/warehouse/{env_name}.log' do
+          config.log_file.to_s.should == '/var/log/ncs/warehouse/the_moon.log'
+        end
+
+        it 'is a Pathname' do
+          config.log_file.should be_a(Pathname)
+        end
+      end
+
+      describe 'when set' do
+        describe 'to a String' do
+          before do
+            config.log_file = '/var/log/foo.log'
+          end
+
+          it 'takes the setting' do
+            config.log_file.to_s.should == '/var/log/foo.log'
+          end
+
+          it 'is converted to a Pathname' do
+            config.log_file.should be_a(Pathname)
+          end
+        end
+
+        describe 'to nil' do
+          before do
+            config.log_file = nil
+          end
+
+          it 'reverts to the default' do
+            config.log_file.to_s.should == '/var/log/ncs/warehouse/the_moon.log'
+          end
+        end
+
+        describe 'to a Pathname' do
+          let(:expected) { Pathname.new('/var/log/bar.log') }
+
+          before do
+            config.log_file = expected
+          end
+
+          it 'is the same Pathname' do
+            config.log_file.should be(expected)
+          end
+        end
+      end
+    end
+
+    describe '#log', :modifies_warehouse_state do
+      before do
+        config.log_file = tmpdir('logs') + 'test.log'
+      end
+
+      it 'sets up the log if not already set up' do
+        config.log.should_not be_nil
+      end
+    end
+
+    describe '#set_up_logs', :modifies_warehouse_state do
+      before do
+        NcsNavigator::Warehouse.env = 'development'
+      end
+
+      describe 'when the log can be written' do
+        let(:file) { tmpdir('logs') + 'test.log' }
+
+        before do
+          config.log_file = file
+          config.set_up_logs
+        end
+
+        it 'logs to a file in the configured directory' do
+          config.log.error('Is this thing on?')
+
+          file.read.should =~ /this thing/
+        end
+
+        it 'sets up the DataMapper log' do
+          ::DataMapper.logger.info('DM did something')
+
+          file.read.should =~ /DM did something/
+        end
+      end
+
+      describe 'when the log cannot be written' do
+        let(:out) { StringIO.new }
+
+        before do
+          @original_stdout, $stdout = $stdout, out
+          config.log_file = '/made/up/does/not/exist.log'
+          config.set_up_logs
+        end
+
+        after do
+          $stdout = @original_stdout
+        end
+
+        it 'warns after setup' do
+          out.string.should =~ %r{WARNING: Could not create or update log /made/up/does/not/exist.log.}
+          out.string.should =~ %r{WARNING: Will log errors and warnings to standard out until this is fixed.}
+        end
+
+        it 'does not emit debug info to standard out' do
+          config.log.debug('Hello?')
+          out.string.should_not =~ /Hello/
+        end
+
+        it 'emits warnings to standard out' do
+          config.log.warn("Don't press the red button")
+          out.string.should =~ /red button/
+        end
+
+        it 'does not emit DataMapper debug messages to standard out' do
+          ::DataMapper.logger.debug("Eleven!")
+          out.string.should_not =~ /Eleven/
+        end
+
+        it 'emits DataMapper warnings to standard out' do
+          ::DataMapper.logger.warn("You'll regret updating that")
+          out.string.should =~ /regret/
+        end
+      end
+    end
+
     describe 'bcdatabase' do
       describe 'group', :modifies_warehouse_state do
         subject { config.bcdatabase_group }

@@ -3,6 +3,7 @@ require 'ncs_navigator/configuration'
 require 'ncs_navigator/mdes'
 
 require 'active_support/core_ext/object/try'
+require 'pathname'
 
 module NcsNavigator::Warehouse
   ##
@@ -255,6 +256,59 @@ module NcsNavigator::Warehouse
         else
           fail "Unexpected output_level #{output_level.inspect}"
         end
+    end
+
+    ####
+    #### Logging
+    ####
+
+    ##
+    # The file to which the warehouse will log its actions.  Defaults
+    # to `/var/log/ncs/warehouse/{env_name}.log`.
+    #
+    # @return [Pathname]
+    def log_file
+      @log_directory ||= Pathname.new("/var/log/ncs/warehouse/#{env}.log")
+    end
+
+    ##
+    # Specify the filename for the warehouse's logs.
+    #
+    # @param [Pathname,String,nil] fn
+    def log_file=(fn)
+      @log_directory =
+        case fn
+        when nil
+          nil
+        when Pathname
+          fn
+        else
+          Pathname.new(fn)
+        end
+    end
+
+    def set_up_logs
+      if log_file.writable? || log_file.parent.writable?
+        @log = Logger.new(log_file).tap do |l|
+          l.level = Logger::DEBUG
+        end
+        ::DataMapper::Logger.new(log_file, :debug, " DM: ", true)
+      else
+        @log = Logger.new($stdout).tap do |l|
+          l.level = Logger::WARN
+        end
+        ::DataMapper::Logger.new($stdout, :warn, " DM: ", true)
+
+        $stdout.puts "WARNING: Could not create or update log #{log_file}."
+        $stdout.puts 'WARNING: Will log errors and warnings to standard out until this is fixed.'
+      end
+    end
+
+    ##
+    # @return [Logger] the primary application log
+    def log
+      set_up_logs unless @log
+      @log
     end
   end
 end
