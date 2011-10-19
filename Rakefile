@@ -34,9 +34,12 @@ namespace :generate do
 end
 
 namespace :ci do
-  ENV["CI_REPORTS"] = "reports/spec-xml"
-
   task :all => :spec
 
-  task :spec => ['ci:setup:rspec', 'rake:spec']
+  task :spec_setup do
+    ENV['CI_REPORTS'] = 'reports/spec-xml'
+    ENV['SPEC_OPTS'] = "#{ENV['SPEC_OPTS']} --format nested"
+  end
+
+  task :spec => [:spec_setup, 'ci:setup:rspecbase', 'rake:spec']
 end
