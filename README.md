@@ -130,3 +130,25 @@ TODO: a more complete verification utility.
 MDES Warehouse provides an executable named `mdes-wh` which has
 several subcommands. To get a list of the commands, use `mdes-wh
 help`.
+
+## Monitoring
+
+The warehouse produces interactive monitoring output on standard error
+for most of its actions. This output can be suppressed using the
+`--quiet` command line option, or by setting `c.output_level = :quiet`
+in the environment config file.
+
+Separately, warehouse actions are more permanently logged in a log
+file. The log file name defaults to
+`/var/log/ncs/warehouse/{env_name}.log` and can be changed in the
+environment configuration file. This log file is never cleaned out
+automatically; consider using [logrotate][] or a similar tool to
+rotate it on a daily or weekly basis.
+
+[logrotate]: http://linuxcommand.org/man_pages/logrotate8.html
+
+If a log can't be written to (e.g., because the directory doesn't
+exist), the warehouse will dump warnings and errors to standard out
+instead. The log file will contain more detail than the messages
+dumped to standard out, so don't rely on this backup behavior in
+production.

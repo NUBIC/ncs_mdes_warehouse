@@ -37,10 +37,10 @@ c.add_transformer Bar.new(configuration)
 # from the same machine.
 #c.navigator_ini = '/etc/nubic/ncs/navigator.ini'
 
-# The logger to use in the warehouse. If none is specified, logging
-# will go to standard out. TODO: may be ruby logger or filename or
-# directory (?). Need to figure out rotation.
-#c.log_file = '/var/log/ncs/warehouse.log'
+# The file to which to log the warehouse's actions. Defaults to
+# '/var/log/ncs/warehouse/{env_name}.log'. See the README for more
+# information about logs.
+#c.log_file = '/var/log/ncs/warehouse/something_else.log'
 
 # Control the terminal output when running interactively.  Options are
 # :normal or :quiet. The default is :normal; it will usually make more
