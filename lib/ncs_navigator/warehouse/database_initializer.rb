@@ -28,7 +28,7 @@ module NcsNavigator::Warehouse
 
     attr_reader :configuration
 
-    def_delegator :@configuration, :shell
+    def_delegators :@configuration, :shell, :log
 
     def initialize(config)
       @configuration = config
@@ -56,6 +56,7 @@ module NcsNavigator::Warehouse
 
     def connect_one(which_one, dm_name=nil)
       dm_name ||= :"mdes_warehouse_#{which_one}"
+      log.info "Connecting DataMapper repository #{dm_name.inspect}"
       adapter = ::DataMapper.setup(dm_name, params(which_one))
     end
     private :connect_one
@@ -78,17 +79,21 @@ module NcsNavigator::Warehouse
     # @return [void]
     def replace_schema
       # TODO: actual logging, too
-      shell.say_line(Benchmark.measure do
-        shell.say_line "Drop everything"
-        ::DataMapper.repository(:mdes_warehouse_working).adapter.
-          execute("DROP OWNED BY #{params(:working)['username']}")
-        shell.say_line "Initialize schema"
-        # In DM 1.2, DataMapper.auto_migrate! only works for the
-        # :default repo
-        configuration.models_module.mdes_order.each do |m|
-          m.auto_migrate!(:mdes_warehouse_working)
-        end
-      end)
+      shell.say "Dropping everything"
+      log.info "Dropping everything in working schema"
+      ::DataMapper.repository(:mdes_warehouse_working).adapter.
+        execute("DROP OWNED BY #{params(:working)['username']}")
+      shell.clear_line_then_say "Dropped everything in working schema.\n"
+
+      shell.say "Loading MDES models..."
+      log.info "Initializing schema for MDES #{configuration.mdes.specification_version}"
+      # In DM 1.2, DataMapper.auto_migrate! only works for the
+      # :default repo
+      configuration.models_module.mdes_order.each do |m|
+        shell.clear_line_then_say "Adding #{m.mdes_table_name}..."
+        m.auto_migrate!(:mdes_warehouse_working)
+      end
+      shell.clear_line_then_say "Added #{configuration.models_module.mdes_order.size} tables.\n"
     end
   end
 end
