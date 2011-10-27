@@ -10,7 +10,12 @@ module NcsNavigator::Warehouse::Transformers
       end
     end
 
-    let(:configuration) { NcsNavigator::Warehouse::Configuration.new }
+    let(:configuration) {
+      NcsNavigator::Warehouse::Configuration.new.tap do |c|
+        c.log_file = tmpdir + 'test.log'
+        c.output_level = :quiet
+      end
+    }
     let(:options) { {} }
     let(:instance) { cls.new(configuration, options) }
     let(:cls) { @cls }

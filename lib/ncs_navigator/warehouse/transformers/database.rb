@@ -1,6 +1,7 @@
 require 'ncs_navigator/warehouse'
 
 require 'active_support/core_ext/string'
+require 'forwardable'
 
 module NcsNavigator::Warehouse::Transformers
   ##
@@ -47,6 +48,9 @@ module NcsNavigator::Warehouse::Transformers
   # @see Database::DSL the DSL
   module Database
     include Enumerable
+    extend Forwardable
+
+    def_delegators :@configuration, :shell, :log
 
     def self.included(cls)
       cls.extend DSL
@@ -54,6 +58,7 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     def initialize(configuration, options={})
+      @configuration = configuration
       @repository_name = options.delete(:repository) || options.delete(:repository_name)
       @bcdatabase = { :group => configuration.bcdatabase_group }.
         merge((self.class.bcdatabase.merge(options.delete(:bcdatabase) || {})))
@@ -98,19 +103,41 @@ module NcsNavigator::Warehouse::Transformers
     # evaluates the instructions defined by the {DSL#produce_records
     # DSL} and streams the results to the provided block.
     #
-    # @param [Array<Symbol>] producers if listed, only execute the
-    #   named producers. Intended for isolated testing of each defined
-    #   producer.
+    # @param [Array<Symbol>] producer_names if listed, only execute
+    #   the named producers. Intended for isolated testing of each
+    #   defined producer.
     #
     # @return [void]
-    def each(*producers)
-      selected_producers(producers).each do |rp|
+    def each(*producer_names)
+      producers = selected_producers(producer_names)
+      producer_name_length = producers.collect { |rp| rp.name.size }.max
+      row_count = 0
+      result_count = 0
+
+      log.info(
+        "Producing records from #{self.class} (#{producers.collect { |p| p.name }.join(', ')})")
+
+      producers.each do |rp|
+        shell.clear_line_then_say(
+          "Producing records from %-#{producer_name_length}s (%-22s)" % [rp.name, 'loading'])
+        log.debug("Executing query for producer #{rp.name}:\n#{rp.query}")
         repository.adapter.select(rp.query).each do |row|
+          row_count += 1
           [*rp.row_processor.call(row)].each do |result|
             yield result
+            result_count += 1
+            shell.back_up_and_say(24, "(%-6d in / %-6d out)" % [row_count, result_count])
           end
+          shell.back_up_and_say(24, "(%-6d in / %-6d out)" % [row_count, result_count])
         end
+        log.debug("Producer #{rp.name} complete")
       end
+      shell.say_line "\nComplete"
+
+      log.info(
+        "Production from #{self.class} complete. " +
+        "#{result_count} MDES record#{'s' if result_count != 1} created from " +
+        "#{row_count} row#{'s' if row_count != 1}.")
 
       nil
     end

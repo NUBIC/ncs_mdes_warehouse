@@ -13,7 +13,7 @@ module NcsNavigator::Warehouse
     attr_reader :configuration
     attr_reader :filename
 
-    def_delegator :@configuration, :shell
+    def_delegators :@configuration, :shell, :log
 
     HEADER_TEMPLATE = ERB.new(<<-XML_ERB)
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -72,6 +72,7 @@ XML
 
     def emit_xml
       shell.say_line("Exporting to #{filename}")
+      log.info("Beginning XML export to #{filename}")
 
       @start = Time.now
       filename.open('w') do |f|
@@ -86,13 +87,16 @@ XML
         f.write FOOTER_TEMPLATE
       end
       @end = Time.now
-      shell.clear_line_then_say(
-        "%d records written in %d seconds (%.1f/sec).\n" % [@record_count, emit_time, emit_rate])
+      msg = "%d records written in %d seconds (%.1f/sec).\n" % [@record_count, emit_time, emit_rate]
+      shell.clear_line_then_say(msg)
+      log.info(msg)
 
       shell.say_line("Zipping to #{zip_filename}")
+      log.info("Zipping to #{zip_filename}")
       Zip::ZipFile.open(zip_filename, Zip::ZipFile::CREATE) do |zf|
         zf.add(filename.basename, filename)
       end
+      log.info("XML export complete")
     end
 
     def zip_filename
