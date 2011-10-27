@@ -110,7 +110,7 @@ module NcsNavigator::Warehouse::Transformers
     # @return [void]
     def each(*producer_names)
       producers = selected_producers(producer_names)
-      producer_name_length = producers.collect { |rp| rp.name.size }.max
+      producer_name_length = producers.collect { |rp| rp.name.to_s.size }.max
       row_count = 0
       result_count = 0
 
