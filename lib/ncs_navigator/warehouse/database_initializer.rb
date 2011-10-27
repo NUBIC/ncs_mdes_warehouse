@@ -78,7 +78,6 @@ module NcsNavigator::Warehouse
     #
     # @return [void]
     def replace_schema
-      # TODO: actual logging, too
       shell.say "Dropping everything"
       log.info "Dropping everything in working schema"
       ::DataMapper.repository(:mdes_warehouse_working).adapter.
