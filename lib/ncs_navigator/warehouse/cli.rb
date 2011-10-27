@@ -9,7 +9,7 @@ module NcsNavigator::Warehouse
     class_option :quiet, :type => :boolean, :aliases => %w(-q),
       :desc => 'Suppress the status messages printed to standard error'
     class_option 'config', :type => :string, :aliases => %w(-c),
-      :desc => 'Supply an alternate configuration file instead of the default /etc/nubic/ncs/warehouse/{env_name}.rb'
+      :desc => "Supply an alternate configuration file instead of the default #{Configuration.environment_file}"
 
     no_tasks {
       def configuration
