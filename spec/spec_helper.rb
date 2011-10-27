@@ -44,6 +44,7 @@ RSpec.configure do |config|
     @spec_config ||= NcsNavigator::Warehouse::Configuration.new.tap do |c|
       c.mdes_version = spec_mdes_version
       c.output_level = :quiet
+      c.log_file = tmpdir + 'spec.log'
     end
   end
 
