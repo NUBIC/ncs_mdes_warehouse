@@ -167,6 +167,15 @@ module NcsNavigator::Warehouse::Transformers
 
           acc.should == %w(A)
         end
+
+        it 'can execute just one producer by calling :to_a' do
+          execute_sql(
+            "INSERT INTO people (id) VALUES ('B')",
+            "INSERT INTO more_people (id) VALUES ('Q')"
+          )
+
+          enumerator.to_a(:people).should == %w(B)
+        end
       end
     end
 
