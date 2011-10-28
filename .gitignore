@@ -5,3 +5,4 @@ docs
 reports
 *.sqlite3
 logs
+pkg
