@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'ncs_mdes', '~> 0.4', '>= 0.4.2'
   s.add_dependency 'ncs_navigator_configuration', '~> 0.1'
 
-  s.add_dependency 'activesupport', '~> 3.0.9'
+  s.add_dependency 'activesupport', '~> 3.0'
   s.add_dependency 'i18n', '~> 0.6' # required by activesupport
 
   s.add_dependency 'thor', '~> 0.14.6'
