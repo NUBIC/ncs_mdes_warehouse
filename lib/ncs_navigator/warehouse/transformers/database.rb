@@ -2,6 +2,7 @@ require 'ncs_navigator/warehouse'
 
 require 'active_support/core_ext/string'
 require 'forwardable'
+require 'data_mapper'
 
 module NcsNavigator::Warehouse::Transformers
   ##
@@ -93,6 +94,7 @@ module NcsNavigator::Warehouse::Transformers
     def repository
       @repository ||=
         begin
+          log.debug("Connecting DM repo #{repository_name.inspect} with #{connection_parameters.merge('password' => 'SUPPRESSED').inspect}")
           ::DataMapper.setup(repository_name, connection_parameters)
           ::DataMapper.repository(repository_name)
         end
