@@ -4,4 +4,5 @@ NCS Navigator MDES Warehouse History
 0.0.1
 -----
 
-- Initial version. Includes models for MDES 2.0 Patch.
+- Initial version. Includes models for MDES 2.0 Patch and most
+  peripheral functionality. Actual ETL still pending.
