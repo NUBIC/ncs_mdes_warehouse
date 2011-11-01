@@ -260,18 +260,20 @@ module NcsNavigator::Warehouse::Transformers
 
       def create_property_values(model, row, options)
         row.members.inject({}) do |pv, column|
-          value = row[column]
-          case
-          when options[:prefix] && model.properties[prop = "#{options[:prefix]}#{column}"]
-            pv[prop] = value
-          when model.properties[column]
-            pv[column] = value
-          when column =~ /_code$/  && (prop = model_property_name(model, column.to_s.sub(/_code$/, ''), options[:prefix]))
-            pv[prop] = value
-          when column =~ /_code$/  && (prop = model_property_name(model, column.to_s.sub(/_code$/, '_id'), options[:prefix]))
-            pv[prop] = value
-          when column =~ /_other$/ && (prop = model_property_name(model, column.to_s.sub(/_other$/, '_oth'), options[:prefix]))
-            pv[prop] = value
+          [
+            [//,        ''],
+            [/_code$/,  ''],
+            [/_code$/,  '_id'],
+            [/_other$/, '_oth'],
+          ].detect do |pattern, substution|
+            if column =~ pattern
+              prop = model_property_name(model,
+                column.to_s.sub(pattern, substution), options[:prefix])
+              if prop
+                pv[prop] = row[column]
+                true
+              end
+            end
           end
           pv
         end.merge(options[:explicit] || {})
