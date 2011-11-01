@@ -213,6 +213,85 @@ module NcsNavigator::Warehouse::Transformers
       def produce_records(name, options={}, &logic)
         record_producers << RecordProducer.new(name, options[:query], logic)
       end
+
+      ##
+      # Performs automatic conversion from a row struct to a
+      # an instance of a particular warehouse model. This conversion
+      # uses several heuristics to apply values from the row to the
+      # model instance. Each column in the row will be converted into
+      # at most one model property value. In the order that they are
+      # applied, the heuristics are:
+      #
+      #   * If there's a `:prefix` option, the column is named {X},
+      #     and there's a property named {prefix}{X}, use that
+      #     property.
+      #   * If the column is named {X} and there's a property named
+      #     {X}, use that property.
+      #   * If the column is named {X}_code and there's a property
+      #     named {X}, use that property.
+      #   * If the column is named {X}_code and there's a property
+      #     named {X}_id, use that property.
+      #   * If the column is named {X}_other and there's a property
+      #     named {X}_oth, use that property.
+      #
+      # Separately, any property value in the instance may be
+      # explicitly set via a hash passed as the `:explicit`
+      # option. Property values in `:explicit` take precedence over
+      # the heuristically-determined values.
+      #
+      # @param [Class] model the warehouse model class (e.g.,
+      #   `NcsNavigator::Warehouse::Models::TwoPointZero::Person`)
+      # @param [Object] row a DataMapper row struct that is the source
+      #   of the data for the instance. (This is the kind of object
+      #   that is yielded to {#produce_records} blocks.)
+      # @param [Hash] options Options controlling the created
+      #   instance.
+      #
+      # @option options :prefix [String] a prefix to use when looking
+      #   for matching property values. (See above.)
+      # @option options :explicit [Hash<Symbol, Object>] explicit
+      #   values to use. Any values in this hash trump the
+      #   heuristically-determined values.
+      #
+      # @return [Object] an instance of `model`.
+      def model_row(model, row, options={})
+        model.new(create_property_values(model, row, options))
+      end
+
+      def create_property_values(model, row, options)
+        row.members.inject({}) do |pv, column|
+          value = row[column]
+          case
+          when options[:prefix] && model.properties[prop = "#{options[:prefix]}#{column}"]
+            pv[prop] = value
+          when model.properties[column]
+            pv[column] = value
+          when column =~ /_code$/  && (prop = model_property_name(model, column.to_s.sub(/_code$/, ''), options[:prefix]))
+            pv[prop] = value
+          when column =~ /_code$/  && (prop = model_property_name(model, column.to_s.sub(/_code$/, '_id'), options[:prefix]))
+            pv[prop] = value
+          when column =~ /_other$/ && (prop = model_property_name(model, column.to_s.sub(/_other$/, '_oth'), options[:prefix]))
+            pv[prop] = value
+          end
+          pv
+        end.merge(options[:explicit] || {})
+      end
+      private :create_property_values
+
+      ##
+      # Determines if the model has a property with the given name,
+      # with or without the prefix.
+      #
+      # @return [String,nil] the name of an existing property on the
+      #   model, either with or without the prefix; or nil.
+      def model_property_name(model, name, prefix)
+        if prefix && model.properties[prop = "#{prefix}#{name}"]
+          prop
+        elsif model.properties[name]
+          name
+        end
+      end
+      private :model_property_name
     end
 
     ##

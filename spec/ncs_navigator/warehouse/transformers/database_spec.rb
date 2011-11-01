@@ -199,5 +199,92 @@ module NcsNavigator::Warehouse::Transformers
         end
       end
     end
+
+    describe Database::DSL do
+      describe '.model_row' do
+        # DataMapper models can't be anonymous
+        module Database::DSL::TestModels
+          class Address
+            include ::DataMapper::Resource
+
+            property   :address_id, String, :key => true
+            property   :street, NcsNavigator::Warehouse::DataMapper::NcsString
+            property   :address_type,
+                       NcsNavigator::Warehouse::DataMapper::NcsString,
+                       { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-5", "-6", "-4"] }
+            property   :address_type_oth,
+                       NcsNavigator::Warehouse::DataMapper::NcsString,
+                       { :pii => :possible, :length => 0..255 }
+          end
+
+          Address.finalize
+        end
+
+        let(:address_model) { Database::DSL::TestModels::Address }
+
+        let(:options) { {} }
+
+        def make_row(contents)
+          Struct.new(*contents.keys).new.tap do |r|
+            contents.each_pair do |c, v|
+              r.send("#{c}=", v)
+            end
+          end
+        end
+
+        def model_row(row)
+          sample_class.model_row(address_model, make_row(row), options)
+        end
+
+        it 'maps a column to the property with the same name' do
+          model_row(:street => '123 Anymain Dr.').street.should == '123 Anymain Dr.'
+        end
+
+        it 'maps a column named {X}_code to a property named {X}' do
+          model_row(:address_type_code => '5').address_type.should == '5'
+        end
+
+        it 'maps a column named {X}_code to a property named {X}_id' do
+          model_row(:address_code => '-7').address_id.should == '-7'
+        end
+
+        it 'maps a column named {X}_other to a property named {X}_oth' do
+          model_row(:address_type_other => 'Elephant graveyard').address_type_oth.
+            should == 'Elephant graveyard'
+        end
+
+        describe 'with a prefix' do
+          before do
+            options[:prefix] = 'address_'
+          end
+
+          it 'maps a column to {prefix}_{property_name}' do
+            model_row(:type => '-4').address_type.should == '-4'
+          end
+
+          it 'still maps a column to {property_name} if there is no prefixed version' do
+            model_row(:street => '123 Anymain Dr.').street.should == '123 Anymain Dr.'
+          end
+
+          it 'maps a column named {X}_code to {prefix}{X}' do
+            model_row(:type_code => '1').address_type.should == '1'
+          end
+        end
+
+        describe 'with explicit mappings' do
+          before do
+            options[:explicit] = {
+              :street => '456 Anywhere St.'
+            }
+          end
+
+          it 'prefers the explicit mapping to a column' do
+            model_row(:street => '123 Anymain Dr.').street.should == '456 Anywhere St.'
+          end
+
+          it 'reports the column as unused'
+        end
+      end
+    end
   end
 end
