@@ -201,7 +201,17 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     describe Database::DSL do
-      describe '.model_row' do
+      describe '#unused_columns' do
+        it 'defaults to :ignore' do
+          sample_class.unused_columns.should == :ignore
+        end
+
+        it 'can be set' do
+          sample_class { unused_columns :fail }.unused_columns.should == :fail
+        end
+      end
+
+      describe '#model_row' do
         # DataMapper models can't be anonymous
         module Database::DSL::TestModels
           class Address
@@ -223,6 +233,7 @@ module NcsNavigator::Warehouse::Transformers
         let(:address_model) { Database::DSL::TestModels::Address }
 
         let(:options) { {} }
+        let(:cls) { sample_class }
 
         def make_row(contents)
           Struct.new(*contents.keys).new.tap do |r|
@@ -233,7 +244,7 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         def model_row(row)
-          sample_class.model_row(address_model, make_row(row), options)
+          cls.model_row(address_model, make_row(row), options)
         end
 
         it 'maps a column to the property with the same name' do
@@ -251,6 +262,48 @@ module NcsNavigator::Warehouse::Transformers
         it 'maps a column named {X}_other to a property named {X}_oth' do
           model_row(:address_type_other => 'Elephant graveyard').address_type_oth.
             should == 'Elephant graveyard'
+        end
+
+        describe 'and unused columns' do
+          it 'fails with unused columns if requested' do
+            options[:unused] = :fail
+            begin
+              model_row(:address_type => '-5', :address_length => '6')
+              fail "Exception not thrown"
+            rescue Database::UnusedColumnsForModelError => e
+              e.unused.should == [:address_length]
+            end
+          end
+
+          it 'does not fail if the unused column is explicitly ignored' do
+            options[:unused] = :fail
+            options[:used] = %w(address_length)
+            lambda { model_row(:address_type => '-5', :address_length => '6') }.
+              should_not raise_error
+          end
+
+          describe 'when #unused_columns is set to :fail' do
+            let(:cls) {
+              sample_class do
+                unused_columns :fail
+              end
+            }
+
+            it 'fails appropriately' do
+              begin
+                model_row(:address_type => '-5', :address_length => '6')
+                fail "Exception not thrown"
+              rescue Database::UnusedColumnsForModelError => e
+                e.unused.should == [:address_length]
+              end
+            end
+
+            it 'does not fail if the global setting is overridden' do
+              options[:unused] = :ignore
+              lambda { model_row(:address_type => '-5', :address_length => '6') }.
+                should_not raise_error
+            end
+          end
         end
 
         describe 'with a prefix' do
@@ -282,7 +335,15 @@ module NcsNavigator::Warehouse::Transformers
             model_row(:street => '123 Anymain Dr.').street.should == '456 Anywhere St.'
           end
 
-          it 'reports the column as unused'
+          it 'reports the column as unused' do
+            options[:unused] = :fail
+            begin
+              model_row(:street => '123 Anymain Dr.').street.should == '456 Anywhere St.'
+              fail "Exception not thrown"
+            rescue Database::UnusedColumnsForModelError => e
+              e.unused.should include(:street)
+            end
+          end
         end
       end
     end

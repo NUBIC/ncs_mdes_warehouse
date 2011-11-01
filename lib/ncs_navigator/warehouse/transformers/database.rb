@@ -176,6 +176,21 @@ module NcsNavigator::Warehouse::Transformers
       end
 
       ##
+      # What to do if are encountered by {#model_row}. Default is
+      # `:ignore` but may be set to `:fail` for all producers using
+      # this method. This may be overridden per {#model_row} call
+      # also.
+      #
+      # @return [:ignore, :fail]
+      def unused_columns(setting=nil)
+        if setting
+          @unused_columns = setting
+        else
+          @unused_columns ||= :ignore
+        end
+      end
+
+      ##
       # Defines the bcdatabase specification to use when connecting to
       # the database for this enumeration.
       #
@@ -252,31 +267,56 @@ module NcsNavigator::Warehouse::Transformers
       # @option options :explicit [Hash<Symbol, Object>] explicit
       #   values to use. Any values in this hash trump the
       #   heuristically-determined values.
+      # @option options :unused [:ignore,:fail] what to do when
+      #   there are columns in the row which are not used.
+      # @option options :used [Array<String,Symbol>] columns to
+      #   consider "used" even if the heuristic doesn't match them to
+      #   anything.
       #
       # @return [Object] an instance of `model`.
       def model_row(model, row, options={})
-        model.new(create_property_values(model, row, options))
+        unused_behavior = options[:unused] || unused_columns
+        pv, unused = create_property_values(model, row, options)
+        if options[:used]
+          unused -= options[:used].collect(&:to_sym)
+        end
+        if unused_behavior == :fail && !unused.empty?
+          raise UnusedColumnsForModelError.new(unused)
+        end
+        model.new(pv)
       end
 
+      ##
+      # Returns a two-member array. The first member is the matched
+      # property values. The second is the columns from the row which
+      # were not matched to anything.
       def create_property_values(model, row, options)
-        row.members.inject({}) do |pv, column|
-          [
+        pv = (options[:explicit] || {}).inject({}) { |h, (k, v)| h[k.to_s] = v; h }
+
+        available_props = model.properties.collect { |p| p.name.to_s }
+        available_props -= pv.keys
+
+        unused = []
+        row.members.each do |column|
+          used = [
             [//,        ''],
             [/_code$/,  ''],
             [/_code$/,  '_id'],
             [/_other$/, '_oth'],
           ].detect do |pattern, substution|
             if column =~ pattern
-              prop = model_property_name(model,
+              prop = prefixed_property_name(available_props,
                 column.to_s.sub(pattern, substution), options[:prefix])
               if prop
+                available_props.delete(prop)
                 pv[prop] = row[column]
                 true
               end
             end
           end
-          pv
-        end.merge(options[:explicit] || {})
+          unused << column.to_sym unless used
+        end
+        [pv.merge(options[:explicit] || {}), unused]
       end
       private :create_property_values
 
@@ -286,14 +326,14 @@ module NcsNavigator::Warehouse::Transformers
       #
       # @return [String,nil] the name of an existing property on the
       #   model, either with or without the prefix; or nil.
-      def model_property_name(model, name, prefix)
-        if prefix && model.properties[prop = "#{prefix}#{name}"]
+      def prefixed_property_name(available_props, name, prefix)
+        if prefix && available_props.include?(prop = "#{prefix}#{name}")
           prop
-        elsif model.properties[name]
+        elsif available_props.include?(name)
           name
         end
       end
-      private :model_property_name
+      private :prefixed_property_name
     end
 
     ##
@@ -313,6 +353,17 @@ module NcsNavigator::Warehouse::Transformers
       # @see EnumTransformer
       def create_transformer(configuration, options={})
         EnumTransformer.new(new(configuration, options))
+      end
+    end
+
+    class UnusedColumnsForModelError < StandardError
+      attr_accessor :unused
+
+      def initialize(unused)
+        super(
+          "#{unused.size} unused column#{'s' unless unused.size == 1} when building model. " +
+          "Use :used => %w(#{unused.join(' ')}) or :unused => :ignore to suppress this error.")
+        @unused = unused
       end
     end
   end
