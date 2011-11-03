@@ -201,13 +201,13 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     describe Database::DSL do
-      describe '#unused_columns' do
+      describe '#on_unused_columns' do
         it 'defaults to :ignore' do
-          sample_class.unused_columns.should == :ignore
+          sample_class.on_unused_columns.should == :ignore
         end
 
         it 'can be set' do
-          sample_class { unused_columns :fail }.unused_columns.should == :fail
+          sample_class { on_unused_columns :fail }.on_unused_columns.should == :fail
         end
       end
 
@@ -266,7 +266,7 @@ module NcsNavigator::Warehouse::Transformers
 
         describe 'and unused columns' do
           it 'fails with unused columns if requested' do
-            options[:unused] = :fail
+            options[:on_unused] = :fail
             begin
               model_row(:address_type => '-5', :address_length => '6')
               fail "Exception not thrown"
@@ -275,17 +275,24 @@ module NcsNavigator::Warehouse::Transformers
             end
           end
 
-          it 'does not fail if the unused column is explicitly ignored' do
-            options[:unused] = :fail
-            options[:used] = %w(address_length)
+          it 'does not fail if the unused column is ignored in the options' do
+            options[:on_unused] = :fail
+            options[:ignored_columns] = %w(address_length)
             lambda { model_row(:address_type => '-5', :address_length => '6') }.
               should_not raise_error
           end
 
-          describe 'when #unused_columns is set to :fail' do
+          it 'does not fail if the unused column is ignored at the class level' do
+            options[:on_unused] = :fail
+            cls.ignored_columns 'address_length'
+            lambda { model_row(:address_type => '-5', :address_length => '6') }.
+              should_not raise_error
+          end
+
+          describe 'when #on_unused_columns is set to :fail' do
             let(:cls) {
               sample_class do
-                unused_columns :fail
+                on_unused_columns :fail
               end
             }
 
@@ -299,7 +306,7 @@ module NcsNavigator::Warehouse::Transformers
             end
 
             it 'does not fail if the global setting is overridden' do
-              options[:unused] = :ignore
+              options[:on_unused] = :ignore
               lambda { model_row(:address_type => '-5', :address_length => '6') }.
                 should_not raise_error
             end
@@ -336,7 +343,7 @@ module NcsNavigator::Warehouse::Transformers
           end
 
           it 'reports the column as unused' do
-            options[:unused] = :fail
+            options[:on_unused] = :fail
             begin
               model_row(:street => '123 Anymain Dr.').street.should == '456 Anywhere St.'
               fail "Exception not thrown"

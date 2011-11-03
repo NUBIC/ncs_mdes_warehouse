@@ -178,15 +178,27 @@ module NcsNavigator::Warehouse::Transformers
       ##
       # What to do if are encountered by {#model_row}. Default is
       # `:ignore` but may be set to `:fail` for all producers using
-      # this method. This may be overridden per {#model_row} call
-      # also.
+      # this method. The value set here may be overridden per
+      # {#model_row} call.
       #
       # @return [:ignore, :fail]
-      def unused_columns(setting=nil)
+      def on_unused_columns(setting=nil)
         if setting
-          @unused_columns = setting
+          @on_unused_columns = setting
         else
-          @unused_columns ||= :ignore
+          @on_unused_columns ||= :ignore
+        end
+      end
+
+      ##
+      # Indicates a set of columns which which should not be checked
+      # for used-ness by {#model_row}, even if the `:unused` option is
+      # set to `:fail`.
+      def ignored_columns(*columns)
+        if columns.empty?
+          @ignored_columns ||= []
+        else
+          @ignored_columns = columns.collect(&:to_sym)
         end
       end
 
@@ -267,19 +279,20 @@ module NcsNavigator::Warehouse::Transformers
       # @option options :explicit [Hash<Symbol, Object>] explicit
       #   values to use. Any values in this hash trump the
       #   heuristically-determined values.
-      # @option options :unused [:ignore,:fail] what to do when
+      # @option options :on_unused [:ignore,:fail] what to do when
       #   there are columns in the row which are not used.
-      # @option options :used [Array<String,Symbol>] columns to
-      #   consider "used" even if the heuristic doesn't match them to
-      #   anything.
+      # @option options :ignored_columns [Array<String,Symbol>]
+      #   columns to consider "used" even if the heuristic doesn't
+      #   match them to anything.
       #
       # @return [Object] an instance of `model`.
       def model_row(model, row, options={})
-        unused_behavior = options[:unused] || unused_columns
+        unused_behavior = options[:on_unused] || on_unused_columns
         pv, unused = create_property_values(model, row, options)
-        if options[:used]
-          unused -= options[:used].collect(&:to_sym)
-        end
+
+        unused -= ignored_columns
+        unused -= options[:ignored_columns].collect(&:to_sym) if options[:ignored_columns]
+
         if unused_behavior == :fail && !unused.empty?
           raise UnusedColumnsForModelError.new(unused)
         end
