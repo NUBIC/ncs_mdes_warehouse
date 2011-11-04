@@ -331,9 +331,30 @@ module NcsNavigator::Warehouse::Transformers
           end
         end
 
-        describe 'with explicit mappings' do
+        describe 'with a column map' do
           before do
-            options[:explicit] = {
+            options[:column_map] = { :street_loc => :street }
+          end
+
+          it 'uses the value specified by the map' do
+            model_row(:street_loc => '123 Anymain Dr.').street.should == '123 Anymain Dr.'
+          end
+
+          it 'prefers the mapped value to a heuristically-determined value' do
+            model_row(
+              :street_loc => '123 Anymain Dr.', :street => '456 Anywhere St.'
+            ).street.should == '123 Anymain Dr.'
+          end
+
+          it 'prefers the mapped column value to an explicit property value' do
+            options[:property_values] = { :street => '456 Anywhere St.' }
+            model_row(:street_loc => '123 Anymain Dr.').street.should == '123 Anymain Dr.'
+          end
+        end
+
+        describe 'with property value mappings' do
+          before do
+            options[:property_values] = {
               :street => '456 Anywhere St.'
             }
           end

@@ -276,9 +276,14 @@ module NcsNavigator::Warehouse::Transformers
       #
       # @option options :prefix [String] a prefix to use when looking
       #   for matching property values. (See above.)
-      # @option options :explicit [Hash<Symbol, Object>] explicit
-      #   values to use. Any values in this hash trump the
-      #   heuristically-determined values.
+      # @option options :column_map [Hash<Symbol, Symbol>] explicit
+      #   mapping from column name to model property name. This
+      #   mapping is consulted before the heuristics are applied and
+      #   before `:property_values` is used.
+      # @option options :property_values [Hash<Symbol, Object>]
+      #   explicit values to use. Keys are model property names and
+      #   values are the desired values. Any values in this hash trump
+      #   the heuristically-determined values.
       # @option options :on_unused [:ignore,:fail] what to do when
       #   there are columns in the row which are not used.
       # @option options :ignored_columns [Array<String,Symbol>]
@@ -304,32 +309,40 @@ module NcsNavigator::Warehouse::Transformers
       # property values. The second is the columns from the row which
       # were not matched to anything.
       def create_property_values(model, row, options)
-        pv = (options[:explicit] || {}).inject({}) { |h, (k, v)| h[k.to_s] = v; h }
+        column_map = (options[:column_map] || {}).inject({}) { |h, (k, v)| h[k.to_s] = v.to_s; h }
+
+        pv = (options[:property_values] || {}).inject({}) { |h, (k, v)| h[k.to_s] = v; h }
+        column_map.values.each { |prop| pv.delete(prop) }
 
         available_props = model.properties.collect { |p| p.name.to_s }
         available_props -= pv.keys
 
         unused = []
         row.members.each do |column|
-          used = [
-            [//,        ''],
-            [/_code$/,  ''],
-            [/_code$/,  '_id'],
-            [/_other$/, '_oth'],
-          ].detect do |pattern, substution|
-            if column =~ pattern
-              prop = prefixed_property_name(available_props,
-                column.to_s.sub(pattern, substution), options[:prefix])
-              if prop
-                available_props.delete(prop)
-                pv[prop] = row[column]
-                true
-              end
+          prop =
+            if column_map[column.to_s]
+              column_map[column.to_s]
+            else
+              [
+                [//,        ''],
+                [/_code$/,  ''],
+                [/_code$/,  '_id'],
+                [/_other$/, '_oth'],
+              ].collect do |pattern, substution|
+                if column =~ pattern
+                  prefixed_property_name(available_props,
+                    column.to_s.sub(pattern, substution), options[:prefix])
+                end
+              end.compact.first
             end
+          if prop
+            available_props.delete(prop)
+            pv[prop] = row[column]
+          else
+            unused << column.to_sym
           end
-          unused << column.to_sym unless used
         end
-        [pv.merge(options[:explicit] || {}), unused]
+        [pv, unused]
       end
       private :create_property_values
 
