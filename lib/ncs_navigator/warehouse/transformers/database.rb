@@ -291,7 +291,7 @@ module NcsNavigator::Warehouse::Transformers
         pv, unused = create_property_values(model, row, options)
 
         unused -= ignored_columns
-        unused -= options[:ignored_columns].collect(&:to_sym) if options[:ignored_columns]
+        unused -= options[:ignored_or_used].collect(&:to_sym) if options[:ignored_or_used]
 
         if unused_behavior == :fail && !unused.empty?
           raise UnusedColumnsForModelError.new(unused)
@@ -375,7 +375,7 @@ module NcsNavigator::Warehouse::Transformers
       def initialize(unused)
         super(
           "#{unused.size} unused column#{'s' unless unused.size == 1} when building model. " +
-          "Use :used => %w(#{unused.join(' ')}) or :unused => :ignore to suppress this error.")
+          "Use :ignored_or_used => %w(#{unused.join(' ')}) or :unused => :ignore to suppress this error.")
         @unused = unused
       end
     end

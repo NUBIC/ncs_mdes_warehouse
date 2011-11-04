@@ -277,7 +277,7 @@ module NcsNavigator::Warehouse::Transformers
 
           it 'does not fail if the unused column is ignored in the options' do
             options[:on_unused] = :fail
-            options[:ignored_columns] = %w(address_length)
+            options[:ignored_or_used] = %w(address_length)
             lambda { model_row(:address_type => '-5', :address_length => '6') }.
               should_not raise_error
           end
