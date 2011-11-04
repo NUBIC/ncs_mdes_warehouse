@@ -2,6 +2,7 @@ require 'ncs_navigator/warehouse'
 require 'ncs_navigator/configuration'
 require 'ncs_navigator/mdes'
 
+require 'data_mapper'
 require 'active_support/core_ext/object/try'
 require 'pathname'
 
