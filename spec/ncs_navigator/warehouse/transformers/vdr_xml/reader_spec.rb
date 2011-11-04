@@ -8,6 +8,7 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       let(:ssu)          { reader.detect { |rec| rec.class.name =~ /Ssu$/ } }
       let(:person)       { reader.detect { |rec| rec.class.name =~ /Person$/ } }
       let(:link_contact) { reader.detect { |rec| rec.class.name =~ /LinkContact$/ } }
+      let(:listing_unit) { reader.detect { |rec| rec.class.name =~ /ListingUnit$/ } }
 
       it 'verifies the PSU matches the configuration'
       it 'verifies the specification version matches the runtime MDES version'
@@ -21,12 +22,16 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
           %w(StudyCenter Psu Ssu ListingUnit Person LinkContact)
       end
 
-      it 'reads attribute values' do
-        ssu.ssu_name.should == 'The unluckiest SSU'
+      it 'reads variable values' do
+        person.first_name.should == 'Josephine'
       end
 
       it 'converts a -3 FK to no assocation' do
         person.new_address_id.should be_nil
+      end
+
+      it 'ignores random attributes' do
+        listing_unit.list_line.should == "-7"
       end
 
       describe 'with a blank variable value' do
@@ -35,7 +40,7 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
         end
 
         it 'leaves another blank value as blank' do
-          person.first_name.should == ''
+          person.last_name.should == ''
         end
       end
     end

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<ncs:recruitment_substudy_transmission_envelope xmlns:ncs="http://www.nationalchildrensstudy.gov">
+<ncs:recruitment_substudy_transmission_envelope xmlns:ncs="http://www.nationalchildrensstudy.gov" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <ncs:transmission_header>
     <sc_id>20000029</sc_id>
     <psu_id>20000030</psu_id>
@@ -32,7 +32,7 @@
       <list_id>100</list_id>
       <ssu_id>13.1</ssu_id>
       <tsu_id>-7</tsu_id>
-      <list_line>-7</list_line>
+      <list_line random_attr='foo'>-7</list_line>
       <list_source>3</list_source>
       <list_comment>NA</list_comment>
       <transaction_type>NA</transaction_type>
@@ -41,7 +41,7 @@
       <psu_id>20000030</psu_id>
       <person_id>74</person_id>
       <prefix>-7</prefix>
-      <first_name></first_name>
+      <first_name>Josephine</first_name>
       <last_name></last_name>
       <middle_name></middle_name>
       <maiden_name></maiden_name>
@@ -70,7 +70,7 @@
       <p_info_date>2011-03-31</p_info_date>
       <p_info_update>2011-03-31</p_info_update>
       <person_comment>NA</person_comment>
-      <transaction_type>NA</transaction_type>
+      <transaction_type xsi:nil="true"/>
     </person>
     <link_contact>
       <psu_id>20000030</psu_id>

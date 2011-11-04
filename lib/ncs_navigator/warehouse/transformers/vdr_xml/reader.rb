@@ -77,8 +77,13 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
           # node is the start tag of a table variable
           var = node.local_name.to_sym
           val = node.inner_xml.strip
-          node.read # skip contents (read as 'var' above)
-          node.read # skip close tag
+          unless node.self_closing?
+            # Skip to closing tag
+            n = node.read
+            until n.node_type == 15
+              n = node.read
+            end
+          end
 
           unless should_filter_out(@current_model_class, var, val)
             @current_parameter_values[var] = val
