@@ -4,6 +4,10 @@ NCS Navigator MDES Warehouse History
 0.0.2
 -----
 
+- Added `model_row` helper in Transformers::Database for
+  heuristic-based semi-automatic mapping of transactional data to
+  warehouse entries.
+
 0.0.1
 -----
 
