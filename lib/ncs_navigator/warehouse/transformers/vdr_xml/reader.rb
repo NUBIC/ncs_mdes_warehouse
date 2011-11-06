@@ -46,8 +46,9 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       @start = Time.now
 
       Nokogiri::XML::Reader(@io).each do |node|
-        # 1 is an open element, 15 is a close
-        next unless [1, 15].include?(node.node_type)
+        element_types = [:TYPE_ELEMENT, :TYPE_END_ELEMENT].
+          collect { |c| Nokogiri::XML::Reader.const_get(c) }
+        next unless element_types.include?(node.node_type)
         encounter_node(node, node.node_type == 1, &block)
       end
 
@@ -77,10 +78,11 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
           # node is the start tag of a table variable
           var = node.local_name.to_sym
           val = node.inner_xml.strip
+
           unless node.self_closing?
             # Skip to closing tag
             n = node.read
-            until n.node_type == 15
+            until n.node_type == Nokogiri::XML::Reader::TYPE_END_ELEMENT
               n = node.read
             end
           end
