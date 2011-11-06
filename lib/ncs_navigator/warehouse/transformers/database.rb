@@ -286,7 +286,7 @@ module NcsNavigator::Warehouse::Transformers
       #   the heuristically-determined values.
       # @option options :on_unused [:ignore,:fail] what to do when
       #   there are columns in the row which are not used.
-      # @option options :ignored_columns [Array<String,Symbol>]
+      # @option options :ignored_columns [Array<[String,Symbol]>]
       #   columns to consider "used" even if the heuristic doesn't
       #   match them to anything.
       #
@@ -296,7 +296,7 @@ module NcsNavigator::Warehouse::Transformers
         pv, unused = create_property_values(model, row, options)
 
         unused -= ignored_columns
-        unused -= options[:ignored_or_used].collect(&:to_sym) if options[:ignored_or_used]
+        unused -= options[:ignored_columns].collect(&:to_sym) if options[:ignored_columns]
 
         if unused_behavior == :fail && !unused.empty?
           raise UnusedColumnsForModelError.new(unused)
