@@ -125,7 +125,7 @@ module NcsNavigator::Warehouse::Transformers
         log.debug("Executing query for producer #{rp.name}:\n#{rp.query}")
         repository.adapter.select(rp.query).each do |row|
           row_count += 1
-          [*rp.row_processor.call(row)].each do |result|
+          [*rp.row_processor.call(row)].compact.each do |result|
             yield result
             result_count += 1
             shell.back_up_and_say(24, "(%-6d in / %-6d out)" % [row_count, result_count])

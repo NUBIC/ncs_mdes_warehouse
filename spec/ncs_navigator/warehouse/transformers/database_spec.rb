@@ -116,6 +116,9 @@ module NcsNavigator::Warehouse::Transformers
                 row.id + 'Y'
               ]
             end
+
+            produce_records :nothing, :query => 'SELECT * FROM people' do |row|
+            end
           end
         end
 
@@ -175,6 +178,14 @@ module NcsNavigator::Warehouse::Transformers
           )
 
           enumerator.to_a(:people).should == %w(B)
+        end
+
+        it 'yields nothing for an producer that returns nil' do
+          execute_sql(
+            "INSERT INTO people (id) VALUES ('A')"
+          )
+
+          enumerator.to_a(:nothing).should == []
         end
       end
     end
