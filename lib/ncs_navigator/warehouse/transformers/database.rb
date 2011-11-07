@@ -388,7 +388,7 @@ module NcsNavigator::Warehouse::Transformers
       def initialize(unused)
         super(
           "#{unused.size} unused column#{'s' unless unused.size == 1} when building model. " +
-          "Use :ignored_or_used => %w(#{unused.join(' ')}) or :unused => :ignore to suppress this error.")
+          "Use :ignored_columns => %w(#{unused.join(' ')}) or :unused => :ignore to suppress this error.")
         @unused = unused
       end
     end
