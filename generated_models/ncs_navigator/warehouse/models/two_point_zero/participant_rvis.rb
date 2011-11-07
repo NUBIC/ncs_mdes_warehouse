@@ -25,7 +25,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :rvis_language_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
-    belongs_to :rvis_person,
+    belongs_to :rvis_person_record,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
                :child_key => [ :rvis_person ], :required => false
     property   :rvis_who_consented,

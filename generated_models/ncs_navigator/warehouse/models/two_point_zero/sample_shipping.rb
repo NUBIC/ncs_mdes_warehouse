@@ -40,7 +40,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :shipment_issues_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
-    belongs_to :staff_id_track,
+    belongs_to :staff_id_track_record,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
                :child_key => [ :staff_id_track ], :required => false
     property   :sample_shipped_by,

@@ -40,7 +40,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :equip_action,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :pii => :possible, :length => 1..2, :set => ["1", "2", "3", "-7", "-4"] }
-    belongs_to :staff_id_reviewer,
+    belongs_to :staff_id_reviewer_record,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
                :child_key => [ :staff_id_reviewer ], :required => false
 

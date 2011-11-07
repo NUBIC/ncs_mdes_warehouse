@@ -34,25 +34,25 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     belongs_to :inc_staff_supervisor,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
                :child_key => [ :inc_staff_supervisor_id ], :required => false
-    belongs_to :inc_recip_is_participant,
+    belongs_to :inc_recip_is_participant_record,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Participant',
                :child_key => [ :inc_recip_is_participant ], :required => false
-    belongs_to :inc_recip_is_du,
+    belongs_to :inc_recip_is_du_record,
                'NcsNavigator::Warehouse::Models::TwoPointZero::DwellingUnit',
                :child_key => [ :inc_recip_is_du ], :required => false
-    belongs_to :inc_recip_is_staff,
+    belongs_to :inc_recip_is_staff_record,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Staff',
                :child_key => [ :inc_recip_is_staff ], :required => false
-    belongs_to :inc_recip_is_family,
+    belongs_to :inc_recip_is_family_record,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
                :child_key => [ :inc_recip_is_family ], :required => false
-    belongs_to :inc_recip_is_acquaintance,
+    belongs_to :inc_recip_is_acquaintance_record,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
                :child_key => [ :inc_recip_is_acquaintance ], :required => false
     property   :inc_recip_is_other,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
-    belongs_to :inc_contact_person,
+    belongs_to :inc_contact_person_record,
                'NcsNavigator::Warehouse::Models::TwoPointZero::Person',
                :child_key => [ :inc_contact_person ], :required => false
     property   :inctype,
