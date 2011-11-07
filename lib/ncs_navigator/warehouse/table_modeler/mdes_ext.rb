@@ -73,6 +73,15 @@ module NcsNavigator
           end
         ].compact
       end
+
+      def wh_reference_name
+        fail 'Does not apply' unless self.table_reference
+        if self.name =~ /_id$/
+          self.name.sub(/_id$/, '')
+        else
+          self.name + '_record'
+        end
+      end
     end
 
     class VariableType

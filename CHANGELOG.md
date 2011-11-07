@@ -4,6 +4,10 @@ NCS Navigator MDES Warehouse History
 0.0.3
 -----
 
+- Correct generated models so that association reference names and
+  foreign key column names do not collide. This was previously
+  possible when an MDES foreign key was not suffixed with "_id".
+
 0.0.2
 -----
 

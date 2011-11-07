@@ -449,8 +449,10 @@ end
         end
       end
 
+      let(:child_variable_name) { 'some_tree_id' }
+
       before do
-        table.variables << NcsNavigator::Mdes::Variable.new('some_tree_id').tap do |v|
+        table.variables << NcsNavigator::Mdes::Variable.new(child_variable_name).tap do |v|
           v.table_reference = parent_table
           v.type = NcsNavigator::Mdes::VariableType.new('foreignKeyRequiredType').tap do |vt|
             vt.base_type = :string
@@ -501,6 +503,18 @@ end
           instance.some_tree = nil
 
           instance.should_not be_valid
+        end
+
+        describe 'when the child key does not have the "_id" suffix' do
+          let(:child_variable_name) { 'some_tree' }
+
+          it 'has an object reference accessor' do
+            model_class.instance_methods.collect(&:to_s).should include('some_tree_record')
+          end
+
+          it 'does not have a suffixed ID attribute' do
+            model_class.instance_methods.collect(&:to_s).should_not include('some_tree_id')
+          end
         end
       end
     end
