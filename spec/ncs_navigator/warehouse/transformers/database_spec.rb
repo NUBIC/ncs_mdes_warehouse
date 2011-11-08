@@ -222,7 +222,7 @@ module NcsNavigator::Warehouse::Transformers
         end
       end
 
-      describe '#model_row' do
+      describe '#produce_one_for_one' do
         # DataMapper models can't be anonymous
         module Database::DSL::TestModels
           class Address
@@ -245,6 +245,7 @@ module NcsNavigator::Warehouse::Transformers
 
         let(:options) { {} }
         let(:cls) { sample_class }
+        let(:producer) { cls.record_producers.first }
 
         def make_row(contents)
           Struct.new(*contents.keys).new.tap do |r|
@@ -255,7 +256,8 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         def model_row(row)
-          cls.model_row(address_model, make_row(row), options)
+          cls.produce_one_for_one(:addresses, address_model, options)
+          producer.row_processor.call(make_row(row))
         end
 
         it 'maps a column to the property with the same name' do
@@ -282,7 +284,7 @@ module NcsNavigator::Warehouse::Transformers
               model_row(:address_type => '-5', :address_length => '6')
               fail "Exception not thrown"
             rescue Database::UnusedColumnsForModelError => e
-              e.unused.should == [:address_length]
+              e.unused.should == ['address_length']
             end
           end
 
@@ -312,7 +314,7 @@ module NcsNavigator::Warehouse::Transformers
                 model_row(:address_type => '-5', :address_length => '6')
                 fail "Exception not thrown"
               rescue Database::UnusedColumnsForModelError => e
-                e.unused.should == [:address_length]
+                e.unused.should == %w(address_length)
               end
             end
 
@@ -357,14 +359,15 @@ module NcsNavigator::Warehouse::Transformers
             ).street.should == '123 Anymain Dr.'
           end
 
-          it 'prefers the mapped column value to an explicit property value' do
-            options[:property_values] = { :street => '456 Anywhere St.' }
-            model_row(:street_loc => '123 Anymain Dr.').street.should == '123 Anymain Dr.'
+          it 'does not include the default mapping in the total map' do
+            cls.produce_one_for_one(:addresses, address_model, options)
+            producer.column_map(%w(street street_loc)).keys.should == %w(street_loc)
           end
         end
 
         describe 'with property value mappings' do
           before do
+            pending 'Is this needed?'
             options[:property_values] = {
               :street => '456 Anywhere St.'
             }

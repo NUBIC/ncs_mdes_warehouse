@@ -8,6 +8,12 @@ NCS Navigator MDES Warehouse History
   foreign key column names do not collide. This was previously
   possible when an MDES foreign key was not suffixed with "_id".
 
+- Replace `model_row` helper in `Transformers::Database` with its own
+  top-level production method, `produce_one_for_one`. The options and
+  behavior are mostly the same as `model_row`, but this refactoring
+  allows the results of the column mapping heuristic to be exposed to
+  assist in writing DRYer importers.
+
 0.0.2
 -----
 

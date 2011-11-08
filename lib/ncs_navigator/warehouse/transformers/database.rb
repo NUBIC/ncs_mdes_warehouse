@@ -198,7 +198,7 @@ module NcsNavigator::Warehouse::Transformers
         if columns.empty?
           @ignored_columns ||= []
         else
-          @ignored_columns = columns.collect(&:to_sym)
+          @ignored_columns = columns.collect(&:to_s)
         end
       end
 
@@ -242,116 +242,132 @@ module NcsNavigator::Warehouse::Transformers
       end
 
       ##
-      # Performs automatic conversion from a row struct to a
-      # an instance of a particular warehouse model. This conversion
-      # uses several heuristics to apply values from the row to the
-      # model instance. Each column in the row will be converted into
-      # at most one model property value. In the order that they are
-      # applied, the heuristics are:
+      # Define a translation from the results of a query into exactly
+      # one warehouse record per result row. This method, while more
+      # restrictive than {#produce_records}, allows for rapidly
+      # mapping data which is already a close match for MDES records.
       #
+      # The mapping uses a series of heuristics to map from the
+      # columns in each query result row to at most one MDES variable
+      # from the specified model.
+      #
+      #   * If the column appears as a key in the `:column_map` hash,
+      #     use the associated value as the target variable name.
       #   * If there's a `:prefix` option, the column is named {X},
-      #     and there's a property named {prefix}{X}, use that
-      #     property.
-      #   * If the column is named {X} and there's a property named
-      #     {X}, use that property.
-      #   * If the column is named {X}_code and there's a property
-      #     named {X}, use that property.
-      #   * If the column is named {X}_code and there's a property
-      #     named {X}_id, use that property.
+      #     and there's a variable named {prefix}{X}, use that
+      #     variable.
+      #   * If the column is named {X} and there's a variable named
+      #     {X}, use that variable.
+      #   * If the column is named {X}_code and there's a variable
+      #     named {X}, use that variable.
+      #   * If the column is named {X}_code and there's a variable
+      #     named {X}_id, use that variable.
       #   * If the column is named {X}_other and there's a property
-      #     named {X}_oth, use that property.
+      #     named {X}_oth, use that variable.
       #
-      # Separately, any property value in the instance may be
-      # explicitly set via a hash passed as the `:explicit`
-      # option. Property values in `:explicit` take precedence over
-      # the heuristically-determined values.
-      #
-      # @param [Class] model the warehouse model class (e.g.,
-      #   `NcsNavigator::Warehouse::Models::TwoPointZero::Person`)
-      # @param [Object] row a DataMapper row struct that is the source
-      #   of the data for the instance. (This is the kind of object
-      #   that is yielded to {#produce_records} blocks.)
-      # @param [Hash] options Options controlling the created
-      #   instance.
+      # @param [Symbol] name the name of this producer; if you don't
+      #   specify a `:query`, the default is to return every row from
+      #   the application table with this name.
+      # @param [Class] model the warehouse model to which results of
+      #   the query will be mapped.
+      # @param [Hash] options
+      # @option options :query [String] the query to execute for this
+      #   producer. If not specified, the query is `"SELECT * FROM #{name}"`.
       #
       # @option options :prefix [String] a prefix to use when looking
       #   for matching property values. (See above.)
       # @option options :column_map [Hash<Symbol, Symbol>] explicit
-      #   mapping from column name to model property name. This
-      #   mapping is consulted before the heuristics are applied and
-      #   before `:property_values` is used.
-      # @option options :property_values [Hash<Symbol, Object>]
-      #   explicit values to use. Keys are model property names and
-      #   values are the desired values. Any values in this hash trump
-      #   the heuristically-determined values.
+      #   mapping from column name to MDES variable name. This
+      #   mapping is consulted before the heuristics are applied.
       # @option options :on_unused [:ignore,:fail] what to do when
       #   there are columns in the row which are not used.
       # @option options :ignored_columns [Array<[String,Symbol]>]
-      #   columns to consider "used" even if the heuristic doesn't
-      #   match them to anything.
+      #   columns to consider "used" even if the heuristic or the
+      #   column map don't match them to anything.
       #
-      # @return [Object] an instance of `model`.
-      def model_row(model, row, options={})
-        unused_behavior = options[:on_unused] || on_unused_columns
-        pv, unused = create_property_values(model, row, options)
+      # @return [void]
+      def produce_one_for_one(name, model, options={})
+        options[:on_unused] ||= on_unused_columns
+        options[:column_map] =
+          (options[:column_map] || {}).inject({}) { |h, (k, v)| h[k.to_s] = v.to_s; h }
+        options[:ignored_columns] =
+          (options[:ignored_columns] || []).collect(&:to_s) + ignored_columns
 
-        unused -= ignored_columns
-        unused -= options[:ignored_columns].collect(&:to_sym) if options[:ignored_columns]
+        record_producers << OneForOneProducer.new(name, options.delete(:query), model, options)
+      end
+    end
 
-        if unused_behavior == :fail && !unused.empty?
-          raise UnusedColumnsForModelError.new(unused)
-        end
-        model.new(pv)
+    ##
+    # The class ecapsulating one call to {DSL#produce_records}
+    class RecordProducer < Struct.new(:name, :query, :row_processor)
+      def query
+        super || "SELECT * FROM #{name}"
+      end
+    end
+
+    ##
+    # The class encapsulating one call to {DSL#produce_one_for_one}
+    class OneForOneProducer < RecordProducer
+      attr_reader :model, :options
+
+      def initialize(name, query, model, options)
+        super(name, query, self)
+        @model = model
+        @options = options
       end
 
       ##
-      # Returns a two-member array. The first member is the matched
-      # property values. The second is the columns from the row which
-      # were not matched to anything.
-      def create_property_values(model, row, options)
-        column_map = (options[:column_map] || {}).inject({}) { |h, (k, v)| h[k.to_s] = v.to_s; h }
+      # Produces a single instance of {#model} using the values in the
+      # row as mapped by {#column_map}.
+      def convert_row(row)
+        col_map = column_map(row.members)
+        unused = row.members.collect(&:to_s) - col_map.keys - options[:ignored_columns]
 
-        pv = (options[:property_values] || {}).inject({}) { |h, (k, v)| h[k.to_s] = v; h }
-        column_map.values.each { |prop| pv.delete(prop) }
+        if options[:on_unused] == :fail && !unused.empty?
+          raise UnusedColumnsForModelError.new(unused)
+        end
+        model.new(
+          col_map.inject({}) { |pv, (col_name, var_name)| pv[var_name] = row[col_name]; pv }
+        )
+      end
+      alias :call :convert_row
 
+      ##
+      # @param [Array<String>] column_names
+      # @return [Hash<String, String>] a mapping from the given
+      #   column names to MDES variable names for the configured
+      #   model. This mapping reflects both the configured explicit
+      #   mapping and the heuristic.
+      def column_map(column_names)
         available_props = model.properties.collect { |p| p.name.to_s }
-        available_props -= pv.keys
+        available_props -= options[:column_map].values
 
-        unused = []
-        row.members.each do |column|
+        column_names.inject({}) do |map, column|
+          column = column.to_s
           prop =
-            if column_map[column.to_s]
-              column_map[column.to_s]
+            if options[:column_map][column]
+              options[:column_map][column]
             else
               [
                 [//,        ''],
                 [/_code$/,  ''],
                 [/_code$/,  '_id'],
                 [/_other$/, '_oth'],
-              ].collect do |pattern, substution|
+              ].collect do |pattern, substitution|
                 if column =~ pattern
                   prefixed_property_name(available_props,
-                    column.to_s.sub(pattern, substution), options[:prefix])
+                    column.sub(pattern, substitution), options[:prefix])
                 end
               end.compact.first
             end
           if prop
             available_props.delete(prop)
-            pv[prop] = row[column]
-          else
-            unused << column.to_sym
+            map[column] = prop
           end
+          map
         end
-        [pv, unused]
       end
-      private :create_property_values
 
-      ##
-      # Determines if the model has a property with the given name,
-      # with or without the prefix.
-      #
-      # @return [String,nil] the name of an existing property on the
-      #   model, either with or without the prefix; or nil.
       def prefixed_property_name(available_props, name, prefix)
         if prefix && available_props.include?(prop = "#{prefix}#{name}")
           prop
@@ -360,14 +376,6 @@ module NcsNavigator::Warehouse::Transformers
         end
       end
       private :prefixed_property_name
-    end
-
-    ##
-    # @private
-    class RecordProducer < Struct.new(:name, :query, :row_processor)
-      def query
-        super || "SELECT * FROM #{name}"
-      end
     end
 
     ##
@@ -388,7 +396,7 @@ module NcsNavigator::Warehouse::Transformers
       def initialize(unused)
         super(
           "#{unused.size} unused column#{'s' unless unused.size == 1} when building model. " +
-          "Use :ignored_columns => %w(#{unused.join(' ')}) or :unused => :ignore to suppress this error.")
+          "Use :ignored_columns => %w(#{unused.join(' ')}) or :on_unused => :ignore to suppress this error.")
         @unused = unused
       end
     end
