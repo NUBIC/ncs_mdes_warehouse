@@ -364,29 +364,6 @@ module NcsNavigator::Warehouse::Transformers
             producer.column_map(%w(street street_loc)).keys.should == %w(street_loc)
           end
         end
-
-        describe 'with property value mappings' do
-          before do
-            pending 'Is this needed?'
-            options[:property_values] = {
-              :street => '456 Anywhere St.'
-            }
-          end
-
-          it 'prefers the explicit mapping to a column' do
-            model_row(:street => '123 Anymain Dr.').street.should == '456 Anywhere St.'
-          end
-
-          it 'reports the column as unused' do
-            options[:on_unused] = :fail
-            begin
-              model_row(:street => '123 Anymain Dr.').street.should == '456 Anywhere St.'
-              fail "Exception not thrown"
-            rescue Database::UnusedColumnsForModelError => e
-              e.unused.should include(:street)
-            end
-          end
-        end
       end
     end
   end
