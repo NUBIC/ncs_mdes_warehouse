@@ -363,6 +363,11 @@ module NcsNavigator::Warehouse::Transformers
             cls.produce_one_for_one(:addresses, address_model, options)
             producer.column_map(%w(street street_loc)).keys.should == %w(street_loc)
           end
+
+          it 'always includes explicit mapping values in the total map' do
+            cls.produce_one_for_one(:addresses, address_model, options)
+            producer.column_map(%w(street)).keys.should == %w(street_loc)
+          end
         end
       end
     end

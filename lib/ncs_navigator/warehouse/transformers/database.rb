@@ -342,12 +342,10 @@ module NcsNavigator::Warehouse::Transformers
         available_props = model.properties.collect { |p| p.name.to_s }
         available_props -= options[:column_map].values
 
-        column_names.inject({}) do |map, column|
+        column_names.inject(options[:column_map].dup) do |map, column|
           column = column.to_s
           prop =
-            if options[:column_map][column]
-              options[:column_map][column]
-            else
+            unless options[:column_map][column]
               [
                 [//,        ''],
                 [/_code$/,  ''],
