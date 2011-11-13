@@ -94,6 +94,58 @@ module NcsNavigator::Warehouse
       end
       shell.clear_line_then_say "Added #{configuration.models_module.mdes_order.size} tables.\n"
     end
+
+    ##
+    # Replaces the reporting database with a clone of the working
+    # database. This method relies on the command line `pg_dump` and
+    # `pg_restore` commands.
+    #
+    # @see Configuration#pg_bin_path
+    def clone_working_to_reporting
+      PostgreSQL::Pgpass.new.tap do |pgpass|
+        pgpass.update params(:working)
+        pgpass.update params(:reporting)
+      end
+
+      dump_cmd = [
+        configuration.pg_bin('pg_dump'),
+        pg_params(params(:working)),
+        '--format=custom',
+        params(:working)['database']
+      ].flatten
+
+      restore_cmd = [
+        configuration.pg_bin('pg_restore'),
+        pg_params(params(:reporting)),
+        '--clean',
+        '--dbname', params(:reporting)['database']
+      ].flatten
+
+      command = "#{escape_cmd dump_cmd} | #{escape_cmd restore_cmd}"
+      log.info('Cloning working schema into reporting schema')
+      log.debug("Clone command: #{command.inspect}")
+      system(command)
+    end
+
+    def pg_params(p)
+      [
+        pg_param(p, 'host'),
+        pg_param(p, 'port'),
+        pg_param(p, 'username'),
+        '-w'
+      ].compact.flatten
+    end
+    private :pg_params
+
+    def pg_param(p, param_name)
+      ["--#{param_name}", p[param_name]] if p[param_name]
+    end
+    private :pg_param
+
+    def escape_cmd(parts)
+      parts.collect { |p| "'#{p}'" }.join(' ')
+    end
+    private :escape_cmd
   end
 end
 

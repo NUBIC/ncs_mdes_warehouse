@@ -40,6 +40,12 @@ module NcsNavigator::Warehouse
       db.replace_schema
     end
 
+    desc 'clone-working', 'Copies the contents of the working database to the reporting database'
+    def clone_working
+      db = DatabaseInitializer.new(configuration)
+      db.clone_working_to_reporting
+    end
+
     desc 'emit-xml [FILENAME]', 'Generates the VDR submission XML'
     long_desc <<-DESC
 Generates and zips the vanguard data repository submission XML from

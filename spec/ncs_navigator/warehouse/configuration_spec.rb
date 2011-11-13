@@ -328,6 +328,48 @@ module NcsNavigator::Warehouse
       end
     end
 
+    describe '#pg_bin_path' do
+      it 'defaults to nil' do
+        config.pg_bin_path.should be_nil
+      end
+
+      describe 'when set' do
+        before do
+          config.pg_bin_path = '/Library/PostgreSQL/9.0/bin'
+        end
+
+        it 'is retrievable' do
+          config.pg_bin_path.to_s.should == '/Library/PostgreSQL/9.0/bin'
+        end
+
+        it 'becomes a Pathname' do
+          config.pg_bin_path.should be_a Pathname
+        end
+      end
+    end
+
+    describe '#pg_bin' do
+      describe 'with no path' do
+        before do
+          config.pg_bin_path = nil
+        end
+
+        it 'prepends nothing' do
+          config.pg_bin('pg_dumpall').to_s.should == 'pg_dumpall'
+        end
+      end
+
+      describe 'with a path' do
+        before do
+          config.pg_bin_path = '/home/me/bin'
+        end
+
+        it 'prepends the path' do
+          config.pg_bin('pg_dumpall').to_s.should == '/home/me/bin/pg_dumpall'
+        end
+      end
+    end
+
     describe '.from_file' do
       let(:filename) { tmpdir + 'test.rb' }
       subject { Configuration.from_file(filename) }

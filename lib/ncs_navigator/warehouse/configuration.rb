@@ -277,15 +277,7 @@ module NcsNavigator::Warehouse
     #
     # @param [Pathname,String,nil] fn
     def log_file=(fn)
-      @log_directory =
-        case fn
-        when nil
-          nil
-        when Pathname
-          fn
-        else
-          Pathname.new(fn)
-        end
+      @log_directory = coerce_to_pathname(fn)
     end
 
     def set_up_logs
@@ -310,6 +302,53 @@ module NcsNavigator::Warehouse
     def log
       set_up_logs unless @log
       @log
+    end
+
+    ####
+    #### pg_bin
+    ####
+
+    ##
+    # The path where the PostgreSQL command line utilities can be
+    # found. If they are on the search path, this may be `nil` (the
+    # default).
+    #
+    # @return [Pathname, nil]
+    attr_reader :pg_bin_path
+
+    ##
+    # Specify the path where the PostgreSQL command line utilities can
+    # be found.
+    #
+    # @param [Pathname,String,nil] fn
+    # @return [void]
+    def pg_bin_path=(fn)
+      @pg_bin_path = coerce_to_pathname(fn)
+    end
+
+    ##
+    # @return [Pathname] the executable for the given PostgreSQL
+    #   utility.
+    # @param [Pathname, String] command the name of the command
+    def pg_bin(command)
+      if pg_bin_path
+        pg_bin_path + command
+      else
+        coerce_to_pathname command
+      end
+    end
+
+    private
+
+    def coerce_to_pathname(value)
+      case value
+      when nil
+        nil
+      when Pathname
+        value
+      else
+        Pathname.new(value)
+      end
     end
   end
 end
