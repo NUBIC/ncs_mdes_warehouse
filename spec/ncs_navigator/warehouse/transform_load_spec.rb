@@ -9,6 +9,7 @@ module NcsNavigator::Warehouse
       Configuration.new.tap do |c|
         c.bcdatabase_group = :test_sqlite
         c.log_file = tmpdir + "#{File.basename(__FILE__)}.log"
+        c.output_level = :quiet
       end
     end
 
@@ -17,8 +18,8 @@ module NcsNavigator::Warehouse
       DatabaseInitializer.new(base_config).tap do |dbi|
         dbi.set_up_repository(:both)
       end
-      TransformError.auto_migrate!(:default)
-      TransformStatus.auto_migrate!(:default)
+      TransformError.auto_migrate!(:mdes_warehouse_working)
+      TransformStatus.auto_migrate!(:mdes_warehouse_working)
     end
 
     describe '#run' do
@@ -74,6 +75,11 @@ module NcsNavigator::Warehouse
 
           status.start_time.hour.should == 8
           status.end_time.hour.should == 9
+        end
+
+        it 'sets the position' do
+          loader.run
+          status.position.should == 0
         end
       end
 

@@ -9,7 +9,7 @@ module NcsNavigator::Warehouse::Transformers
       # @return [#transform] a transformer that loads the MDES data in
       #   the specified VDR XML file.
       def from_file(config, filename) # <- TODO better solution
-        EnumTransformer.new(Reader.new(config, filename))
+        EnumTransformer.new(config, Reader.new(config, filename))
       end
 
       ##

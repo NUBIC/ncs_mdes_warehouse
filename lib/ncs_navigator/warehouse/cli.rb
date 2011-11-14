@@ -75,6 +75,11 @@ DESC
       success = TransformLoad.new(configuration).run
       if success || options['force']
         db.clone_working_to_reporting
+      else
+        configuration.shell.say_line "There were errors during ETL. Reporting database not updated."
+        configuration.shell.say_line "See the log and the database table wh_transform_error for more details."
+
+        exit 1
       end
     end
   end

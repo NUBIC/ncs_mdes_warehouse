@@ -57,6 +57,8 @@ module NcsNavigator::Warehouse
     def connect_one(which_one, dm_name=nil)
       dm_name ||= :"mdes_warehouse_#{which_one}"
       log.info "Connecting DataMapper repository #{dm_name.inspect}"
+      p = params(which_one)
+      log.debug "  using #{p.merge('password' => 'SUPPRESSED').inspect}"
       adapter = ::DataMapper.setup(dm_name, params(which_one))
     end
     private :connect_one

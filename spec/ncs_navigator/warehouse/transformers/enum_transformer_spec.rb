@@ -14,13 +14,14 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     describe '#transform' do
+      let(:config) { NcsNavigator::Warehouse::Configuration.new }
       let(:records) { [
           Sample.new(:id => 1, :name => 'One'),
           Sample.new(:id => 2, :name => 'Two'),
           Sample.new(:id => 3, :name => 'Three')
         ] }
       let(:transform_status) { NcsNavigator::Warehouse::TransformStatus.memory_only('test') }
-      subject { EnumTransformer.new(records) }
+      subject { EnumTransformer.new(config, records) }
 
       it 'saves valid records when all are valid' do
         records.each do |m|
@@ -86,7 +87,8 @@ module NcsNavigator::Warehouse::Transformers
         it 'records the failing instance' do
           err = transform_status.transform_errors.first
           err.model_class.should == Sample.to_s
-          err.message.should == 'Error on save. RuntimeError: No database around these parts. Sample id=1.'
+          err.message.should ==
+            'Error on save. RuntimeError: No database around these parts. Sample id=1.'
         end
 
         it 'saves the saveable instances' do

@@ -31,6 +31,7 @@ module NcsNavigator::Warehouse
     property :start_time,   DateTime
     property :end_time,     DateTime
     property :record_count, Integer, :default => 0
+    property :position,     Integer
 
     has n, :transform_errors, 'NcsNavigator::Warehouse::TransformError'
 
