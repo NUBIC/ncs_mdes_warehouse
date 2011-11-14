@@ -68,8 +68,8 @@ module NcsNavigator::Warehouse
         end
 
         it 'sets the start and end times' do
-          Time.should_receive(:now).and_return(Time.new(2001, 1, 12, 8, 0, 0))
-          Time.stub!(:now).and_return(Time.new(2001, 1, 12, 9, 6, 30))
+          Time.should_receive(:now).and_return(Time.iso8601('2001-01-12T08:00:00'))
+          Time.stub!(:now).and_return(Time.iso8601('2001-01-12T09:06:30'))
 
           loader.run
 
