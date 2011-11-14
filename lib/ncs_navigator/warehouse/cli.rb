@@ -58,6 +58,25 @@ DESC
 
       XmlEmitter.new(configuration, filename).emit_xml
     end
+
+    desc 'etl', 'Performs the full extract-transform-load process for this configuration'
+    long_desc <<-DESC
+Clears the working schema and repopulates it with the results of running
+the all the configured transforms. If the transforms are successful, the
+reporting schema is wiped and replaced with the results.
+DESC
+    method_option 'force', :type => 'boolean',
+      :desc => 'Copy the working schema to production even if there are errors'
+    def etl
+      db = DatabaseInitializer.new(configuration)
+      db.set_up_repository(:both)
+      db.replace_schema
+
+      success = TransformLoad.new(configuration).run
+      if success || options['force']
+        db.clone_working_to_reporting
+      end
+    end
   end
 end
 

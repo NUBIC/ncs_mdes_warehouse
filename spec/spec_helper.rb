@@ -70,7 +70,7 @@ RSpec.configure do |config|
 
   # @return [Pathname] the path to an existing temporary director
   def tmpdir(*path)
-    @tmpdir ||= Pathname.new(File.expand_path('../../tmp', __FILE__)).
+    @tmpdir = Pathname.new(File.expand_path('../../tmp', __FILE__)).
       tap { |p| p.mkpath }
     if path.empty?
       @tmpdir

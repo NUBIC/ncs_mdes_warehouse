@@ -9,13 +9,17 @@ module NcsNavigator::Warehouse::Transformers
       property :name, String, :required => true
     end
 
+    before(:all) do
+      DataMapper.finalize
+    end
+
     describe '#transform' do
       let(:records) { [
           Sample.new(:id => 1, :name => 'One'),
           Sample.new(:id => 2, :name => 'Two'),
           Sample.new(:id => 3, :name => 'Three')
         ] }
-      let(:transform_status) { TransformStatus.new('test') }
+      let(:transform_status) { NcsNavigator::Warehouse::TransformStatus.memory_only('test') }
       subject { EnumTransformer.new(records) }
 
       it 'saves valid records when all are valid' do
@@ -25,7 +29,7 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         subject.transform(transform_status)
-        transform_status.errors.should be_empty
+        transform_status.transform_errors.should be_empty
       end
 
       it 'automatically sets the PSU ID if the object accepts it'
@@ -40,8 +44,8 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         it 'records the invalid instance' do
-          err = transform_status.errors.first
-          err.model_class.should == Sample
+          err = transform_status.transform_errors.first
+          err.model_class.should == Sample.to_s
           err.message.should == 'Invalid record. Name must not be blank (name=nil). Sample id=3.'
         end
 
@@ -60,8 +64,8 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         it 'records the unsaveable instance' do
-          err = transform_status.errors.first
-          err.model_class.should == Sample
+          err = transform_status.transform_errors.first
+          err.model_class.should == Sample.to_s
           err.message.should == 'Could not save. Sample id=2.'
         end
 
@@ -80,8 +84,8 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         it 'records the failing instance' do
-          err = transform_status.errors.first
-          err.model_class.should == Sample
+          err = transform_status.transform_errors.first
+          err.model_class.should == Sample.to_s
           err.message.should == 'Error on save. RuntimeError: No database around these parts. Sample id=1.'
         end
 

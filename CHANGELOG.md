@@ -1,8 +1,11 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
-0.0.3
+0.1.0
 -----
+
+- Implement actual ETL runner. It's accessible via the `etl`
+  subcommand of the `mdes-wh` executable.
 
 - Correct generated models so that association reference names and
   foreign key column names do not collide. This was previously

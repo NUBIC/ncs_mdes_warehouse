@@ -88,11 +88,12 @@ module NcsNavigator::Warehouse
       log.info "Initializing schema for MDES #{configuration.mdes.specification_version}"
       # In DM 1.2, DataMapper.auto_migrate! only works for the
       # :default repo
-      configuration.models_module.mdes_order.each do |m|
-        shell.clear_line_then_say "Adding #{m.mdes_table_name}..."
+      ::DataMapper::Model.descendants.each do |m|
+        shell.clear_line_then_say "Adding #{m.storage_name(:mdes_warehouse_working)}..."
         m.auto_migrate!(:mdes_warehouse_working)
       end
-      shell.clear_line_then_say "Added #{configuration.models_module.mdes_order.size} tables.\n"
+      shell.clear_line_then_say(
+        "Added #{configuration.models_module.mdes_order.size} MDES tables.\n")
     end
 
     ##
