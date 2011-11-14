@@ -120,6 +120,7 @@ module NcsNavigator::Warehouse
       restore_cmd = [
         configuration.pg_bin('pg_restore'),
         pg_params(params(:reporting)),
+        '--schema', 'public',
         '--clean',
         '--dbname', params(:reporting)['database']
       ].flatten
@@ -127,7 +128,10 @@ module NcsNavigator::Warehouse
       command = "#{escape_cmd dump_cmd} | #{escape_cmd restore_cmd}"
       log.info('Cloning working schema into reporting schema')
       log.debug("Clone command: #{command.inspect}")
-      system(command)
+      unless system(command)
+        configuration.shell.say_line "Clone from working to reporting failed. See above for detail."
+        exit 1
+      end
     end
 
     def pg_params(p)
