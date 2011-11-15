@@ -4,6 +4,10 @@ NCS Navigator MDES Warehouse History
 0.1.1
 -----
 
+- Disable DataMapper's identity map during ETL. It caches created
+  records in memory without limit, so it brings the system to a crawl
+  when loading hundreds of thousands of records.
+
 0.1.0
 -----
 
