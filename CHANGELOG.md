@@ -8,6 +8,10 @@ NCS Navigator MDES Warehouse History
   records in memory without limit, so it brings the system to a crawl
   when loading hundreds of thousands of records.
 
+- Wrap each transformer in a transaction during ETL, and turn off
+  synchronous commits. This combination (not tried separately) gives
+  around a 10% speed boost.
+
 0.1.0
 -----
 

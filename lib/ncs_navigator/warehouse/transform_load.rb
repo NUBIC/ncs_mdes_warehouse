@@ -25,11 +25,14 @@ module NcsNavigator::Warehouse
           def repo.identity_map(model); {}; end
 
           build_status_for(transformer, position).tap do |status|
-            begin
-              transformer.transform(status)
-            rescue => e
-              shell.say_line("\nTransform failed. (See log for more detail.)")
-              status.add_error("Transform failed. #{e.class}: #{e}.")
+            TransformStatus.transaction do
+              repo.adapter.execute("SET LOCAL synchronous_commit TO OFF")
+              begin
+                transformer.transform(status)
+              rescue => e
+                shell.say_line("\nTransform failed. (See log for more detail.)")
+                status.add_error("Transform failed. #{e.class}: #{e}.")
+              end
             end
             status.end_time = Time.now
             unless status.save
