@@ -43,7 +43,8 @@ module NcsNavigator::Warehouse
     desc 'clone-working', 'Copies the contents of the working database to the reporting database'
     def clone_working
       db = DatabaseInitializer.new(configuration)
-      db.clone_working_to_reporting
+      db.set_up_repository(:both)
+      db.clone_working_to_reporting or exit(1)
     end
 
     desc 'emit-xml [FILENAME]', 'Generates the VDR submission XML'
@@ -74,7 +75,7 @@ DESC
 
       success = TransformLoad.new(configuration).run
       if success || options['force']
-        db.clone_working_to_reporting
+        db.clone_working_to_reporting or exit(1)
       else
         configuration.shell.say_line "There were errors during ETL. Reporting database not updated."
         configuration.shell.say_line "See the log and the database table wh_transform_error for more details."

@@ -80,11 +80,7 @@ module NcsNavigator::Warehouse
     #
     # @return [void]
     def replace_schema
-      shell.say "Dropping everything"
-      log.info "Dropping everything in working schema"
-      ::DataMapper.repository(:mdes_warehouse_working).adapter.
-        execute("DROP OWNED BY #{params(:working)['username']}")
-      shell.clear_line_then_say "Dropped everything in working schema.\n"
+      drop_all(:working)
 
       shell.say "Loading MDES models..."
       log.info "Initializing schema for MDES #{configuration.mdes.specification_version}"
@@ -98,11 +94,23 @@ module NcsNavigator::Warehouse
         "Added #{configuration.models_module.mdes_order.size} MDES tables.\n")
     end
 
+    def drop_all(which)
+      shell.say "Dropping everything in #{which} schema"
+      log.info "Dropping everything in #{which} schema"
+      ::DataMapper.repository(:"mdes_warehouse_#{which}").adapter.
+        execute("DROP OWNED BY #{params(which)['username']}")
+      shell.clear_line_then_say "Dropped everything in #{which} schema.\n"
+    end
+    private :drop_all
+
     ##
     # Replaces the reporting database with a clone of the working
     # database. This method relies on the command line `pg_dump` and
-    # `pg_restore` commands.
+    # `pg_restore` commands. In addition, you must also have
+    # previously called {#set_up_repository} with `:both` as the
+    # argument.
     #
+    # @return [true,false] whether the clone succeeded.
     # @see Configuration#pg_bin_path
     def clone_working_to_reporting
       PostgreSQL::Pgpass.new.tap do |pgpass|
@@ -121,16 +129,22 @@ module NcsNavigator::Warehouse
         configuration.pg_bin('pg_restore'),
         pg_params(params(:reporting)),
         '--schema', 'public',
-        '--clean',
         '--dbname', params(:reporting)['database']
       ].flatten
 
+      drop_all(:reporting)
+
       command = "#{escape_cmd dump_cmd} | #{escape_cmd restore_cmd}"
+      shell.say 'Cloning working schema into reporting schema...'
       log.info('Cloning working schema into reporting schema')
       log.debug("Clone command: #{command.inspect}")
       unless system(command)
-        configuration.shell.say_line "Clone from working to reporting failed. See above for detail."
-        exit 1
+        shell.clear_line_then_say(
+          "Clone from working to reporting failed. See above for detail.\n")
+        return false
+      else
+        shell.clear_line_then_say("Clone from working to reporting successful.\n")
+        return true
       end
     end
 
