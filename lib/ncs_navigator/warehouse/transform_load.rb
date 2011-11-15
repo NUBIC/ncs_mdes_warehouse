@@ -26,7 +26,9 @@ module NcsNavigator::Warehouse
 
           build_status_for(transformer, position).tap do |status|
             TransformStatus.transaction do
-              repo.adapter.execute("SET LOCAL synchronous_commit TO OFF")
+              if repo.adapter.to_s =~ /Postgres/
+                repo.adapter.execute("SET LOCAL synchronous_commit TO OFF")
+              end
               begin
                 transformer.transform(status)
               rescue => e
