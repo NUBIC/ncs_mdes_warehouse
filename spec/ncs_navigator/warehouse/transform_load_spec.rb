@@ -137,6 +137,23 @@ module NcsNavigator::Warehouse
 
         it 'sends on failure'
       end
+
+      # This is a crappy test; it would be better if it could be done
+      # another way. Unfortunately, it doesn't look like DataMapper
+      # exposes information to allow another way to check this.
+      it "defeats DataMapper's caching" do
+        seen_maps = []
+        identity_map_tracker_transformer = BlockTransformer.new { |s|
+          seen_maps << ::DataMapper::Repository.context.first.instance_eval { @identity_maps }
+        }
+        config.add_transformer(identity_map_tracker_transformer)
+        config.add_transformer(identity_map_tracker_transformer)
+
+        loader.run
+        loader.statuses.collect { |s| s.transform_errors }.flatten.should == []
+
+        seen_maps.should == [{}, {}]
+      end
     end
 
     class ::BlockTransformer

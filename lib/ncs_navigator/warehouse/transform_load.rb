@@ -18,7 +18,12 @@ module NcsNavigator::Warehouse
     def run
       position = 0
       @statuses = configuration.transformers.collect do |transformer|
-        ::DataMapper.repository(:mdes_warehouse_working) do
+        ::DataMapper.repository(:mdes_warehouse_working) do |repo|
+          # redefine identity map as a no-op so it doesn't cache
+          # anything. TODO: provide a patch to DataMapper that makes
+          # something like this an option.
+          def repo.identity_map(model); {}; end
+
           build_status_for(transformer, position).tap do |status|
             begin
               transformer.transform(status)
