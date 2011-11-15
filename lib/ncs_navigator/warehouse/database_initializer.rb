@@ -141,9 +141,11 @@ module NcsNavigator::Warehouse
       unless system(command)
         shell.clear_line_then_say(
           "Clone from working to reporting failed. See above for detail.\n")
+        log.error('Clone failed.')
         return false
       else
         shell.clear_line_then_say("Clone from working to reporting successful.\n")
+        log.info('Clone succeeded.')
         return true
       end
     end
