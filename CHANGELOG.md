@@ -12,6 +12,8 @@ NCS Navigator MDES Warehouse History
   synchronous commits. This combination (not tried separately) gives
   around a 10% speed boost.
 
+- Loosen gem dependencies for compatibility with Rails 3.0.
+
 0.1.0
 -----
 

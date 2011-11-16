@@ -19,13 +19,13 @@ Gem::Specification.new do |s|
   s.add_dependency 'ncs_navigator_configuration', '~> 0.1'
 
   s.add_dependency 'activesupport', '~> 3.0'
-  s.add_dependency 'i18n', '~> 0.6' # required by activesupport
+  s.add_dependency 'i18n', '~> 0.4' # required by activesupport
 
   s.add_dependency 'thor', '~> 0.14.6'
   s.add_dependency 'rubyzip', '~> 0.9.4'
 
   s.add_dependency 'nokogiri', '~> 1.5.0'
-  s.add_dependency 'builder', '~> 3.0'
+  s.add_dependency 'builder', '>= 2.1.2'
 
   s.add_dependency 'data_mapper', '~> 1.2.0'
   s.add_dependency 'bcdatabase', '~> 1.1'
