@@ -304,14 +304,15 @@ module NcsNavigator::Warehouse::Transformers
 
           describe 'when #on_unused_columns is set to :fail' do
             let(:cls) {
-              sample_class do
-                on_unused_columns :fail
+              sample_class.tap do |c|
+                c.on_unused_columns :fail
+                c.produce_one_for_one(:addresses, address_model, options)
               end
             }
 
             it 'fails appropriately' do
               begin
-                model_row(:address_type => '-5', :address_length => '6')
+                producer.call(make_row :address_type => '-5', :address_length => '6')
                 fail "Exception not thrown"
               rescue Database::UnusedColumnsForModelError => e
                 e.unused.should == %w(address_length)
@@ -320,7 +321,13 @@ module NcsNavigator::Warehouse::Transformers
 
             it 'does not fail if the global setting is overridden' do
               options[:on_unused] = :ignore
-              lambda { model_row(:address_type => '-5', :address_length => '6') }.
+              lambda { producer.call(make_row :address_type => '-5', :address_length => '6') }.
+                should_not raise_error
+            end
+
+            it 'can be ignored by modifying the global setting' do
+              cls.on_unused_columns :ignore
+              lambda { producer.call(make_row :address_type => '-5', :address_length => '6') }.
                 should_not raise_error
             end
           end

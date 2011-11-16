@@ -287,13 +287,12 @@ module NcsNavigator::Warehouse::Transformers
       #
       # @return [void]
       def produce_one_for_one(name, model, options={})
-        options[:on_unused] ||= on_unused_columns
         options[:column_map] =
           (options[:column_map] || {}).inject({}) { |h, (k, v)| h[k.to_s] = v.to_s; h }
-        options[:ignored_columns] =
-          (options[:ignored_columns] || []).collect(&:to_s) + ignored_columns
+        options[:ignored_columns] = (options[:ignored_columns] || []).collect(&:to_s)
 
-        record_producers << OneForOneProducer.new(name, options.delete(:query), model, options)
+        record_producers <<
+          OneForOneProducer.new(name, options.delete(:query), model, self, options)
       end
     end
 
@@ -308,11 +307,12 @@ module NcsNavigator::Warehouse::Transformers
     ##
     # The class encapsulating one call to {DSL#produce_one_for_one}
     class OneForOneProducer < RecordProducer
-      attr_reader :model, :options
+      attr_reader :model, :options, :dsl_host
 
-      def initialize(name, query, model, options)
+      def initialize(name, query, model, dsl_host, options)
         super(name, query, self)
         @model = model
+        @dsl_host = dsl_host
         @options = options
       end
 
@@ -321,9 +321,9 @@ module NcsNavigator::Warehouse::Transformers
       # row as mapped by {#column_map}.
       def convert_row(row)
         col_map = column_map(row.members)
-        unused = row.members.collect(&:to_s) - col_map.keys - options[:ignored_columns]
+        unused = row.members.collect(&:to_s) - col_map.keys - ignored_columns
 
-        if options[:on_unused] == :fail && !unused.empty?
+        if on_unused == :fail && !unused.empty?
           raise UnusedColumnsForModelError.new(unused)
         end
         model.new(
@@ -374,6 +374,16 @@ module NcsNavigator::Warehouse::Transformers
         end
       end
       private :prefixed_property_name
+
+      def on_unused
+        options[:on_unused] || dsl_host.on_unused_columns
+      end
+      private :on_unused
+
+      def ignored_columns
+        options[:ignored_columns] + dsl_host.ignored_columns
+      end
+      private :ignored_columns
     end
 
     ##
