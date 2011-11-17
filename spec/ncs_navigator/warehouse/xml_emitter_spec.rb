@@ -23,11 +23,11 @@ module NcsNavigator::Warehouse
     # Most of the details of the XML are tested on the MdesModel mixin
     describe 'the generated XML', :slow do
       it 'includes the SC from the configuration' do
-        xml.xpath('//sc_id').text.should == '2000042'
+        xml.xpath('//sc_id').text.should == '20000029'
       end
 
       it 'includes the PSU from the configuration' do
-        xml.xpath('//psu_id').text.should == '2000423'
+        xml.xpath('//psu_id').text.should == '20000030'
       end
 
       it 'includes the appropriate specification version' do

@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib", "generated_models"]
 
   s.add_dependency 'ncs_mdes', '~> 0.4', '>= 0.4.2'
-  s.add_dependency 'ncs_navigator_configuration', '~> 0.1'
+  s.add_dependency 'ncs_navigator_configuration', '~> 0.2'
 
   s.add_dependency 'activesupport', '~> 3.0'
   s.add_dependency 'i18n', '~> 0.4' # required by activesupport
