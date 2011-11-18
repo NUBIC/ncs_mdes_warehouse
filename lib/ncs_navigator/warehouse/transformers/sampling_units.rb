@@ -24,18 +24,34 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     def each
+      log.info("Generating MDES records for sampling units.")
+
+      shell_describe('PSU', configuration.navigator.psus.size)
       configuration.navigator.psus.each do |nav_psu|
         yield create_psu(nav_psu)
       end
+
+      shell_describe('SSU', configuration.navigator.ssus.size)
       configuration.navigator.ssus.each do |nav_ssu|
         yield create_ssu(nav_ssu)
       end
-      configuration.navigator.ssus.collect { |nav_ssu| nav_ssu.tsus }.flatten.each do |nav_tsu|
+
+      tsus = configuration.navigator.ssus.collect { |nav_ssu| nav_ssu.tsus }.flatten
+      shell_describe('TSU', tsus.size)
+      tsus.each do |nav_tsu|
         yield create_tsu(nav_tsu)
       end
+
+      log.info("All sampling unit records generated.")
+      shell.clear_line_then_say("All sampling unit records generated.")
     end
 
     private
+
+    def shell_describe(what, count)
+      plural = ('s' if count != 1)
+      shell.clear_line_then_say("Generating MDES record#{plural} for #{count} #{what}#{plural}")
+    end
 
     def psu_model
       configuration.models_module.const_get(:Psu)
