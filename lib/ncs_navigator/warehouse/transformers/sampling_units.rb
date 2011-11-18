@@ -43,7 +43,7 @@ module NcsNavigator::Warehouse::Transformers
       end
 
       log.info("All sampling unit records generated.")
-      shell.clear_line_then_say("All sampling unit records generated.")
+      shell.clear_line_then_say("All sampling unit records generated.\n")
     end
 
     private
