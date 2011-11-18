@@ -269,7 +269,7 @@ module NcsNavigator::Warehouse
     #
     # @return [Pathname]
     def log_file
-      @log_directory ||= Pathname.new("/var/log/ncs/warehouse/#{env}.log")
+      @log_directory ||= Pathname.new("/var/log/nubic/ncs/warehouse/#{env}.log")
     end
 
     ##

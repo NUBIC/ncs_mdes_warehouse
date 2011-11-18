@@ -157,8 +157,8 @@ module NcsNavigator::Warehouse
       end
 
       describe 'by default' do
-        it 'is /var/log/ncs/warehouse/{env_name}.log' do
-          config.log_file.to_s.should == '/var/log/ncs/warehouse/the_moon.log'
+        it 'is /var/log/nubic/ncs/warehouse/{env_name}.log' do
+          config.log_file.to_s.should == '/var/log/nubic/ncs/warehouse/the_moon.log'
         end
 
         it 'is a Pathname' do
@@ -187,7 +187,7 @@ module NcsNavigator::Warehouse
           end
 
           it 'reverts to the default' do
-            config.log_file.to_s.should == '/var/log/ncs/warehouse/the_moon.log'
+            config.log_file.to_s.should == '/var/log/nubic/ncs/warehouse/the_moon.log'
           end
         end
 

@@ -15,7 +15,10 @@ NCS Navigator MDES Warehouse History
 - Loosen gem dependencies for compatibility with Rails 3.0.
 
 - Add `Transformers::SamplingUnits` for generating PSU, SSU, and TSU
-  records from the runtime configuration.
+  records from the runtime configuration. (#1602)
+
+- Changed default log path to `/var/log/nubic/ncs/warehouse`. This is
+  parallel with the default configuration paths under `/etc`. (#1605)
 
 0.1.0
 -----
