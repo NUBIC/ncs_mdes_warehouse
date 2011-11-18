@@ -13,12 +13,24 @@ module NcsNavigator::Warehouse::Transformers
       end
 
       ##
+      # @param config [Configuration] the configuration for the
+      #   warehouse.
+      # @param list [String,Array<String>] the files to consider. This
+      #   may be either a glob or an explicit list of files.
+      #
       # @return [#transform] a transformer for the most recently
       #   modified VDR XML file from the given list of files.
       def from_most_recent_file(config, list)
+        files =
+          if String === list
+            Dir[list].tap { |a| fail "Glob #{list} does not match any files." if a.empty? }
+          else
+            list.tap { |a| fail "The file list is empty." if a.empty? }
+          end
+
         from_file(
           config,
-          list.collect { |fn| [fn, File.stat(fn).mtime] }.
+          files.collect { |fn| [fn, File.stat(fn).mtime] }.
             sort_by { |fn, mtime| mtime }.reverse.first.first)
       end
     end

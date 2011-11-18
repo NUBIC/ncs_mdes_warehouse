@@ -27,7 +27,7 @@ module NcsNavigator::Warehouse::Transformers
 
     describe '.from_most_recent_file' do
       let(:path) { tmpdir('contractor-files') }
-      subject { VdrXml.from_most_recent_file(config, Dir[File.join(path, '*')]) }
+      subject { VdrXml.from_most_recent_file(config, list_or_glob) }
 
       before do
         system("touch -t 02030405 '#{path}/a'")
@@ -35,11 +35,41 @@ module NcsNavigator::Warehouse::Transformers
         system("touch -t 02020405 '#{path}/c'")
       end
 
-      it 'uses the most recent filename from the list' do
-        subject.enum.filename.should == File.join(path, 'b')
+      describe 'with a file list' do
+        let(:list_or_glob) { Dir[File.join(path, '*')] }
+
+        it 'uses the most recent filename from the list' do
+          subject.enum.filename.should == File.join(path, 'b')
+        end
+
+        include_examples 'a VDR transformer'
+
+        describe 'that is empty' do
+          let(:list_or_glob) { [] }
+
+          it 'fails' do
+            lambda { subject }.should raise_error /The file list is empty./
+          end
+        end
       end
 
-      include_examples 'a VDR transformer'
+      describe 'with a glob' do
+        let(:list_or_glob) { File.join(path, '*') }
+
+        it 'uses the most recent filename matched by the glob' do
+          subject.enum.filename.should == File.join(path, 'b')
+        end
+
+        include_examples 'a VDR transformer'
+
+        describe 'when the glob does not match anything' do
+          let(:list_or_glob) { File.join(path, 'z*') }
+
+          it 'fails' do
+            lambda { subject }.should raise_error %r{Glob .*?./z\* does not match any files}
+          end
+        end
+      end
     end
   end
 end

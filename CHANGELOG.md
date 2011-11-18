@@ -20,6 +20,8 @@ NCS Navigator MDES Warehouse History
 - Changed default log path to `/var/log/nubic/ncs/warehouse`. This is
   parallel with the default configuration paths under `/etc`. (#1605)
 
+- Improve error messages in VdrXml.from_most_recent_file. (#1604)
+
 0.1.0
 -----
 
