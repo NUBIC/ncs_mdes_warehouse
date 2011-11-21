@@ -5,6 +5,7 @@ module NcsNavigator::Warehouse::Transformers
     class Sample
       include ::DataMapper::Resource
 
+      property :psu_id, String
       property :id, Integer, :key => true
       property :name, String, :required => true
     end
@@ -14,7 +15,11 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     describe '#transform' do
-      let(:config) { NcsNavigator::Warehouse::Configuration.new }
+      let(:config) {
+        NcsNavigator::Warehouse::Configuration.new.tap do |c|
+          c.log_file = tmpdir + 'enum_transformer_test.log'
+        end
+      }
       let(:records) { [
           Sample.new(:id => 1, :name => 'One'),
           Sample.new(:id => 2, :name => 'Two'),
@@ -33,7 +38,17 @@ module NcsNavigator::Warehouse::Transformers
         transform_status.transform_errors.should be_empty
       end
 
-      it 'automatically sets the PSU ID if the object accepts it'
+      it 'automatically sets the PSU ID if necessary' do
+        records[1].psu_id = '20000042'
+
+        records.each do |m|
+          m.should_receive(:valid?).and_return(true)
+          m.should_receive(:save).and_return(true)
+        end
+
+        subject.transform(transform_status)
+        records.collect(&:psu_id).should == %w(20000030 20000042 20000030)
+      end
 
       describe 'with an invalid instance' do
         before do

@@ -37,6 +37,7 @@ module NcsNavigator::Warehouse::Transformers
     # @return [void]
     def transform(status)
       enum.each do |record|
+        apply_psu_if_necessary(record)
         if record.valid?
           log.debug("Saving valid record #{record_ident record}.")
           begin
@@ -71,6 +72,14 @@ module NcsNavigator::Warehouse::Transformers
       # No composite keys in the MDES
       '%s %s=%s' % [
         rec.class.name.demodulize, rec.class.key.first.name, rec.key.try(:first).inspect]
+    end
+
+    def apply_psu_if_necessary(record)
+      if record.respond_to?(:psu_id=) && record.respond_to?(:psu_id)
+        unless record.psu_id
+          record.psu_id = @configuration.navigator.psus.first.id
+        end
+      end
     end
   end
 end
