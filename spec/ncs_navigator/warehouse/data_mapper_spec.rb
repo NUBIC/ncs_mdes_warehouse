@@ -12,23 +12,27 @@ module NcsNavigator::Warehouse::DataMapper
   end
 
   describe NcsString, :modifies_warehouse_state do
-    class NcsStringHost
-      include DataMapper::Resource
-      property :haiku, NcsString
-    end
+    let(:model) {
+      class NcsStringHost
+        include DataMapper::Resource
+        property :haiku, NcsString
+      end
+    }
 
-    subject { NcsStringHost.properties[:haiku] }
+    subject { model.properties[:haiku] }
 
     it_behaves_like 'a string-based NCS type'
   end
 
   describe NcsText, :modifies_warehouse_state do
-    class NcsTextHost
-      include DataMapper::Resource
-      property :novel, NcsText
-    end
+    let(:model) {
+      class NcsTextHost
+        include DataMapper::Resource
+        property :novel, NcsText
+      end
+    }
 
-    subject { NcsTextHost.properties[:novel] }
+    subject { model.properties[:novel] }
 
     it_behaves_like 'a string-based NCS type'
   end
