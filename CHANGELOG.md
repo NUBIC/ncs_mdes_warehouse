@@ -10,6 +10,10 @@ NCS Navigator MDES Warehouse History
 - ETL: store invalid or failing record IDs as a separate column
   instead of as part of TransformError#message. (#1636)
 
+- When an MDES model string variable is set from a BigDecimal, coerce
+  it to a floating point string. The ruby default is scientific
+  notation, but that's not permitted in the MDES.
+
 0.1.1
 -----
 
