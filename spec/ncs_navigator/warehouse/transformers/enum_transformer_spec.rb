@@ -62,7 +62,8 @@ module NcsNavigator::Warehouse::Transformers
         it 'records the invalid instance' do
           err = transform_status.transform_errors.first
           err.model_class.should == Sample.to_s
-          err.message.should == 'Invalid record. Name must not be blank (name=nil). Sample id=3.'
+          err.record_id.should == '3'
+          err.message.should == 'Invalid record. Name must not be blank (name=nil).'
         end
 
         it 'saves the other instances' do
@@ -82,7 +83,8 @@ module NcsNavigator::Warehouse::Transformers
         it 'records the unsaveable instance' do
           err = transform_status.transform_errors.first
           err.model_class.should == Sample.to_s
-          err.message.should == 'Could not save. Sample id=2.'
+          err.record_id.should == '2'
+          err.message.should == 'Could not save.'
         end
 
         it 'saves the saveable instances' do
@@ -102,8 +104,9 @@ module NcsNavigator::Warehouse::Transformers
         it 'records the failing instance' do
           err = transform_status.transform_errors.first
           err.model_class.should == Sample.to_s
+          err.record_id.should == '1'
           err.message.should ==
-            'Error on save. RuntimeError: No database around these parts. Sample id=1.'
+            'Error on save. RuntimeError: No database around these parts.'
         end
 
         it 'saves the saveable instances' do

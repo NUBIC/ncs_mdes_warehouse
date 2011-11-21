@@ -42,12 +42,12 @@ module NcsNavigator::Warehouse::Transformers
           log.debug("Saving valid record #{record_ident record}.")
           begin
             unless record.save
-              msg = "Could not save. #{record_ident(record)}."
+              msg = "Could not save."
               log.error msg
               status.unsuccessful_record(record, msg)
             end
           rescue => e
-            msg = "Error on save. #{e.class}: #{e}. #{record_ident(record)}."
+            msg = "Error on save. #{e.class}: #{e}."
             log.error msg
             status.unsuccessful_record(record, msg)
           end
@@ -58,7 +58,7 @@ module NcsNavigator::Warehouse::Transformers
               "#{e} (#{prop}=#{v.inspect})."
             }
           }.flatten
-          msg = "Invalid record. #{messages.join(' ')} #{record_ident(record)}."
+          msg = "Invalid record. #{messages.join(' ')}"
           log.error msg
           status.unsuccessful_record(record, msg)
         end

@@ -7,6 +7,9 @@ NCS Navigator MDES Warehouse History
 - Automatically set PSU ID in `Transformers::EnumTransformer` if it is
   not already set. (#1630)
 
+- ETL: store invalid or failing record IDs as a separate column
+  instead of as part of TransformError#message. (#1636)
+
 0.1.1
 -----
 
