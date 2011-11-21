@@ -4,6 +4,9 @@ NCS Navigator MDES Warehouse History
 0.1.2
 -----
 
+- Automatically set PSU ID in `Transformers::EnumTransformer` if it is
+  not already set. (#1630)
+
 0.1.1
 -----
 
