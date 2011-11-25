@@ -15,6 +15,26 @@ require 'data_mapper'
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
+  ##
+  # A mostly-default configuration to use in tests of objects that
+  # rely on the MDES specification so as to avoid initializing it
+  # multiple times. It also contains the configuration pointing to the
+  # test database schemas.
+  def spec_config
+    @spec_config || fail("Flag specs that use spec_config with :use_mdes or :use_database")
+  end
+
+  def init_spec_config
+    @spec_config ||= NcsNavigator::Warehouse::Configuration.new.tap do |c|
+      c.mdes_version = spec_mdes_version
+      c.output_level = :quiet
+      c.log_file = tmpdir + 'spec.log'
+      c.bcdatabase_group = ENV['CI_RUBY'] ? :public_ci_postgresql9 : :local_postgresql
+      c.bcdatabase_entries[:working] = :mdes_warehouse_working_test
+      c.bcdatabase_entries[:reporting] = :mdes_warehouse_reporting_test
+    end
+  end
+
   ###### MDES model loading
 
   # Each test run can only operate against one version of the MDES at
@@ -25,20 +45,8 @@ RSpec.configure do |config|
     ENV['SPEC_MDES_VERSION'] || NcsNavigator::Warehouse::DEFAULT_MDES_VERSION
   end
 
-  ##
-  # A mostly-default configuration to use in tests of objects that
-  # rely on the MDES specification so as to avoid initializing it
-  # multiple times.
-  def spec_config
-    @spec_config || fail("Flag specs that use spec_config with :use_mdes")
-  end
-
   config.before(:each, :use_mdes) do
-    @spec_config ||= NcsNavigator::Warehouse::Configuration.new.tap do |c|
-      c.mdes_version = spec_mdes_version
-      c.output_level = :quiet
-      c.log_file = tmpdir + 'spec.log'
-    end
+    init_spec_config
   end
 
   ###### modifies_warehouse_state
@@ -53,6 +61,26 @@ RSpec.configure do |config|
 
   config.after(:each, :modifies_warehouse_state) do
     @global_state_preserver.restore
+  end
+
+  ###### use_database
+
+  config.before(:each, :use_database) do
+    init_spec_config
+
+    $db_init ||=
+      begin
+        init = NcsNavigator::Warehouse::DatabaseInitializer.new(spec_config)
+        init.set_up_repository(:both)
+        init.replace_schema
+        init.clone_working_to_reporting
+      end
+  end
+
+  config.after(:each, :use_database) do
+    ::DataMapper::Model.descendants.each do |model|
+      DataMapper.repository.adapter.execute("TRUNCATE TABLE #{model.storage_name}")
+    end
   end
 
   ###### bcdatabase

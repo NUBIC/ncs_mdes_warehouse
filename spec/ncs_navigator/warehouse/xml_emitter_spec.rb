@@ -15,32 +15,50 @@ module NcsNavigator::Warehouse
     end
 
     before do
-      spec_config.models_module.mdes_order.each do |model|
+      spec_config.models_module.mdes_order.reject { |m| m == person_model }.each do |model|
         model.stub!(:all).and_return([])
       end
     end
 
     # Most of the details of the XML are tested on the MdesModel mixin
     describe 'the generated XML', :slow do
-      it 'includes the SC from the configuration' do
-        xml.xpath('//sc_id').text.should == '20000029'
-      end
-
-      it 'includes the PSU from the configuration' do
-        xml.xpath('//psu_id').text.should == '20000030'
-      end
-
-      it 'includes the appropriate specification version' do
-        xml.xpath('//specification_version').text.
-          should == spec_config.mdes.specification_version
-      end
-
-      describe 'with actual data' do
+      describe 'global attributes' do
         before do
-          person_model.should_receive(:all).and_return([
-              person_model.new(:person_id => 'XQ4'),
-              person_model.new(:person_id => 'QX9')
-            ])
+          person_model.stub!(:all).and_return([])
+        end
+
+        it 'includes the SC from the configuration' do
+          xml.xpath('//sc_id').text.should == '20000029'
+        end
+
+        it 'includes the PSU from the configuration' do
+          xml.xpath('//psu_id').text.should == '20000030'
+        end
+
+        it 'includes the appropriate specification version' do
+          xml.xpath('//specification_version').text.
+            should == spec_config.mdes.specification_version
+        end
+      end
+
+      def create_person(id)
+        person_model.new(
+          person_model.properties.select { |prop| prop.required? }.inject({}) { |h, prop|
+            h[prop.name] = '-4'; h
+          }.merge(:person_id => id)
+        )
+      end
+
+      describe 'with actual data', :slow, :use_database do
+        let(:records) {
+          [
+            create_person('XQ4'),
+            create_person('QX9')
+          ]
+        }
+
+        before do
+          records.each { |rec| rec.save or fail "Save of #{rec.inspect} failed." }
         end
 
         it 'contains records for all models' do
@@ -48,7 +66,25 @@ module NcsNavigator::Warehouse
         end
 
         it 'contains the right records' do
-          xml.xpath('//person/person_id').collect { |e| e.text.strip }.should == %w(XQ4 QX9)
+          xml.xpath('//person/person_id').collect { |e| e.text.strip }.sort.should == %w(QX9 XQ4)
+        end
+      end
+
+      describe 'with lots and lots of actual data', :slow, :use_database do
+        let(:count) { 3134 }
+        let(:records) { (0...count).collect { |n| create_person(n) } }
+        let(:actual_ids) { xml.xpath('//person/person_id').collect { |e| e.text.strip } }
+
+        before do
+          records.each { |rec| rec.save or fail "Save of #{rec.inspect} failed." }
+        end
+
+        it 'contains all the records' do
+          actual_ids.size.should == count
+        end
+
+        it 'contains the right records' do
+          actual_ids.collect(&:to_i).sort[2456].should == 2456
         end
       end
     end
