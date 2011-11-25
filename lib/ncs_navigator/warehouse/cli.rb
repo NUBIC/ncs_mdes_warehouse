@@ -54,10 +54,13 @@ the contents of the current reporting database. The default name for
 the XML file is the county name for the PSU plus the date; e.g.,
 cook-20110728.xml.
 DESC
+    method_option 'block-size', :type => :numeric, :aliases => %w(-b),
+      :desc => 'The maximum number of records to have in memory at once.',
+      :default => 5000
     def emit_xml(filename=nil)
       use_database
 
-      XmlEmitter.new(configuration, filename).emit_xml
+      XmlEmitter.new(configuration, filename, options).emit_xml
     end
 
     desc 'etl', 'Performs the full extract-transform-load process for this configuration'

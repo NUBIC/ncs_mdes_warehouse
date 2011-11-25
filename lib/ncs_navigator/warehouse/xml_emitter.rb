@@ -57,7 +57,7 @@ XML
       ]
     end
 
-    def initialize(config, filename)
+    def initialize(config, filename, options={})
       @configuration = config
       @filename = case filename
                   when Pathname
@@ -68,6 +68,7 @@ XML
                     Pathname.new(filename.to_s)
                   end
       @record_count = 0
+      @block_size = options[:'block-size'] || 5000
     end
 
     def emit_xml
@@ -107,18 +108,17 @@ XML
 
     def write_all_xml_for_model(f, model)
       shell.say(' %20s' % '[loading]')
-      limit = 1000
       count = model.count
       offset = 0
       while offset < count - 1
         shell.back_up_and_say(20, '%20s' % '[loading]')
-        model.all(:limit => limit, :offset => offset).each do |instance|
+        model.all(:limit => @block_size, :offset => offset).each do |instance|
           instance.write_mdes_xml(f, :indent => 3, :margin => 1)
           @record_count += 1
 
           shell.back_up_and_say(20, '%5d (%5.1f/sec)' % [@record_count, emit_rate])
         end
-        offset += limit
+        offset += @block_size
       end
     end
 
