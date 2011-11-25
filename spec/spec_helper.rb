@@ -79,7 +79,11 @@ RSpec.configure do |config|
 
   config.after(:each, :use_database) do
     ::DataMapper::Model.descendants.each do |model|
-      DataMapper.repository.adapter.execute("TRUNCATE TABLE #{model.storage_name}")
+      begin
+        DataMapper.repository.adapter.execute("TRUNCATE TABLE #{model.storage_name}")
+      rescue DataObjects::SyntaxError
+        # table was never created
+      end
     end
   end
 
