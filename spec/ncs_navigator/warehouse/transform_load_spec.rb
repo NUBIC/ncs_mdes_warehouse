@@ -13,7 +13,9 @@ module NcsNavigator::Warehouse
       end
     end
 
-    before(:all) do
+    before do
+      use_test_bcdatabase
+
       # Not config due to RSpec #500
       DatabaseInitializer.new(base_config).tap do |dbi|
         dbi.set_up_repository(:both)

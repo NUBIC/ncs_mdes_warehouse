@@ -48,7 +48,7 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     describe '#connection_parameters' do
-      describe 'from bcdatabase', :modifies_warehouse_state do
+      describe 'from bcdatabase', :modifies_warehouse_state, :use_test_bcdatabase do
         let(:cls) {
           sample_class do
             bcdatabase :name => 'ncs_staff_portal'
@@ -79,7 +79,7 @@ module NcsNavigator::Warehouse::Transformers
       end
     end
 
-    describe '#repository' do
+    describe '#repository', :modifies_warehouse_state, :use_test_bcdatabase do
       include_context 'people_pro'
 
       let(:cls) do
@@ -97,7 +97,7 @@ module NcsNavigator::Warehouse::Transformers
       end
     end
 
-    describe '#each' do
+    describe '#each', :modifies_warehouse_state, :use_test_bcdatabase do
       include_context 'people_pro'
 
       describe 'of .produce_records' do

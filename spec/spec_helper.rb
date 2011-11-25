@@ -15,13 +15,6 @@ require 'data_mapper'
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
-  ###### bcdatabase
-
-  config.before(:all) do
-    NcsNavigator::Warehouse.bcdatabase =
-      Bcdatabase.load(File.expand_path('../bcdatabase', __FILE__), :transforms => [:datamapper])
-  end
-
   ###### MDES model loading
 
   # Each test run can only operate against one version of the MDES at
@@ -60,6 +53,18 @@ RSpec.configure do |config|
 
   config.after(:each, :modifies_warehouse_state) do
     @global_state_preserver.restore
+  end
+
+  ###### bcdatabase
+
+  config.before(:each, :use_test_bcdatabase) do
+    use_test_bcdatabase
+  end
+
+  def use_test_bcdatabase
+    fail 'Use :modifies_warehouse_state with use_test_database' unless @global_state_preserver
+    NcsNavigator::Warehouse.bcdatabase =
+      Bcdatabase.load(File.expand_path('../bcdatabase', __FILE__), :transforms => [:datamapper])
   end
 
   ###### tmpdir
