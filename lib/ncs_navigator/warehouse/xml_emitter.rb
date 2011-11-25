@@ -106,12 +106,18 @@ XML
     private
 
     def write_all_xml_for_model(f, model)
-      shell.say(' %20s' % '[loading]')
-      model.all.each do |instance|
-        instance.write_mdes_xml(f, :indent => 3, :margin => 1)
-        @record_count += 1
+      limit = 1000
+      count = model.count
+      offset = 0
+      while offset < count - 1
+        shell.say(' %20s' % '[loading]')
+        model.all(:limit => limit, :offset => offset).each do |instance|
+          instance.write_mdes_xml(f, :indent => 3, :margin => 1)
+          @record_count += 1
 
-        shell.back_up_and_say(20, '%5d (%5.1f/sec)' % [@record_count, emit_rate])
+          shell.back_up_and_say(20, '%5d (%5.1f/sec)' % [@record_count, emit_rate])
+        end
+        offset += limit
       end
     end
 

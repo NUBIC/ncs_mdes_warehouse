@@ -16,6 +16,7 @@ module NcsNavigator::Warehouse
 
     before do
       spec_config.models_module.mdes_order.reject { |m| m == person_model }.each do |model|
+        model.stub!(:count).and_return(0)
         model.stub!(:all).and_return([])
       end
     end
@@ -24,6 +25,7 @@ module NcsNavigator::Warehouse
     describe 'the generated XML', :slow do
       describe 'global attributes' do
         before do
+          person_model.stub!(:count).and_return(0)
           person_model.stub!(:all).and_return([])
         end
 
