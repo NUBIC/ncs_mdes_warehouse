@@ -51,6 +51,27 @@ module NcsNavigator::Warehouse
         )
       end
 
+      describe 'with exactly one actual record', :slow, :use_database do
+        let(:records) {
+          [
+            create_person('XQ4')
+          ]
+        }
+
+        before do
+          pending 'Not working in CI at the moment' if ENV['CI_RUBY']
+          records.each { |rec| rec.save or fail "Save of #{rec.inspect} failed." }
+        end
+
+        it 'contains records for all models' do
+          xml.xpath('//person').size.should == 1
+        end
+
+        it 'contains the right records' do
+          xml.xpath('//person/person_id').collect { |e| e.text.strip }.sort.should == %w(XQ4)
+        end
+      end
+
       describe 'with actual data', :slow, :use_database do
         let(:records) {
           [

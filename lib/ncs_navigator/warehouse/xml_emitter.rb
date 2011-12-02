@@ -110,7 +110,7 @@ XML
       shell.say(' %20s' % '[loading]')
       count = model.count
       offset = 0
-      while offset < count - 1
+      while offset < count
         shell.back_up_and_say(20, '%20s' % '[loading]')
         model.all(:limit => @block_size, :offset => offset).each do |instance|
           instance.write_mdes_xml(f, :indent => 3, :margin => 1)
