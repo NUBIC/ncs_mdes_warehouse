@@ -14,6 +14,9 @@ NCS Navigator MDES Warehouse History
   it to a floating point string. The ruby default is scientific
   notation, but that's not permitted in the MDES.
 
+- New options for `emit-xml`: `--tables`, `--zip`,
+  `--include-pii`. (#1612, #1657, #1658)
+
 0.1.1
 -----
 
