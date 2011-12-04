@@ -179,8 +179,8 @@ module NcsNavigator::Warehouse
       let(:expected_zipfile) { Pathname.new(filename.to_s + '.zip') }
 
       before do
-        person_model.stub!(:count).and_return(0)
-        person_model.stub!(:all).and_return([])
+        stub_model(person_model)
+        stub_model(participant_model)
       end
 
       context do
