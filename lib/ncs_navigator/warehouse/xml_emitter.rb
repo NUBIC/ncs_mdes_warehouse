@@ -69,6 +69,7 @@ XML
                   end
       @record_count = 0
       @block_size = options[:'block-size'] || 5000
+      @zip = options.has_key?(:zip) ? options[:zip] : true
     end
 
     def emit_xml
@@ -92,12 +93,14 @@ XML
       shell.clear_line_then_say(msg)
       log.info(msg)
 
-      shell.say_line("Zipping to #{zip_filename}")
-      log.info("Zipping to #{zip_filename}")
-      Zip::ZipFile.open(zip_filename, Zip::ZipFile::CREATE) do |zf|
-        zf.add(filename.basename, filename)
+      if @zip
+        shell.say_line("Zipping to #{zip_filename}")
+        log.info("Zipping to #{zip_filename}")
+        Zip::ZipFile.open(zip_filename, Zip::ZipFile::CREATE) do |zf|
+          zf.add(filename.basename, filename)
+        end
+        log.info("XML export complete")
       end
-      log.info("XML export complete")
     end
 
     def zip_filename

@@ -5,8 +5,9 @@ require 'zip/zip'
 module NcsNavigator::Warehouse
   describe XmlEmitter, :use_mdes do
     let(:filename) { tmpdir + 'export.xml' }
+    let(:options) { {} }
     let(:xml) {
-      XmlEmitter.new(spec_config, filename).emit_xml
+      XmlEmitter.new(spec_config, filename, options).emit_xml
       Nokogiri::XML(File.read(filename))
     }
 
@@ -120,27 +121,49 @@ module NcsNavigator::Warehouse
       before do
         person_model.stub!(:count).and_return(0)
         person_model.stub!(:all).and_return([])
-        xml # for side effects
       end
 
-      it 'exists' do
-        expected_zipfile.should be_readable
-      end
-
-      it 'contains just the XML file' do
-        contents = []
-        Zip::ZipFile.foreach(expected_zipfile) do |entry|
-          contents << entry.name
+      context do
+        def actual
+          xml
+          expected_zipfile
         end
-        contents.should == [ filename.basename.to_s ]
+
+        it 'exists by default' do
+          actual.should be_readable
+        end
+
+        it 'exists if explicitly requested' do
+          options[:zip] = true
+          actual.should be_readable
+        end
+
+        it 'does not exist when excluded' do
+          options[:zip] = false
+          actual.exist?.should be_false
+        end
       end
 
-      it 'can be opened by something other than rubyzip' do
-        `which unzip`
-        pending "unzip is not available" unless $? == 0
+      context do
+        before do
+          xml # for side effects
+        end
 
-        `unzip -l '#{expected_zipfile}' 2>&1`.should =~ /#{filename.basename}\s/
-        $?.should == 0
+        it 'contains just the XML file' do
+          contents = []
+          Zip::ZipFile.foreach(expected_zipfile) do |entry|
+            contents << entry.name
+          end
+          contents.should == [ filename.basename.to_s ]
+        end
+
+        it 'can be opened by something other than rubyzip' do
+          `which unzip`
+          pending "unzip is not available" unless $? == 0
+
+          `unzip -l '#{expected_zipfile}' 2>&1`.should =~ /#{filename.basename}\s/
+          $?.should == 0
+        end
       end
     end
 

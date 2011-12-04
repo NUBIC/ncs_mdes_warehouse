@@ -57,6 +57,8 @@ DESC
     method_option 'block-size', :type => :numeric, :aliases => %w(-b),
       :desc => 'The maximum number of records to have in memory at once.',
       :default => 5000
+    method_option 'zip', :type => :boolean, :default => true,
+      :desc => 'Create a zip file alongside the XML. (Use --no-zip to disable.)'
     def emit_xml(filename=nil)
       use_database
 
