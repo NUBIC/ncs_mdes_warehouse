@@ -44,11 +44,11 @@ module NcsNavigator::Warehouse
         end
       end
 
-      def create_person(id)
+      def create_person(id, attributes={})
         person_model.new(
           person_model.properties.select { |prop| prop.required? }.inject({}) { |h, prop|
             h[prop.name] = '-4'; h
-          }.merge(:person_id => id)
+          }.merge(attributes).merge(:person_id => id)
         )
       end
 
@@ -76,8 +76,8 @@ module NcsNavigator::Warehouse
       describe 'with actual data', :slow, :use_database do
         let(:records) {
           [
-            create_person('XQ4'),
-            create_person('QX9')
+            create_person('XQ4', :first_name => 'Xavier'),
+            create_person('QX9', :first_name => 'Quentin')
           ]
         }
 
@@ -92,6 +92,26 @@ module NcsNavigator::Warehouse
 
         it 'contains the right records' do
           xml.xpath('//person/person_id').collect { |e| e.text.strip }.sort.should == %w(QX9 XQ4)
+        end
+
+        describe 'and PII' do
+          let(:xml_first_names) {
+            xml.xpath('//person/first_name').collect { |e| e.text.strip }.sort
+          }
+
+          it 'excludes PII by default' do
+            xml_first_names.should == ['', '']
+          end
+
+          it 'excludes PII when explicitly excluded' do
+            options[:'include-pii'] = false
+            xml_first_names.should == ['', '']
+          end
+
+          it 'includes PII when requested' do
+            options[:'include-pii'] = true
+            xml_first_names.should == %w(Quentin Xavier)
+          end
         end
       end
 

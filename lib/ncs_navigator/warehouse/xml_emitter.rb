@@ -70,6 +70,7 @@ XML
       @record_count = 0
       @block_size = options[:'block-size'] || 5000
       @zip = options.has_key?(:zip) ? options[:zip] : true
+      @include_pii = options[:'include-pii']
     end
 
     def emit_xml
@@ -116,7 +117,7 @@ XML
       while offset < count
         shell.back_up_and_say(20, '%20s' % '[loading]')
         model.all(:limit => @block_size, :offset => offset).each do |instance|
-          instance.write_mdes_xml(f, :indent => 3, :margin => 1)
+          instance.write_mdes_xml(f, :indent => 3, :margin => 1, :pii => @include_pii)
           @record_count += 1
 
           shell.back_up_and_say(20, '%5d (%5.1f/sec)' % [@record_count, emit_rate])
