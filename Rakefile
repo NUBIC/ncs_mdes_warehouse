@@ -15,12 +15,11 @@ task :spec => 'spec:all'
 namespace :spec do
   RSpec::Core::RakeTask.new(:fast) do |t|
     t.pattern = "spec/**/*_spec.rb"
-    t.rspec_opts = %q(--format nested --tag ~slow)
+    t.rspec_opts = %q(--tag ~slow)
   end
 
   RSpec::Core::RakeTask.new(:all) do |t|
     t.pattern = "spec/**/*_spec.rb"
-    t.rspec_opts = %q(--format nested)
   end
 end
 
@@ -38,7 +37,7 @@ namespace :ci do
 
   task :spec_setup do
     ENV['CI_REPORTS'] = 'reports/spec-xml'
-    ENV['SPEC_OPTS'] = "#{ENV['SPEC_OPTS']} --format nested"
+    ENV['SPEC_OPTS'] = "#{ENV['SPEC_OPTS']} --format nested --no-color"
   end
 
   task :spec => [:spec_setup, 'ci:setup:rspecbase', 'rake:spec']
