@@ -61,10 +61,13 @@ DESC
       :desc => 'Include PII values in the emitted XML.'
     method_option 'zip', :type => :boolean, :default => true,
       :desc => 'Create a zip file alongside the XML. (Use --no-zip to disable.)'
+    method_option 'tables', :type => :string,
+      :desc => 'Emit XML for a subset of tables.', :banner => 'TABLE,TABLE,TABLE'
     def emit_xml(filename=nil)
       use_database
 
-      XmlEmitter.new(configuration, filename, options).emit_xml
+      XmlEmitter.new(configuration, filename,
+        options.merge(:tables => options[:tables].try(:split, /\s*,\s*/))).emit_xml
     end
 
     desc 'etl', 'Performs the full extract-transform-load process for this configuration'

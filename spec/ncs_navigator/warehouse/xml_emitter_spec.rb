@@ -15,10 +15,19 @@ module NcsNavigator::Warehouse
       spec_config.models_module.const_get(:Person)
     end
 
+    def participant_model
+      spec_config.models_module.const_get(:Participant)
+    end
+
+    def stub_model(model)
+      model.stub!(:count).and_return(0)
+    end
+
     before do
-      spec_config.models_module.mdes_order.reject { |m| m == person_model }.each do |model|
-        model.stub!(:count).and_return(0)
-        model.stub!(:all).and_return([])
+      spec_config.models_module.mdes_order.reject { |m|
+        [person_model, participant_model].include?(m)
+      }.each do |model|
+        stub_model(model)
       end
     end
 
@@ -26,8 +35,8 @@ module NcsNavigator::Warehouse
     describe 'the generated XML', :slow do
       describe 'global attributes' do
         before do
-          person_model.stub!(:count).and_return(0)
-          person_model.stub!(:all).and_return([])
+          stub_model(person_model)
+          stub_model(participant_model)
         end
 
         it 'includes the SC from the configuration' do
@@ -44,12 +53,18 @@ module NcsNavigator::Warehouse
         end
       end
 
+      def default_required_attributes(model)
+        model.properties.select { |prop| prop.required? }.inject({}) { |h, prop|
+          h[prop.name] = '-4'; h
+        }
+      end
+
+      def create_instance(model, attributes)
+        model.new(default_required_attributes(model).merge(attributes))
+      end
+
       def create_person(id, attributes={})
-        person_model.new(
-          person_model.properties.select { |prop| prop.required? }.inject({}) { |h, prop|
-            h[prop.name] = '-4'; h
-          }.merge(attributes).merge(:person_id => id)
-        )
+        create_instance(person_model, { :person_id => id }.merge(attributes))
       end
 
       describe 'with exactly one actual record', :slow, :use_database do
@@ -77,7 +92,8 @@ module NcsNavigator::Warehouse
         let(:records) {
           [
             create_person('XQ4', :first_name => 'Xavier'),
-            create_person('QX9', :first_name => 'Quentin')
+            create_person('QX9', :first_name => 'Quentin'),
+            create_instance(participant_model, :p_id => 'P_QX4')
           ]
         }
 
@@ -111,6 +127,30 @@ module NcsNavigator::Warehouse
           it 'includes PII when requested' do
             options[:'include-pii'] = true
             xml_first_names.should == %w(Quentin Xavier)
+          end
+        end
+
+        describe 'and selected output' do
+          let(:people_count) { xml.xpath('//person').size }
+          let(:p_count) { xml.xpath('//participant').size }
+
+          it 'includes all tables by default' do
+            people_count.should == 2
+            p_count.should == 1
+          end
+
+          it 'includes only the selected tables when requested' do
+            options[:tables] = %w(participant)
+
+            people_count.should == 0
+            p_count.should == 1
+          end
+
+          it 'includes all the requested tables when explicitly requested' do
+            options[:tables] = spec_config.models_module.mdes_order.collect(&:mdes_table_name)
+
+            people_count.should == 2
+            p_count.should == 1
           end
         end
       end

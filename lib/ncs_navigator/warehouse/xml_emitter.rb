@@ -71,6 +71,14 @@ XML
       @block_size = options[:'block-size'] || 5000
       @zip = options.has_key?(:zip) ? options[:zip] : true
       @include_pii = options[:'include-pii']
+      @models =
+        if options[:tables]
+          options[:tables].collect { |t| t.to_s }.collect { |t|
+            config.models_module.mdes_order.find { |model| model.mdes_table_name == t }
+          }
+        else
+          config.models_module.mdes_order
+        end
     end
 
     def emit_xml
@@ -81,7 +89,7 @@ XML
       filename.open('w') do |f|
         f.write HEADER_TEMPLATE.result(binding)
 
-        configuration.models_module.mdes_order.each do |model|
+        @models.each do |model|
           shell.clear_line_then_say('Writing XML for %33s' % model.mdes_table_name)
 
           write_all_xml_for_model(f, model)
