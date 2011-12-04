@@ -124,9 +124,9 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
     property   :centrifuge_location,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-3", "-4"] }
-    belongs_to :equip,
-               'NcsNavigator::Warehouse::Models::TwoPointZero::SpecEquipment',
-               :child_key => [ :equip_id ], :required => false
+    property   :equip_id,
+               NcsNavigator::Warehouse::DataMapper::NcsString,
+               { :length => 0..36 }
     property   :centrifuge_time,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..5, :format => /^([0-9][0-9]:[0-9][0-9])?$/ }
