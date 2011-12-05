@@ -7,11 +7,27 @@ require 'fileutils'
 require 'forwardable'
 
 module NcsNavigator::Warehouse
+  ##
+  # Generates VDR XML from a warehouse instance. This is the object
+  # which implements the `emit-xml` tool in the `mdes-wh` command line
+  # client.
   class XmlEmitter
     extend Forwardable
 
+    ##
+    # @return [Configuration] the warehouse configuration used by this
+    #   emitter.
     attr_reader :configuration
+
+    ##
+    # @return [Pathname] the file to which the XML will be emitted.
     attr_reader :filename
+
+    ##
+    # @return [Array<Models::MdesModel>] the models whose data will be
+    #   emitted. This is determined from the `:tables` option to
+    #   {#initialize}.
+    attr_reader :models
 
     def_delegators :@configuration, :shell, :log
 
@@ -39,6 +55,10 @@ XML_ERB
 </ncs:recruitment_substudy_transmission_envelope>
 XML
 
+    ##
+    # @param configuration [Configuration]
+    # @return [Pathname] the default filename to use for a VDR XML
+    #   submission. The format is `{county}-{YYYYMMDD}.xml`.
     def self.default_filename(configuration)
       psu_type = configuration.mdes.types.detect { |type| type.name =~ /^psu_cl/ }
       unless psu_type
@@ -48,7 +68,7 @@ XML
       psu_id = configuration.navigator.psus.first.id
       psu_entry =  psu_type.code_list.detect { |cle| cle.value == psu_id }
       unless psu_entry
-        fail "Cannot find PSU #{psu_id} in #{psu_type.name}. Please specify a filename manually"
+        fail "Cannot find PSU #{psu_id} in #{psu_type.name}. Please specify a filename manually."
       end
 
       Pathname.new '%s-%s.xml' % [
@@ -57,6 +77,25 @@ XML
       ]
     end
 
+    ##
+    # Create a new {XmlEmitter}.
+    #
+    # @param [Configuration] config the configuration for the
+    #   warehouse from which to emit records.
+    # @param [Pathname,#to_s,nil] filename the filename to which the output
+    #   will be written. If `nil`, the {.default_filename} is used.
+    #
+    # @option options [Fixnum] :block-size (5000) the maximum number
+    #   of records to load into memory before writing them to the XML
+    #   file. Reduce this to reduce the memory load of the emitter.
+    #   Increasing it will probably not improve performance, even if
+    #   you have sufficient memory to load more records.
+    # @option options [Boolean] :include-pii (false) should PII
+    #   variable values be included in the XML?
+    # @option options [Array<#to_s>] :tables (all for current MDES
+    #   version) the tables to include in the emitted XML.
+    # @option options [Boolean] :zip (true) should a ZIP file be
+    #   produced alongside the XML file?
     def initialize(config, filename, options={})
       @configuration = config
       @filename = case filename
@@ -81,6 +120,10 @@ XML
         end
     end
 
+    ##
+    # Emit XML from the configured warehouse to {#filename}.
+    #
+    # @return [void]
     def emit_xml
       shell.say_line("Exporting to #{filename}")
       log.info("Beginning XML export to #{filename}")
@@ -89,7 +132,7 @@ XML
       filename.open('w') do |f|
         f.write HEADER_TEMPLATE.result(binding)
 
-        @models.each do |model|
+        models.each do |model|
           shell.clear_line_then_say('Writing XML for %33s' % model.mdes_table_name)
 
           write_all_xml_for_model(f, model)
@@ -102,7 +145,7 @@ XML
       shell.clear_line_then_say(msg)
       log.info(msg)
 
-      if @zip
+      if zip?
         shell.say_line("Zipping to #{zip_filename}")
         log.info("Zipping to #{zip_filename}")
         Zip::ZipFile.open(zip_filename, Zip::ZipFile::CREATE) do |zf|
@@ -112,6 +155,26 @@ XML
       end
     end
 
+    ##
+    # Will PII be included in the exported XML?
+    #
+    # @return [Boolean]
+    def include_pii?
+      @include_pii
+    end
+
+    ##
+    # Will a ZIP archive be created along with the XML?
+    #
+    # @return [Boolean]
+    def zip?
+      @zip
+    end
+
+    ##
+    # @return [Pathname] the filename for the ZIP archive of the XML,
+    #   if any. Currently this is always {#filename} + '.zip'.
+    # @see #zip?
     def zip_filename
       @zip_filename ||= filename.to_s + '.zip'
     end
@@ -125,7 +188,7 @@ XML
       while offset < count
         shell.back_up_and_say(20, '%20s' % '[loading]')
         model.all(:limit => @block_size, :offset => offset).each do |instance|
-          instance.write_mdes_xml(f, :indent => 3, :margin => 1, :pii => @include_pii)
+          instance.write_mdes_xml(f, :indent => 3, :margin => 1, :pii => include_pii?)
           @record_count += 1
 
           shell.back_up_and_say(20, '%5d (%5.1f/sec)' % [@record_count, emit_rate])
