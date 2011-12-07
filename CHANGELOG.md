@@ -1,7 +1,7 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
-0.1.2
+0.2.0
 -----
 
 - Automatically set PSU ID and recruitment type in
@@ -17,6 +17,9 @@ NCS Navigator MDES Warehouse History
 
 - New options for `emit-xml`: `--tables`, `--zip`,
   `--include-pii`. (#1612, #1657, #1658)
+
+- Add `compare` subcommand in `mdes-wh` for comparing the contents of
+  two warehouses. (#1667)
 
 0.1.1
 -----

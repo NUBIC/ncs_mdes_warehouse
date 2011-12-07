@@ -22,6 +22,7 @@ module NcsNavigator::Warehouse
       say clear_line_chars
       say s
     end
+    alias :clear_line_and_say :clear_line_then_say
 
     def say_line(s)
       say s, "\n"

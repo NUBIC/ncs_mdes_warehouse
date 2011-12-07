@@ -44,18 +44,17 @@ module NcsNavigator::Warehouse
     #   be the reporting repo unless only the working repo is
     #   configured in.
     # @return [void]
-    def set_up_repository(mode=:reporting)
+    def set_up_repository(mode=:reporting, prefix="mdes_warehouse")
       fail "Invalid mode #{mode.inspect}" unless [:reporting, :working, :both].include?(mode)
       modes = case mode
               when :both then [:reporting, :working]
               else [mode]
               end
       connect_one(modes.first, :default)
-      modes.each { |m| connect_one(m) }
+      modes.each { |m| connect_one(m, [prefix, m].join('_').to_sym) }
     end
 
-    def connect_one(which_one, dm_name=nil)
-      dm_name ||= :"mdes_warehouse_#{which_one}"
+    def connect_one(which_one, dm_name)
       log.info "Connecting DataMapper repository #{dm_name.inspect}"
       p = params(which_one)
       log.debug "  using #{p.merge('password' => 'SUPPRESSED').inspect}"

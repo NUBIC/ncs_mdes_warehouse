@@ -93,6 +93,41 @@ DESC
         exit 1
       end
     end
+
+    desc 'compare', 'Compares the contents of two warehouses, A & B.'
+    long_desc <<-DESC
+Compares the contents of the MDES tables in two warehouses.
+
+The comparison can be done at three levels:
+
+1. Record counts.
+
+2. IDs. (Which record IDs appear in one warehouse and not the other?)
+
+3. Full contents. (Matching records based on ID, what variables have different values?)
+
+Each level includes the one before it (i.e., doing a full content
+comparison also does ID and count comparisons). Higher levels skip
+tables which would add heat without light; i.e., level 2 only compares
+IDs for a table when there are at least some records in each warehouse
+and level 3 only compares content for tables where there are some
+overlapping IDs.
+DESC
+    method_option 'warehouse-a', :type => :string, :aliases => %w(-a),
+      :desc => 'The configuration file for warehouse A. The environment default will be used if not specified.'
+    method_option 'warehouse-b', :type => :string, :required => true, :aliases => %w(-b),
+      :desc => 'The configuration file for warehouse B.'
+    method_option 'level', :type => :numeric, :default => 1,
+      :desc => 'The level of detail for the comparison.'
+    def compare
+      if options['warehouse-a']
+        options['config'] = options['warehouse-a']
+      end
+      config_a = configuration
+      config_b = Configuration.from_file(options['warehouse-b'])
+
+      Comparator.new(config_a, config_b, options).compare
+    end
   end
 end
 
