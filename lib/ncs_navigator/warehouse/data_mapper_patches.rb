@@ -4,6 +4,7 @@
 # been submitted to the dm-constraints:
 # https://github.com/datamapper/dm-constraints/pull/13
 
+require 'ncs_navigator/warehouse/data_mapper'
 require 'data_mapper/constraints/adapters/do_adapter'
 # @private
 module DataMapper::Constraints::Adapters::DataObjectsAdapter::SQL

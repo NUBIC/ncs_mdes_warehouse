@@ -1,8 +1,8 @@
 require 'ncs_navigator/warehouse'
 require 'ncs_navigator/configuration'
 require 'ncs_navigator/mdes'
+require 'ncs_navigator/warehouse/data_mapper'
 
-require 'data_mapper'
 require 'active_support/core_ext/object/try'
 require 'pathname'
 

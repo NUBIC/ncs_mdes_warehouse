@@ -1,4 +1,9 @@
-require 'data_mapper'
+%w(
+  dm-core dm-constraints dm-migrations dm-transactions dm-validations dm-types dm-aggregates
+).each do |dm|
+  require dm
+end
+
 require 'ncs_navigator/warehouse'
 
 module NcsNavigator::Warehouse

@@ -1,7 +1,5 @@
 require File.expand_path('../../../../spec_helper', __FILE__)
 
-require 'data_mapper'
-
 module NcsNavigator::Warehouse::Models
   module Spec
     ##

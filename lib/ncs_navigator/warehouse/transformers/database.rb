@@ -1,8 +1,8 @@
 require 'ncs_navigator/warehouse'
+require 'ncs_navigator/warehouse/data_mapper'
 
 require 'active_support/core_ext/string'
 require 'forwardable'
-require 'data_mapper'
 
 module NcsNavigator::Warehouse::Transformers
   ##

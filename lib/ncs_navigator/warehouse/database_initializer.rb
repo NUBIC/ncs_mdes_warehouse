@@ -1,10 +1,10 @@
 require 'ncs_navigator/warehouse'
 
 require 'bcdatabase'
-require 'data_mapper'
 require 'benchmark'
 require 'forwardable'
 
+require 'ncs_navigator/warehouse/data_mapper'
 require 'ncs_navigator/warehouse/data_mapper_patches'
 
 module NcsNavigator::Warehouse

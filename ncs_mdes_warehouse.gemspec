@@ -27,9 +27,14 @@ Gem::Specification.new do |s|
   s.add_dependency 'nokogiri', '~> 1.5.0'
   s.add_dependency 'builder', '>= 2.1.2'
 
-  s.add_dependency 'data_mapper', '~> 1.2.0'
+  %w(
+    dm-core dm-constraints dm-migrations dm-transactions dm-validations dm-types dm-aggregates
+    dm-postgres-adapter
+  ).each do |dm_gem|
+    s.add_dependency dm_gem, '~> 1.2.0'
+  end
+
   s.add_dependency 'bcdatabase', '~> 1.1'
-  s.add_dependency 'dm-postgres-adapter', '~> 1.2.0'
 
   s.add_development_dependency 'rspec', '~> 2.6'
   s.add_development_dependency 'rake', '~> 0.9.2'

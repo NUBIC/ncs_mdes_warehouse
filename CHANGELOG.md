@@ -4,6 +4,12 @@ NCS Navigator MDES Warehouse History
 0.2.1
 -----
 
+- Depend on the specific DataMapper modules we use, rather than the
+  `data_mapper` meta-gem. Practically this only excludes
+  dm-serializer, but dm-serializer monkeys with the CSV library in a
+  way that interferes with other CSV-using libraries, so excluding it
+  is necessary. (#1619, data_mapper/dm-serializer#25)
+
 0.2.0
 -----
 
