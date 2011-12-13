@@ -1,5 +1,5 @@
-require 'data_mapper'
 require 'ncs_navigator/warehouse'
+require 'ncs_navigator/warehouse/data_mapper'
 
 module NcsNavigator::Warehouse::Models::TwoPointZero
   class PrePregPdecorateRoom
