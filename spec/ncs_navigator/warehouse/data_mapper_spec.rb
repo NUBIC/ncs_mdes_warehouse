@@ -9,6 +9,10 @@ module NcsNavigator::Warehouse::DataMapper
     it 'uses the default method for other types' do
       subject.send(:typecast_to_primitive, 45).should == '45'
     end
+
+    it 'is not lazily-loaded' do
+      subject.options[:lazy].should be_false
+    end
   end
 
   describe NcsString, :modifies_warehouse_state do

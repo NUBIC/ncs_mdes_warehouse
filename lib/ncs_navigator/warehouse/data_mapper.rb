@@ -19,6 +19,7 @@ module NcsNavigator::Warehouse
           accept_options :pii, :omittable
           attr_reader :pii, :omittable
         end
+        into.lazy(false)
       end
 
       def initialize(model, name, options = {})
