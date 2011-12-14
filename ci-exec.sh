@@ -16,7 +16,7 @@ source ~/.rvm/scripts/rvm
 set -xe
 
 # On the overnight build, reinstall all gems
-if [ `date +%H` -lt 5 ]; then
+if [ `date +%H` -lt 5 ] && [ -z $SKIP_REINSTALL ]; then
     set +xe
     echo "Purging gemset to verify that all deps can still be installed"
     rvm --force $CI_RUBY gemset delete $GEMSET
