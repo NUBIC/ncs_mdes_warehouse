@@ -8,13 +8,17 @@ class NcsNavigator::Warehouse::Configuration
     alias :c :configuration
 
     def initialize(filename)
-      @filename = filename
+      @filename = Pathname.new(filename)
+      unless @filename.absolute?
+        @filename = @filename.realpath
+      end
       @base_configuration = NcsNavigator::Warehouse::Configuration.new
       @configuration = ErrorAccumulator.new(@base_configuration, @filename)
     end
 
     def eval
       instance_eval(File.read(@filename), @filename)
+      configuration.configuration_file = @filename
       configuration.finish
       @evaled = true
     end

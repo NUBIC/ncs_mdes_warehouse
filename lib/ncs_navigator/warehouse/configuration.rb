@@ -30,7 +30,7 @@ module NcsNavigator::Warehouse
       #   given file.
       # @param [String] filename
       def from_file(filename)
-        FileEvaluator.new(filename).result
+        FileEvaluator.new(filename.to_s).result
       end
 
       ##
@@ -336,6 +336,27 @@ module NcsNavigator::Warehouse
       else
         coerce_to_pathname command
       end
+    end
+
+    ####
+    #### Meta
+    ####
+
+    ##
+    # The file from which this configuration was originally read. If
+    # the configuration was constructed solely in memory, this value
+    # will be `nil`.
+    #
+    # @return [Pathname,nil]
+    attr_reader :configuration_file
+
+    ##
+    # Specify the file from which this configuration was read.
+    #
+    # @param [Pathname,String,nil] fn
+    # @return [void]
+    def configuration_file=(fn)
+      @configuration_file = coerce_to_pathname(fn)
     end
 
     private

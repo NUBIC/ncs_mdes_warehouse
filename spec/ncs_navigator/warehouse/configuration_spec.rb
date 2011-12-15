@@ -394,6 +394,20 @@ module NcsNavigator::Warehouse
         subject.bcdatabase_group.should == :custom
       end
 
+      describe 'source file tracking' do
+        it 'knows what file it came from' do
+          write_file { }
+          subject.configuration_file.to_s.should == filename.to_s
+        end
+
+        it 'resolves relative paths' do
+          write_file { }
+          FileUtils.cd tmpdir do
+            Configuration.from_file('test.rb').configuration_file.to_s.should == filename.to_s
+          end
+        end
+      end
+
       describe 'with errors' do
         before do
           write_file do |f|
