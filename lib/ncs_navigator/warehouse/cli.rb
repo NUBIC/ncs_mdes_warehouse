@@ -4,8 +4,6 @@ require 'thor'
 
 module NcsNavigator::Warehouse
   class CLI < Thor
-    class_option 'mdes-version', :type => :string,
-      :desc => 'Override the MDES version for the environment', :banner => 'X.Y'
     class_option :quiet, :type => :boolean, :aliases => %w(-q),
       :desc => 'Suppress the status messages printed to standard error'
     class_option 'config', :type => :string, :aliases => %w(-c),
@@ -19,7 +17,6 @@ module NcsNavigator::Warehouse
               Configuration.from_file(options['config']) :
               Configuration.for_environment
             base.tap do |c|
-              c.mdes_version = options['mdes-version'] if options['mdes-version']
               if options.has_key?('quiet')
                 c.output_level = options['quiet'] ? :quiet : :normal
               end

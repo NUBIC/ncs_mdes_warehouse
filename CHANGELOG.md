@@ -10,6 +10,8 @@ NCS Navigator MDES Warehouse History
   way that interferes with other CSV-using libraries, so excluding it
   is necessary. (#1619, data_mapper/dm-serializer#25)
 
+- Remove mdes-version command line option.
+
 0.2.0
 -----
 
