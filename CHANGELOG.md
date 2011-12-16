@@ -1,7 +1,7 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
-0.2.1
+0.3.0
 -----
 
 - Depend on the specific DataMapper modules we use, rather than the
@@ -11,6 +11,8 @@ NCS Navigator MDES Warehouse History
   is necessary. (#1619, data_mapper/dm-serializer#25)
 
 - Remove mdes-version command line option.
+
+- Add `SubprocessTransformer` for executing external scripts to do ETL.
 
 0.2.0
 -----

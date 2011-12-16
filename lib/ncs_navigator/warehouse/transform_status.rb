@@ -26,7 +26,7 @@ module NcsNavigator::Warehouse
       storage_names[:mdes_warehouse_reporting] = 'wh_transform_status'
 
     property :id,           Serial
-    property :name,         String,  :required => true, :length => 255
+    property :name,         Text,    :required => true
     property :start_time,   DateTime
     property :end_time,     DateTime
     property :record_count, Integer, :default => 0

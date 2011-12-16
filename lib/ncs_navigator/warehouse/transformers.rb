@@ -11,9 +11,10 @@ module NcsNavigator::Warehouse
   # `Enumerable` of MDES Warehouse model instances, validates and
   # saves them. It's a good general base for your own transformers.
   module Transformers
-    autoload :Database,        'ncs_navigator/warehouse/transformers/database'
-    autoload :EnumTransformer, 'ncs_navigator/warehouse/transformers/enum_transformer'
-    autoload :SamplingUnits,   'ncs_navigator/warehouse/transformers/sampling_units'
-    autoload :VdrXml,          'ncs_navigator/warehouse/transformers/vdr_xml'
+    autoload :Database,              'ncs_navigator/warehouse/transformers/database'
+    autoload :EnumTransformer,       'ncs_navigator/warehouse/transformers/enum_transformer'
+    autoload :SamplingUnits,         'ncs_navigator/warehouse/transformers/sampling_units'
+    autoload :SubprocessTransformer, 'ncs_navigator/warehouse/transformers/subprocess_transformer'
+    autoload :VdrXml,                'ncs_navigator/warehouse/transformers/vdr_xml'
   end
 end

@@ -23,6 +23,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'thor', '~> 0.14.6'
   s.add_dependency 'rubyzip', '~> 0.9.4'
+  s.add_dependency 'childprocess', '~> 0.2.3'
+  s.add_dependency 'json', '~> 1.6'
 
   s.add_dependency 'nokogiri', '~> 1.5.0'
   s.add_dependency 'builder', '>= 2.1.2'
