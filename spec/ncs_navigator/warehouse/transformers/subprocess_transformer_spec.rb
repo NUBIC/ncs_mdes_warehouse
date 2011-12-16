@@ -32,7 +32,7 @@ module NcsNavigator::Warehouse::Transformers
 
       it 'executes the script' do
         write_script do |f|
-          f.puts %(echo "bar" > #{side_file})
+          f.puts %(echo "bar" > '#{side_file}')
         end
 
         subject.transform(transform_status)
