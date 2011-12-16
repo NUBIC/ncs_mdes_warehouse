@@ -42,6 +42,15 @@ module NcsNavigator::Warehouse::Transformers
     attr_reader :configuration
 
     ##
+    # @return [String] the working directory for the subprocess.
+    attr_reader :directory
+
+    ##
+    # @return [Hash<String, String>] supplemental environment variable
+    #   values for the subprocess.
+    attr_reader :environment
+
+    ##
     # @param config [Configuration]
     # @param exec_and_args [String<Array>] the arguments for the
     #   subprocess to spawn, including the executable name (which
@@ -58,7 +67,7 @@ module NcsNavigator::Warehouse::Transformers
     def initialize(config, exec_and_args, options={})
       @configuration = config
       @exec_and_args = exec_and_args
-      @working_directory = options[:directory] || '.'
+      @directory = options[:directory] || '.'
       @environment = options[:environment] || {}
     end
 
@@ -77,7 +86,7 @@ module NcsNavigator::Warehouse::Transformers
     # @return [void]
     def transform(transform_status)
       process = ChildProcess.build(*exec_and_args)
-      process.environment.merge!(@environment)
+      process.environment.merge!(environment)
 
       # inherit stderr
       process.io.inherit!
@@ -89,7 +98,7 @@ module NcsNavigator::Warehouse::Transformers
       log.info "Spawning subprocess transformer `#{exec_and_args.join(' ')}`"
       shell.say "Spawning subprocess transformer `#{exec_and_args.join(' ')}`"
 
-      FileUtils.cd @working_directory do
+      FileUtils.cd directory do
         process.start
       end
 
