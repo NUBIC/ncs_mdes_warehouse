@@ -12,7 +12,8 @@ NCS Navigator MDES Warehouse History
 
 - Remove mdes-version command line option.
 
-- Add `SubprocessTransformer` for executing external scripts to do ETL.
+- Add `SubprocessTransformer` for executing external scripts to do
+  ETL. (#1682)
 
 0.2.0
 -----
