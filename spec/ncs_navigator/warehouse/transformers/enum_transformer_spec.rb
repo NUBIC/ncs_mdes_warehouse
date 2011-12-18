@@ -1,5 +1,7 @@
 require File.expand_path('../../../../spec_helper', __FILE__)
 
+require 'ncs_navigator/warehouse/data_mapper'
+
 module NcsNavigator::Warehouse::Transformers
   describe EnumTransformer, :modifies_warehouse_state do
     class Sample
