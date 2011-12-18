@@ -42,7 +42,7 @@ module NcsNavigator::Warehouse::Transformers
           log.debug("Saving valid record #{record_ident record}.")
           begin
             unless record.save
-              msg = "Could not save."
+              msg = "Could not save valid record #{record.inspect}. #{record_messages(record).join(' ')}"
               log.error msg
               status.unsuccessful_record(record, msg)
             end
@@ -52,13 +52,7 @@ module NcsNavigator::Warehouse::Transformers
             status.unsuccessful_record(record, msg)
           end
         else
-          messages = record.errors.keys.collect { |prop|
-            record.errors[prop].collect { |e|
-              v = record.send(prop)
-              "#{e} (#{prop}=#{v.inspect})."
-            }
-          }.flatten
-          msg = "Invalid record. #{messages.join(' ')}"
+          msg = "Invalid record. #{record_messages(record).join(' ')}"
           log.error msg
           status.unsuccessful_record(record, msg)
         end
@@ -72,6 +66,15 @@ module NcsNavigator::Warehouse::Transformers
       # No composite keys in the MDES
       '%s %s=%s' % [
         rec.class.name.demodulize, rec.class.key.first.name, rec.key.try(:first).inspect]
+    end
+
+    def record_messages(record)
+      record.errors.keys.collect { |prop|
+        record.errors[prop].collect { |e|
+          v = record.send(prop)
+          "#{e} (#{prop}=#{v.inspect})."
+        }
+      }.flatten
     end
 
     def apply_global_values_if_necessary(record)

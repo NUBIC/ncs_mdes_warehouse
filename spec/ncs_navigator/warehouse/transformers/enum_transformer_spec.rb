@@ -99,7 +99,7 @@ module NcsNavigator::Warehouse::Transformers
           err = transform_status.transform_errors.first
           err.model_class.should == Sample.to_s
           err.record_id.should == '2'
-          err.message.should == 'Could not save.'
+          err.message.should =~ /^Could not save valid record/
         end
 
         it 'saves the saveable instances' do
