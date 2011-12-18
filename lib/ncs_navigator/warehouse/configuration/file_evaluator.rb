@@ -18,7 +18,6 @@ class NcsNavigator::Warehouse::Configuration
 
     def eval
       instance_eval(File.read(@filename), @filename)
-      configuration.configuration_file = @filename
       configuration.finish
       @evaled = true
     end
@@ -37,6 +36,7 @@ class NcsNavigator::Warehouse::Configuration
     def initialize(configuration, filename)
       @filename = filename
       @base_configuration = configuration
+      @base_configuration.configuration_file = @filename
       @errors = []
     end
 

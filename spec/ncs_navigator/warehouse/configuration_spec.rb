@@ -406,6 +406,14 @@ module NcsNavigator::Warehouse
             Configuration.from_file('test.rb').configuration_file.to_s.should == filename.to_s
           end
         end
+
+        it 'exposes the source file during evaluation' do
+          write_file do |f|
+            f.puts 'filename = c.configuration_file.to_s'
+            f.puts 'c.add_transformer NcsNavigator::Warehouse::Transformers::SubprocessTransformer.new(c, ["foo", filename])'
+          end
+          subject.transformers.first.exec_and_args.should == ['foo', filename.to_s]
+        end
       end
 
       describe 'with errors' do

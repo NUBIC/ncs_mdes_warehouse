@@ -4,6 +4,10 @@ NCS Navigator MDES Warehouse History
 0.3.1
 -----
 
+- Ensure that {Configuration#configuration_file} is set before
+  evaluating a configuration file so it can be used to configure
+  transformers. (#1688)
+
 0.3.0
 -----
 
