@@ -13,6 +13,7 @@
       <comments>NA</comments>
       <transaction_type>NA</transaction_type>
     </study_center>
+
     <psu>
       <sc_id>20000029</sc_id>
       <psu_id>20000030</psu_id>
@@ -20,6 +21,7 @@
       <recruit_type>3</recruit_type>
       <transaction_type>NA</transaction_type>
     </psu>
+
     <ssu>
       <sc_id>20000029</sc_id>
       <psu_id>20000030</psu_id>
@@ -27,6 +29,7 @@
       <ssu_name>The unluckiest SSU</ssu_name>
       <transaction_type>NA</transaction_type>
     </ssu>
+
     <listing_unit>
       <psu_id>20000030</psu_id>
       <list_id>100</list_id>
@@ -37,6 +40,7 @@
       <list_comment>NA</list_comment>
       <transaction_type>NA</transaction_type>
     </listing_unit>
+
     <person>
       <psu_id>20000030</psu_id>
       <person_id>74</person_id>
@@ -72,6 +76,7 @@
       <person_comment>NA</person_comment>
       <transaction_type xsi:nil="true"/>
     </person>
+
     <link_contact>
       <psu_id>20000030</psu_id>
       <contact_link_id>36</contact_link_id>
@@ -83,5 +88,29 @@
       <provider_id>-7</provider_id>
       <transaction_type>NA</transaction_type>
     </link_contact>
+
+    <email>
+      <psu_id>20000030</psu_id>
+      <email_id>18</email_id>
+      <person_id>74</person_id>
+      <institute_id></institute_id>
+      <provider_id></provider_id>
+      <email>jo@example.net</email>
+      <email_rank>1</email_rank>
+      <email_rank_oth>-7</email_rank_oth>
+      <email_info_source>1</email_info_source>
+      <email_info_source_oth>-7</email_info_source_oth>
+      <email_info_date>2011-03-31</email_info_date>
+      <email_info_update>9777-97-97</email_info_update>
+      <email_type>1</email_type>
+      <email_type_oth>-7</email_type_oth>
+      <email_share>2</email_share>
+      <email_active>1</email_active>
+      <email_comment>NA</email_comment>
+      <email_start_date>9666-96-96</email_start_date>
+      <email_end_date>9666-96-96</email_end_date>
+      <transaction_type xsi:nil="true"/>
+   </email>
+
   </ncs:transmission_tables>
 </ncs:recruitment_substudy_transmission_envelope>

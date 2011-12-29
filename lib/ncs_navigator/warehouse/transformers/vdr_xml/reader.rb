@@ -67,7 +67,7 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       if node.local_name == 'transmission_tables'
         @in_table_section = is_open
       elsif @current_model_class
-        if node.local_name == @current_model_class.mdes_table_name
+        if !is_open && node.local_name == @current_model_class.mdes_table_name
           # on the way out of this record
           yield build_current_instance
           @current_model_class = nil

@@ -9,17 +9,18 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       let(:person)       { reader.detect { |rec| rec.class.name =~ /Person$/ } }
       let(:link_contact) { reader.detect { |rec| rec.class.name =~ /LinkContact$/ } }
       let(:listing_unit) { reader.detect { |rec| rec.class.name =~ /ListingUnit$/ } }
+      let(:email)        { reader.detect { |rec| rec.class.name =~ /Email$/ } }
 
       it 'verifies the PSU matches the configuration'
       it 'verifies the specification version matches the runtime MDES version'
 
       it 'yields all records' do
-        reader.to_a.size.should == 6
+        reader.to_a.size.should == 7
       end
 
       it 'yields the records using their model classes' do
         reader.collect { |rec| rec.class.name.demodulize }.should ==
-          %w(StudyCenter Psu Ssu ListingUnit Person LinkContact)
+          %w(StudyCenter Psu Ssu ListingUnit Person LinkContact Email)
       end
 
       it 'reads variable values' do
@@ -42,6 +43,10 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
         it 'leaves another blank value as blank' do
           person.last_name.should == ''
         end
+      end
+
+      it 'handles table-named variables' do
+        email.email.should == 'jo@example.net'
       end
     end
   end
