@@ -6,6 +6,8 @@ NCS Navigator MDES Warehouse History
 
 - Correct VDR XML reader for the case where an MDES table that
   contains a variable with the same name as the table. (#1695)
+- Include the Study Center record in the instances created from the
+  `SamplingUnits` transformer. (#1690)
 
 0.3.1
 -----
