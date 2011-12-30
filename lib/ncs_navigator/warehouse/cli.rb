@@ -114,7 +114,7 @@ DESC
       :desc => 'The configuration file for warehouse A. The environment default will be used if not specified.'
     method_option 'warehouse-b', :type => :string, :required => true, :aliases => %w(-b),
       :desc => 'The configuration file for warehouse B.'
-    method_option 'level', :type => :numeric, :default => 1,
+    method_option 'level', :type => :numeric, :default => 3,
       :desc => 'The level of detail for the comparison.'
     def compare
       if options['warehouse-a']
