@@ -61,23 +61,19 @@ module NcsNavigator::Warehouse::Transformers
         detect { |code| code.value == value }.label
     end
 
-    def sc_model
-      configuration.models_module.const_get(:StudyCenter)
+    def model(name)
+      configuration.models_module.const_get(name)
     end
 
     def create_study_center
-      sc_model.new(
+      model(:StudyCenter).new(
         :sc_id => configuration.navigator.sc_id,
         :sc_name => code_label('study_center_cl1', configuration.navigator.sc_id)
       )
     end
 
-    def psu_model
-      configuration.models_module.const_get(:Psu)
-    end
-
     def create_psu(nav_psu)
-      psu_model.new(
+      model(:Psu).new(
         :psu_id => nav_psu.id,
         :sc_id => configuration.navigator.sc_id,
         :recruit_type => configuration.navigator.recruitment_type_id,
@@ -85,12 +81,8 @@ module NcsNavigator::Warehouse::Transformers
       )
     end
 
-    def ssu_model
-      configuration.models_module.const_get(:Ssu)
-    end
-
     def create_ssu(nav_ssu)
-      ssu_model.new(
+      model(:Ssu).new(
         :ssu_id => nav_ssu.id,
         :ssu_name => nav_ssu.name,
         :psu_id => nav_ssu.psu.id,
@@ -98,12 +90,8 @@ module NcsNavigator::Warehouse::Transformers
       )
     end
 
-    def tsu_model
-      configuration.models_module.const_get(:Tsu)
-    end
-
     def create_tsu(nav_tsu)
-      tsu_model.new(
+      model(:Tsu).new(
         :tsu_id => nav_tsu.id,
         :tsu_name => nav_tsu.name,
         :psu_id => nav_tsu.ssu.psu.id,
