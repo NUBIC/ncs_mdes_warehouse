@@ -26,6 +26,9 @@ module NcsNavigator::Warehouse::Transformers
     def each
       log.info("Generating MDES records for sampling units.")
 
+      shell_describe('Study Center', 1)
+      yield create_study_center
+
       shell_describe('PSU', configuration.navigator.psus.size)
       configuration.navigator.psus.each do |nav_psu|
         yield create_psu(nav_psu)
@@ -53,6 +56,22 @@ module NcsNavigator::Warehouse::Transformers
       shell.clear_line_then_say("Generating MDES record#{plural} for #{count} #{what}#{plural}")
     end
 
+    def code_label(type_name, value)
+      configuration.mdes.types.detect { |t| t.name == type_name }.code_list.
+        detect { |code| code.value == value }.label
+    end
+
+    def sc_model
+      configuration.models_module.const_get(:StudyCenter)
+    end
+
+    def create_study_center
+      sc_model.new(
+        :sc_id => configuration.navigator.sc_id,
+        :sc_name => code_label('study_center_cl1', configuration.navigator.sc_id)
+      )
+    end
+
     def psu_model
       configuration.models_module.const_get(:Psu)
     end
@@ -62,8 +81,7 @@ module NcsNavigator::Warehouse::Transformers
         :psu_id => nav_psu.id,
         :sc_id => configuration.navigator.sc_id,
         :recruit_type => configuration.navigator.recruitment_type_id,
-        :psu_name => configuration.mdes.types.detect { |t| t.name == 'psu_cl1' }.code_list.
-          detect { |code| code.value == nav_psu.id }.label
+        :psu_name => code_label('psu_cl1', nav_psu.id)
       )
     end
 

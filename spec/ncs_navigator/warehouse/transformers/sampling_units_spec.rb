@@ -14,7 +14,28 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     it 'yields everything in MDES order' do
-      subject.to_a.collect { |i| i.class.to_s.demodulize }.should == %w(Psu Ssu Ssu Tsu)
+      subject.to_a.collect { |i| i.class.to_s.demodulize }.should == %w(StudyCenter Psu Ssu Ssu Tsu)
+    end
+
+    describe 'emitted Study Center' do
+      let(:sc_model) { spec_config.models_module.const_get(:StudyCenter) }
+      let(:sc) { subject.to_a.detect { |emitted| emitted.is_a?(sc_model) } }
+
+      it 'exists' do
+        sc.should_not be_nil
+      end
+
+      it 'has the study center ID from the configuration' do
+        sc.sc_id.should == test_sc_id
+      end
+
+      it 'has the name from the MDES' do
+        sc.sc_name.should == 'Northwestern University'
+      end
+
+      it 'has no comments' do
+        sc.comments.should be_nil
+      end
     end
 
     describe 'emitted PSU' do
