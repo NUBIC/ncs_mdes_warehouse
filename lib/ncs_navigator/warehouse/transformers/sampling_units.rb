@@ -45,8 +45,8 @@ module NcsNavigator::Warehouse::Transformers
         yield create_tsu(nav_tsu)
       end
 
-      log.info("All sampling unit records generated.")
-      shell.clear_line_then_say("All sampling unit records generated.\n")
+      log.info("Sampling unit records complete.")
+      shell.clear_line_then_say("Sampling unit records complete.\n")
     end
 
     private
