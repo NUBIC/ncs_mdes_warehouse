@@ -7,8 +7,8 @@ NCS Navigator MDES Warehouse History
 0.3.2
 -----
 
-- Correct VDR XML reader for the case where an MDES table that
-  contains a variable with the same name as the table. (#1695)
+- Correct VDR XML reader for the case of an MDES table that contains a
+  variable with the same name as the table. (#1695)
 - Include the Study Center record in the instances created from the
   `SamplingUnits` transformer. (#1690)
 - Change the default compare level to 3. It turns out that the full
