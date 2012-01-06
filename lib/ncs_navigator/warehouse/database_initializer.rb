@@ -93,6 +93,7 @@ module NcsNavigator::Warehouse
         "Added #{configuration.models_module.mdes_order.size} MDES tables.\n")
     end
 
+    # @private Exposed for use in tests
     def drop_all(which)
       shell.say "Dropping everything in #{which} schema"
       log.info "Dropping everything in #{which} schema"
@@ -100,7 +101,6 @@ module NcsNavigator::Warehouse
         execute("DROP OWNED BY #{params(which)['username']}")
       shell.clear_line_then_say "Dropped everything in #{which} schema.\n"
     end
-    private :drop_all
 
     ##
     # Replaces the reporting database with a clone of the working
