@@ -42,7 +42,7 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
     # @yield a series of model instances
     # @return [void]
     def each(&block)
-      shell.say_line("Beginning VDR XML read#{" of #{filename}" if filename}")
+      shell.say_line("Reading VDR XML #{filename if filename}")
       @start = Time.now
 
       Nokogiri::XML::Reader(@io).each do |node|
