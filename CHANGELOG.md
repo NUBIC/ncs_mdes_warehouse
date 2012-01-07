@@ -4,6 +4,10 @@ NCS Navigator MDES Warehouse History
 0.3.3
 -----
 
+- Restore creation of foreign key constraints during schema
+  initialization. This was lost after upgrading to DataMapper 1.2 in
+  the prehistory of the project. (#1639)
+
 0.3.2
 -----
 

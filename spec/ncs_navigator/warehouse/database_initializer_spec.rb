@@ -14,7 +14,7 @@ module NcsNavigator::Warehouse
           "SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
       end
 
-      it 'does not touch the default repository' do
+      it 'does not touch the reporting repository' do
         subject.drop_all(:reporting) # just to make sure
         subject.replace_schema
         table_names(:reporting).should == []
@@ -33,7 +33,7 @@ module NcsNavigator::Warehouse
 
       describe 'with foreign keys' do
         let(:foreign_keys) {
-          ::DataMapper.repository("mdes_warehouse_working").adapter.select(
+          ::DataMapper.repository(:mdes_warehouse_working).adapter.select(
             %q{
                SELECT constraint_name, is_deferrable
                FROM information_schema.table_constraints
@@ -43,7 +43,6 @@ module NcsNavigator::Warehouse
         }
 
         before do
-          pending '#1639'
           subject.replace_schema
         end
 

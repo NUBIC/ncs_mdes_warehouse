@@ -41,13 +41,13 @@ module NcsNavigator::Warehouse
     # @param mode [:reporting, :working, :both] which repositories to
     #   set up. In general, the working database should only be needed
     #   internal to the warehouse's scripts. The `:default` repo will
-    #   be the reporting repo unless only the working repo is
+    #   be the working repo unless only the reporting repo is
     #   configured in.
     # @return [void]
     def set_up_repository(mode=:reporting, prefix="mdes_warehouse")
       fail "Invalid mode #{mode.inspect}" unless [:reporting, :working, :both].include?(mode)
       modes = case mode
-              when :both then [:reporting, :working]
+              when :both then [:working, :reporting]
               else [mode]
               end
       connect_one(modes.first, :default)
@@ -83,12 +83,9 @@ module NcsNavigator::Warehouse
 
       shell.say "Loading MDES models..."
       log.info "Initializing schema for MDES #{configuration.mdes.specification_version}"
-      # In DM 1.2, DataMapper.auto_migrate! only works for the
-      # :default repo
-      ::DataMapper::Model.descendants.each do |m|
-        shell.clear_line_then_say "Adding #{m.storage_name(:mdes_warehouse_working)}..."
-        m.auto_migrate!(:mdes_warehouse_working)
-      end
+      shell.clear_line_then_say("Creating schema in working database...")
+      ::DataMapper.auto_migrate!
+
       shell.clear_line_then_say(
         "Added #{configuration.models_module.mdes_order.size} MDES tables.\n")
     end
