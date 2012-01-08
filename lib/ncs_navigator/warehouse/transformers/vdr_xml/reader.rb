@@ -18,6 +18,13 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
     def_delegator :@configuration, :shell
 
     ##
+    # These code values indicate missing or unknown data.
+    # If one of them appears in a nullable, non-coded field, we will
+    # skip it. Similarly, if a record's PK is one of these values, we
+    # will skip the entire record.
+    MISSING_CODES = %w(-3 -4 -6 -7)
+
+    ##
     # @return [Fixnum] the number of records that have been read so far.
     attr_reader :record_count
 
@@ -103,12 +110,22 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
 
     def should_filter_out(model_class, variable_name, value)
       return true if variable_name == :transaction_type
-      # if it's a key to another table...
-      if @current_model_class.relationships.detect { |r| r.child_key.collect(&:name).include?(variable_name) }
-        # ...and it is unknown or empty
-        return value == '-3' || value.strip.empty?
+
+      if is_foreign_key_in_current_model?(variable_name)
+        return MISSING_CODES.include?(value) || value.strip.empty?
+      end
+
+      property = @current_model_class.properties.find { |p| p.name == variable_name }
+      unless property.required? || property.options[:set]
+        return MISSING_CODES.include?(value)
       end
     end
+
+    def is_foreign_key_in_current_model?(variable_name)
+      @current_model_class.relationships.
+        detect { |r| r.child_key.collect(&:name).include?(variable_name) }
+    end
+    private :is_foreign_key_in_current_model?
 
     def build_current_instance
       @current_model_class.new(@current_parameter_values)

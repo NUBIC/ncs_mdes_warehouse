@@ -9,6 +9,7 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       let(:person)       { reader.detect { |rec| rec.class.name =~ /Person$/ } }
       let(:link_contact) { reader.detect { |rec| rec.class.name =~ /LinkContact$/ } }
       let(:listing_unit) { reader.detect { |rec| rec.class.name =~ /ListingUnit$/ } }
+      let(:study_center) { reader.detect { |rec| rec.class.name =~ /StudyCenter$/ } }
       let(:email)        { reader.detect { |rec| rec.class.name =~ /Email$/ } }
 
       it 'verifies the PSU matches the configuration'
@@ -31,8 +32,20 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
         person.new_address_id.should be_nil
       end
 
+      it 'converts a -7 FK to no assocation' do
+        listing_unit.tsu_id.should be_nil
+      end
+
       it 'ignores random attributes' do
-        listing_unit.list_line.should == "-7"
+        listing_unit.list_source.should == "3"
+      end
+
+      it 'converts an "unknown" code in a text field to no value' do
+        study_center.comments.should be_nil
+      end
+
+      it 'leaves alone "unknown" codes in coded fields' do
+        person.sex.should == "-6"
       end
 
       describe 'with a blank variable value' do

@@ -10,7 +10,7 @@
     <study_center>
       <sc_id>20000029</sc_id>
       <sc_name>Northwestern University</sc_name>
-      <comments>NA</comments>
+      <comments>-7</comments>
       <transaction_type>NA</transaction_type>
     </study_center>
 
@@ -35,8 +35,8 @@
       <list_id>100</list_id>
       <ssu_id>13.1</ssu_id>
       <tsu_id>-7</tsu_id>
-      <list_line random_attr='foo'>-7</list_line>
-      <list_source>3</list_source>
+      <list_line>-7</list_line>
+      <list_source random_attr='foo'>3</list_source>
       <list_comment>NA</list_comment>
       <transaction_type>NA</transaction_type>
     </listing_unit>
@@ -51,7 +51,7 @@
       <maiden_name></maiden_name>
       <suffix>-7</suffix>
       <title>-7</title>
-      <sex>2</sex>
+      <sex>-6</sex>
       <age>49</age>
       <age_range>5</age_range>
       <person_dob>1962-01-01</person_dob>

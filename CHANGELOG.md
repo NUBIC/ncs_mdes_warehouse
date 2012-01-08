@@ -1,12 +1,16 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
-0.3.3
+0.4.0
 -----
 
 - Restore creation of foreign key constraints during schema
   initialization. This was lost after upgrading to DataMapper 1.2 in
   the prehistory of the project. (#1639)
+
+- Skip more unknown/missing codes when reading VDR XML. The reader
+  now treats any non-coded, non-required field whose value is exactly
+  -3, -4, -6, or -7 as NULL. (#1702)
 
 0.3.2
 -----
