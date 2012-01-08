@@ -12,6 +12,9 @@ NCS Navigator MDES Warehouse History
   now treats any non-coded, non-required field whose value is exactly
   -3, -4, -6, or -7 as NULL. (#1702)
 
+- Skip entire records where the PK is one of the unknown/missing
+  codes. (#1703)
+
 0.3.2
 -----
 
