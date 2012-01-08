@@ -30,6 +30,14 @@
       <transaction_type>NA</transaction_type>
     </ssu>
 
+    <ssu>
+      <sc_id>20000029</sc_id>
+      <psu_id>20000030</psu_id>
+      <ssu_id>-7</ssu_id>
+      <ssu_name>-7</ssu_name>
+      <transaction_type>NA</transaction_type>
+    </ssu>
+
     <listing_unit>
       <psu_id>20000030</psu_id>
       <list_id>100</list_id>

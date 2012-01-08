@@ -76,7 +76,10 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       elsif @current_model_class
         if !is_open && node.local_name == @current_model_class.mdes_table_name
           # on the way out of this record
-          yield build_current_instance
+          rec = build_current_instance
+          unless MISSING_CODES.include?(rec.key.first)
+            yield rec
+          end
           @current_model_class = nil
           @record_count += 1
           shell.clear_line_then_say('%6d records (%3.1f per second); up to %s' %

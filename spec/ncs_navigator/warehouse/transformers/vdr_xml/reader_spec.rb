@@ -48,6 +48,10 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
         person.sex.should == "-6"
       end
 
+      it 'completely ignores records whose key is an "unknown" code' do
+        reader.select { |rec| rec.class.name =~ /Ssu$/ }.collect(&:key).should == [['13']]
+      end
+
       describe 'with a blank variable value' do
         it 'converts a blank FK to no association' do
           link_contact.instrument_id.should be_nil
