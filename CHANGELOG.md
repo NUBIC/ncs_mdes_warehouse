@@ -20,8 +20,10 @@ NCS Navigator MDES Warehouse History
 
 - Correct VDR XML reader for the case of an MDES table that contains a
   variable with the same name as the table. (#1695)
+
 - Include the Study Center record in the instances created from the
   `SamplingUnits` transformer. (#1690)
+
 - Change the default compare level to 3. It turns out that the full
   compare is not that slow, so there's no reason to default it to 1.
   (#1691)
