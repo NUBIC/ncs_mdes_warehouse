@@ -15,6 +15,10 @@ NCS Navigator MDES Warehouse History
 - Skip entire records where the PK is one of the unknown/missing
   codes. (#1703)
 
+- Prevent data integrity errors from killing the entire ETL
+  process. They are now recorded as transform errors just like
+  validation problems. (#1717)
+
 0.3.2
 -----
 
