@@ -8,9 +8,9 @@ NCS Navigator MDES Warehouse History
   initialization. This was lost after upgrading to DataMapper 1.2 in
   the prehistory of the project. (#1639)
 
-- Skip more unknown/missing codes when reading VDR XML. The reader
-  now treats any non-coded, non-required field whose value is exactly
-  -3, -4, -6, or -7 as NULL. (#1702)
+- Skip more unknown/missing codes when reading VDR XML. The reader now
+  treats any non-coded, non-required field whose value is exactly -3,
+  -4, -6, or -7 as NULL. (#1702)
 
 - Skip entire records where the PK is one of the unknown/missing
   codes. (#1703)
@@ -19,14 +19,14 @@ NCS Navigator MDES Warehouse History
   process. They are now recorded as transform errors just like
   validation problems. (#1717)
 
-- Ignore blank PII values when generating the `:pii` meta attribute for
-  model properties. (Done with #1814)
+- Ignore blank PII values when generating the `:pii` meta attribute
+  for model properties. (Done with #1814)
 
 - Create `no_pii` schema containing views with all PII
   excised. (#1814)
 
 - Create `mdes_warehouse_no_pii` role that has read-only access to the
-  contents of the `no_pii` schema.
+  contents of the `no_pii` schema. (#1814)
 
 0.3.2
 -----
