@@ -58,8 +58,8 @@ XML
     ##
     # @param configuration [Configuration]
     # @return [Pathname] the default filename to use for a VDR XML
-    #   submission. The format is `{county}-{YYYYMMDD}.xml`.
-    def self.default_filename(configuration)
+    #   submission. The format is `{county}-{YYYYMMDD}{-PII}.xml`.
+    def self.default_filename(configuration, include_pii=false)
       psu_type = configuration.mdes.types.detect { |type| type.name =~ /^psu_cl/ }
       unless psu_type
         fail 'Cannot find the PSU code list. Please specify a filename manually.'
@@ -71,9 +71,10 @@ XML
         fail "Cannot find PSU #{psu_id} in #{psu_type.name}. Please specify a filename manually."
       end
 
-      Pathname.new '%s-%s.xml' % [
+      Pathname.new '%s-%s%s.xml' % [
         psu_entry.label.split(',', 2).first.downcase.gsub(/\s*county\s*/, '').strip.gsub(' ', '_'),
-        Time.now.iso8601.split('T').first.gsub('-', '')
+        Time.now.iso8601.split('T').first.gsub('-', ''),
+        include_pii ? '-PII' : ''
       ]
     end
 
@@ -98,18 +99,18 @@ XML
     #   produced alongside the XML file?
     def initialize(config, filename, options={})
       @configuration = config
+      @include_pii = options[:'include-pii']
       @filename = case filename
                   when Pathname
                     filename
                   when nil
-                    self.class.default_filename(configuration)
+                    self.class.default_filename(configuration, @include_pii)
                   else
                     Pathname.new(filename.to_s)
                   end
       @record_count = 0
       @block_size = options[:'block-size'] || 5000
       @zip = options.has_key?(:zip) ? options[:zip] : true
-      @include_pii = options[:'include-pii']
       @models =
         if options[:tables]
           options[:tables].collect { |t| t.to_s }.collect { |t|

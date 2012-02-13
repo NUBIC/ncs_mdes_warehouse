@@ -228,7 +228,8 @@ module NcsNavigator::Warehouse
     end
 
     describe 'the default filename', :slow, :use_mdes do
-      subject { XmlEmitter.new(spec_config, nil).filename }
+      subject { XmlEmitter.new(spec_config, nil, options).filename }
+      let(:options) { { } }
 
       before do
         pending "ncs_mdes doesn't work on JRuby" if RUBY_PLATFORM == 'java'
@@ -239,11 +240,16 @@ module NcsNavigator::Warehouse
         # Time.parse uses Time.now internally, so this needs to be
         # defined before starting to register the mock.
         t = Time.parse('2011-07-28')
-        Time.should_receive(:now).and_return(t)
+        Time.stub!(:now).and_return(t)
       end
 
       it 'is county_name-DATE.xml' do
         subject.to_s.should == 'bear_lake-20110728.xml'
+      end
+
+      it 'is county_name-DATE-PII.xml when PII is included' do
+        options[:'include-pii'] = true
+        subject.to_s.should == 'bear_lake-20110728-PII.xml'
       end
 
       it 'is a Pathname' do
