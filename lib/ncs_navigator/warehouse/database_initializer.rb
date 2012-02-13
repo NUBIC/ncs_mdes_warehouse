@@ -88,6 +88,8 @@ module NcsNavigator::Warehouse
 
       shell.clear_line_then_say(
         "Added #{configuration.models_module.mdes_order.size} MDES tables.\n")
+
+      create_no_pii_views
     end
 
     # @private Exposed for use in tests
@@ -98,6 +100,36 @@ module NcsNavigator::Warehouse
         execute("DROP OWNED BY #{params(which)['username']}")
       shell.clear_line_then_say "Dropped everything in #{which} schema.\n"
     end
+
+    def create_no_pii_views
+      no_pii_schema = 'no_pii'
+      shell.say("Creating no-PII views...")
+
+      views = configuration.models_module.mdes_order.collect do |model|
+        selects = model.properties.collect { |p|
+          [p.pii ? "varchar(32) '[pii=#{p.pii}]'" : p.name, p.name].join(' AS ')
+        }
+        %Q(CREATE VIEW #{no_pii_schema}.#{model.mdes_table_name}
+             AS SELECT #{selects.join(',')} FROM public.#{model.mdes_table_name})
+      end
+      ::DataMapper.repository(:mdes_warehouse_working).adapter.
+        execute("CREATE SCHEMA #{no_pii_schema} #{views.join("\n")}")
+
+      role_name = 'mdes_warehouse_no_pii'
+      need_to_create_role = ::DataMapper.repository(:mdes_warehouse_working).adapter.
+        select("SELECT rolname FROM pg_catalog.pg_roles WHERE rolname='#{role_name}'").empty?
+      [
+        ("CREATE ROLE #{role_name}" if need_to_create_role),
+        "ALTER ROLE #{role_name} SET search_path=no_pii",
+        "GRANT USAGE ON SCHEMA #{no_pii_schema} TO #{role_name}",
+        "GRANT SELECT ON ALL TABLES IN SCHEMA #{no_pii_schema} TO #{role_name}"
+      ].compact.each do |stmt|
+        ::DataMapper.repository(:mdes_warehouse_working).adapter.execute(stmt)
+      end
+
+      shell.say_line("done.")
+    end
+    private :create_no_pii_views
 
     ##
     # Replaces the reporting database with a clone of the working
