@@ -54,14 +54,27 @@ gem][confex].
 The warehouse requires two PostgreSQL databases.  There are several
 ways to create them. `createdb` is one:
 
-    $ createuser -e -h dbserver.my.org -PRSD mdes_warehouse
+    $ createuser -e -h dbserver.my.org -PrSD mdes_warehouse
     Enter password for new role:
     Enter it again:
-    CREATE ROLE mdes_warehouse PASSWORD 'md5...' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN;
+    CREATE ROLE mdes_warehouse PASSWORD 'md5...' NOSUPERUSER NOCREATEDB CREATEROLE INHERIT LOGIN;
     $ createdb -e -O mdes_warehouse mdes_warehouse_working
     CREATE DATABASE mdes_warehouse_working OWNER mdes_warehouse;
     $ createdb -e -O mdes_warehouse mdes_warehouse_reporting
     CREATE DATABASE mdes_warehouse_reporting OWNER mdes_warehouse;
+
+#### The CREATEROLE privilege
+
+The database user that manages the warehouse (`mdes_warehouse` in the
+above example) needs to have the `CREATEROLE` privilege so that it can
+create the `mdes_warehouse_no_pii` role that is used for granting
+access to the PII-screened views created during warehouse schema
+setup. If you are uncomfortable granting `CREATEROLE` to an
+application user, you also have the option of manually pre-creating
+the `mdes_warehouse_no_pii` role:
+
+    $ createuser -e -h dbserver.my.org -LRSD mdes_warehouse_no_pii
+    CREATE ROLE mdes_warehouse_no_pii NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT NOLOGIN
 
 ### Configure bcdatabase
 
