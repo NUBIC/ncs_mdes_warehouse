@@ -19,6 +19,9 @@ NCS Navigator MDES Warehouse History
   process. They are now recorded as transform errors just like
   validation problems. (#1717)
 
+- Ignore blank PII values when generating the `:pii` meta attribute for
+  model properties. (Done with #1814)
+
 0.3.2
 -----
 

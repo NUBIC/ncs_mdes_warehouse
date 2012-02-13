@@ -59,7 +59,7 @@ module NcsNavigator
             end
             options[:required] = true if required
             options[:omittable] = true if omittable
-            options[:pii] = pii if pii
+            options[:pii] = pii unless pii.blank?
             options.merge(type.wh_type_options)
           end
       end

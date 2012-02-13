@@ -353,6 +353,13 @@ end
         model_property.pii.should == :possible
       end
 
+      it 'ignores blank PII values' do
+        variable.pii = ' '
+        subject.load!
+
+        model_property.pii.should be_nil
+      end
+
       it 'preserves the omittableness' do
         variable.omittable = true
         subject.load!
