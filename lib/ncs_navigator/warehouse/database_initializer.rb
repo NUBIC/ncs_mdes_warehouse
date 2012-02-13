@@ -120,7 +120,6 @@ module NcsNavigator::Warehouse
         select("SELECT rolname FROM pg_catalog.pg_roles WHERE rolname='#{role_name}'").empty?
       [
         ("CREATE ROLE #{role_name}" if need_to_create_role),
-        "ALTER ROLE #{role_name} SET search_path=no_pii",
         "GRANT USAGE ON SCHEMA #{no_pii_schema} TO #{role_name}",
         "GRANT SELECT ON ALL TABLES IN SCHEMA #{no_pii_schema} TO #{role_name}"
       ].compact.each do |stmt|
