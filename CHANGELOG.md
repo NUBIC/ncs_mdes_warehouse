@@ -26,6 +26,8 @@ NCS Navigator MDES Warehouse History
   there is a role named `mdes_warehouse_no_pii`, it will automatically
   be granted SELECT on the content of this schema. (#1814)
 
+- Changed default emit-xml filename when PII is included. (#1816)
+
 0.3.2
 -----
 
