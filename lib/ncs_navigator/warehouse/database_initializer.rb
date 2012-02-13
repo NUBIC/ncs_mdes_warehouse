@@ -114,19 +114,24 @@ module NcsNavigator::Warehouse
       end
       ::DataMapper.repository(:mdes_warehouse_working).adapter.
         execute("CREATE SCHEMA #{no_pii_schema} #{views.join("\n")}")
+      shell.clear_line_then_say("Created no-PII views.\n")
 
       role_name = 'mdes_warehouse_no_pii'
-      need_to_create_role = ::DataMapper.repository(:mdes_warehouse_working).adapter.
-        select("SELECT rolname FROM pg_catalog.pg_roles WHERE rolname='#{role_name}'").empty?
-      [
-        ("CREATE ROLE #{role_name}" if need_to_create_role),
-        "GRANT USAGE ON SCHEMA #{no_pii_schema} TO #{role_name}",
-        "GRANT SELECT ON ALL TABLES IN SCHEMA #{no_pii_schema} TO #{role_name}"
-      ].compact.each do |stmt|
-        ::DataMapper.repository(:mdes_warehouse_working).adapter.execute(stmt)
+      role_exists = ::DataMapper.repository(:mdes_warehouse_working).adapter.
+        select("SELECT rolname FROM pg_catalog.pg_roles WHERE rolname='#{role_name}'").size > 0
+      if role_exists
+        shell.say("- Granting SELECT on no-PII views to #{role_name}...")
+        [
+          "GRANT USAGE ON SCHEMA #{no_pii_schema} TO #{role_name}",
+          "GRANT SELECT ON ALL TABLES IN SCHEMA #{no_pii_schema} TO #{role_name}"
+        ].each do |stmt|
+          ::DataMapper.repository(:mdes_warehouse_working).adapter.execute(stmt)
+        end
+        shell.clear_line_then_say("- Granted SELECT on no-PII views to #{role_name}.\n")
+      else
+        shell.say_line(
+          "- Database role #{role_name} does not exist. Performing no grants for no-PII views.")
       end
-
-      shell.say_line("done.")
     end
     private :create_no_pii_views
 

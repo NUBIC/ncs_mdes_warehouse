@@ -54,27 +54,39 @@ gem][confex].
 The warehouse requires two PostgreSQL databases.  There are several
 ways to create them. `createdb` is one:
 
-    $ createuser -e -h dbserver.my.org -PrSD mdes_warehouse
+    $ createuser -e -h dbserver.my.org -PRSD mdes_warehouse
     Enter password for new role:
     Enter it again:
-    CREATE ROLE mdes_warehouse PASSWORD 'md5...' NOSUPERUSER NOCREATEDB CREATEROLE INHERIT LOGIN;
+    CREATE ROLE mdes_warehouse PASSWORD 'md5...' NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN;
     $ createdb -e -O mdes_warehouse mdes_warehouse_working
     CREATE DATABASE mdes_warehouse_working OWNER mdes_warehouse;
     $ createdb -e -O mdes_warehouse mdes_warehouse_reporting
     CREATE DATABASE mdes_warehouse_reporting OWNER mdes_warehouse;
 
-#### The CREATEROLE privilege
+#### Additional database roles
 
-The database user that manages the warehouse (`mdes_warehouse` in the
-above example) needs to have the `CREATEROLE` privilege so that it can
-create the `mdes_warehouse_no_pii` role that is used for granting
-access to the PII-screened views created during warehouse schema
-setup. If you are uncomfortable granting `CREATEROLE` to an
-application user, you also have the option of manually pre-creating
-the `mdes_warehouse_no_pii` role:
+For safe reporting purposes, the warehouse automatically creates
+PII-screened views in a schema named `no_pii`. Since those views are
+dropped along with everything else when the warehouse schema is
+recreated, direct grants from user accounts to to the views will be
+lost every time ETL runs. To work around this potential problem, the
+schema creation process looks for a role named
+`mdes_warehouse_no_pii`. If this role exists, it will be granted
+read-only access to these PII-screened views. Here's how you can
+create the role:
 
     $ createuser -e -h dbserver.my.org -LRSD mdes_warehouse_no_pii
     CREATE ROLE mdes_warehouse_no_pii NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT NOLOGIN;
+
+Individual data analyst accounts can then be granted this role to have
+access to a PII-free view of the warehouse:
+
+    # In a database console
+    GRANT mdes_warehouse_no_pii TO some_data_analyst;
+    # Following is optional; it will make sure that some_data_analyst
+    # will default to querying the PII-free views instead of the
+    # (inaccessible) full-data tables in the public schema.
+    ALTER some_data_analyst SET search_path=no_pii;
 
 ### Configure bcdatabase
 

@@ -22,11 +22,9 @@ NCS Navigator MDES Warehouse History
 - Ignore blank PII values when generating the `:pii` meta attribute
   for model properties. (Done with #1814)
 
-- Create `no_pii` schema containing views with all PII
-  excised. (#1814)
-
-- Create `mdes_warehouse_no_pii` role that has read-only access to the
-  contents of the `no_pii` schema. (#1814)
+- Create `no_pii` schema containing views with all PII excised. If
+  there is a role named `mdes_warehouse_no_pii`, it will automatically
+  be granted SELECT on the content of this schema. (#1814)
 
 0.3.2
 -----
