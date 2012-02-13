@@ -74,7 +74,7 @@ application user, you also have the option of manually pre-creating
 the `mdes_warehouse_no_pii` role:
 
     $ createuser -e -h dbserver.my.org -LRSD mdes_warehouse_no_pii
-    CREATE ROLE mdes_warehouse_no_pii NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT NOLOGIN
+    CREATE ROLE mdes_warehouse_no_pii NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT NOLOGIN;
 
 ### Configure bcdatabase
 
