@@ -93,12 +93,12 @@ module NcsNavigator::Warehouse
     end
 
     # @private Exposed for use in tests
-    def drop_all(which)
-      shell.say "Dropping everything in #{which} schema"
-      log.info "Dropping everything in #{which} schema"
+    def drop_all(which, options={})
+      shell.clear_line_then_say "Dropping everything in #{which} schema" unless options[:quiet]
+      log.info "Dropping everything in #{which} schema..."
       ::DataMapper.repository(:"mdes_warehouse_#{which}").adapter.
         execute("DROP OWNED BY #{params(which)['username']}")
-      shell.clear_line_then_say "Dropped everything in #{which} schema.\n"
+      shell.clear_line_then_say "Dropped everything in #{which} schema.\n" unless options[:quiet]
     end
 
     def create_no_pii_views
@@ -150,36 +150,84 @@ module NcsNavigator::Warehouse
         pgpass.update params(:reporting)
       end
 
-      dump_cmd = [
+      shell.say 'Cloning working schema into reporting schema...'
+
+      dump_file = Tempfile.new('wh_clone_dump')
+
+      dump_cmd = escape_cmd([
         configuration.pg_bin('pg_dump'),
         pg_params(params(:working)),
         '--format=custom',
+        "--file=#{dump_file.path}",
         params(:working)['database']
-      ].flatten
+      ].flatten)
 
-      restore_cmd = [
+      shell.clear_line_then_say(
+        "Cloning working to reporting... dumping working database to temporary file")
+      log.debug("Dump command: #{dump_cmd}")
+      unless system(dump_cmd)
+        shell.say(
+          "\nClone from working to reporting failed. See above for detail.\n")
+        log.error('Dump failed.')
+        return false
+      end
+
+      list_file = Tempfile.new('wh_clone_list')
+      list_cmd = escape_cmd([
+        configuration.pg_bin('pg_restore'),
+        pg_params(params(:working)),
+        '--list',
+        "--file=#{list_file.path}",
+        dump_file.path
+      ].flatten)
+
+      shell.clear_line_then_say(
+        "Cloning working to reporting... extracting dump contents")
+      log.debug("List command: #{list_cmd}")
+      unless system(list_cmd)
+        shell.say(
+          "\nClone from working to reporting failed. See above for detail.\n")
+        log.error('Dump failed.')
+        return false
+      end
+
+      shell.clear_line_then_say(
+        "Cloning working to reporting... filtering content list")
+      list_file.rewind
+      selection_file = Tempfile.new('wh_clone_selection')
+      list_file.read.split("\n").each do |line|
+        if line =~ %r{#{params(:working)['username']}$}
+          selection_file.puts line
+        end
+      end
+
+      restore_cmd = escape_cmd([
         configuration.pg_bin('pg_restore'),
         pg_params(params(:reporting)),
-        '--schema', 'public',
-        '--dbname', params(:reporting)['database']
-      ].flatten
+        "--use-list=#{selection_file.path}",
+        '--dbname', params(:reporting)['database'],
+        dump_file.path
+      ].flatten)
 
-      drop_all(:reporting)
+      drop_all(:reporting, :quiet => true)
 
-      command = "#{escape_cmd dump_cmd} | #{escape_cmd restore_cmd}"
-      shell.say 'Cloning working schema into reporting schema...'
-      log.info('Cloning working schema into reporting schema')
-      log.debug("Clone command: #{command.inspect}")
-      unless system(command)
-        shell.clear_line_then_say(
-          "Clone from working to reporting failed. See above for detail.\n")
-        log.error('Clone failed.')
-        return false
-      else
-        shell.clear_line_then_say("Clone from working to reporting successful.\n")
+      shell.clear_line_then_say(
+        "Cloning working to reporting... loading filtered dump into reporting database")
+      log.debug("Restore command: #{restore_cmd.inspect}")
+      if system(restore_cmd)
+        shell.clear_line_then_say("Successfully cloned working to reporting.\n")
         log.info('Clone succeeded.')
         return true
+      else
+        shell.say(
+          "\nClone from working to reporting failed. See above for detail.\n")
+        log.error('Dump failed.')
+        return false
       end
+    ensure
+      dump_file.unlink if dump_file
+      list_file.unlink if list_file
+      selection_file.unlink if selection_file
     end
 
     def pg_params(p)
