@@ -126,7 +126,7 @@ XML
     #
     # @return [void]
     def emit_xml
-      shell.say_line("Exporting to #{filename}")
+      shell.say_line("Exporting to #{filename}#{include_pii? ? ' with PII' : ''}")
       log.info("Beginning XML export to #{filename}")
 
       @start = Time.now
