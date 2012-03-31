@@ -4,6 +4,8 @@ NCS Navigator MDES Warehouse History
 0.4.1
 -----
 
+- Decode carriage returns that libxml2 refuses to decode. (#1940)
+
 0.4.0
 -----
 

@@ -65,6 +65,10 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       it 'handles table-named variables' do
         email.email.should == 'jo@example.net'
       end
+
+      it 'strips left over encoded CRs (#1940)' do
+        person.person_comment.should == "Likes\r\nline\r\nbreaks"
+      end
     end
   end
 end

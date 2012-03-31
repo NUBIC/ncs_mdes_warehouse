@@ -87,7 +87,7 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
         else
           # node is the start tag of a table variable
           var = node.local_name.to_sym
-          val = node.inner_xml.strip
+          val = node.inner_xml.strip.gsub('&#13;', "\r")
 
           unless node.self_closing?
             # Skip to closing tag
