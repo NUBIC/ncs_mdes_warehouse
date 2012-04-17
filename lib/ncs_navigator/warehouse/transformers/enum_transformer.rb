@@ -26,7 +26,12 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     def name
-      "EnumTransformer for #{enum.class}"
+      enum_name = if enum.respond_to?(:name)
+                    enum.name
+                  else
+                    enum.class
+                  end
+      "EnumTransformer for #{enum_name}"
     end
 
     ##

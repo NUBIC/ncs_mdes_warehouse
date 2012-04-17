@@ -4,6 +4,9 @@ NCS Navigator MDES Warehouse History
 0.4.2
 -----
 
+- Include the input filename in the name of transformers based on
+  `VdrXml::Reader`. (#1927)
+
 0.4.1
 -----
 

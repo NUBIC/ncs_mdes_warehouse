@@ -2,9 +2,20 @@ require File.expand_path('../../../../../spec_helper', __FILE__)
 
 class NcsNavigator::Warehouse::Transformers::VdrXml
   describe Reader, :use_mdes do
+    let(:filename) { File.expand_path('../made_up_vdr_xml.xml', __FILE__) }
+    let(:reader) { Reader.new(spec_config, filename) }
+
+    describe '#name' do
+      it 'includes the filename when present' do
+        reader.name.should == "VDR XML #{filename}"
+      end
+
+      it 'includes the IO string rep if no filename' do
+        Reader.new(spec_config, StringIO.new).name.should =~ /VDR XML #<StringIO/
+      end
+    end
+
     describe '#each', :slow do
-      let(:filename) { File.expand_path('../made_up_vdr_xml.xml', __FILE__) }
-      let(:reader) { Reader.new(spec_config, filename) }
       let(:ssu)          { reader.detect { |rec| rec.class.name =~ /Ssu$/ } }
       let(:person)       { reader.detect { |rec| rec.class.name =~ /Person$/ } }
       let(:link_contact) { reader.detect { |rec| rec.class.name =~ /LinkContact$/ } }

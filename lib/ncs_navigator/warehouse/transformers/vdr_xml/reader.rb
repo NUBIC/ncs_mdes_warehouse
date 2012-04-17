@@ -39,6 +39,14 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       @record_count = 0
     end
 
+    def name
+      if @filename
+        "VDR XML #{@filename}"
+      else
+        "VDR XML #{@io.inspect}"
+      end
+    end
+
     ##
     # Reads the XML and yields each encountered record as a warehouse
     # model instance to the provided block. It does not validate the
