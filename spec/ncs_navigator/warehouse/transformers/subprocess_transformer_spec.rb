@@ -183,6 +183,7 @@ module NcsNavigator::Warehouse::Transformers
       before do
         write_script do |f|
           f.puts 'echo $SOME_ENV'
+          f.puts 'echo $BUNDLE_GEMFILE'
         end
 
         options[:environment] = { 'SOME_ENV' => 'staging' }
@@ -192,6 +193,11 @@ module NcsNavigator::Warehouse::Transformers
 
       it 'has the specified values' do
         messages.first.should == 'staging'
+      end
+
+      it 'excludes the parent bundler environment' do
+        ENV['BUNDLE_GEMFILE'].should_not be_nil # setup
+        messages.last.should == ''
       end
 
       it 'does not monkey with the parent environment' do

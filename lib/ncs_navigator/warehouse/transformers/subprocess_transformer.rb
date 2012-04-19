@@ -3,6 +3,7 @@ require 'childprocess'
 require 'forwardable'
 require 'json'
 require 'fileutils'
+require 'bundler'
 
 module NcsNavigator::Warehouse::Transformers
   ##
@@ -99,7 +100,9 @@ module NcsNavigator::Warehouse::Transformers
       shell.say "Spawning subprocess transformer `#{exec_and_args.join(' ')}`"
 
       FileUtils.cd directory do
-        process.start
+        Bundler.with_clean_env do
+          process.start
+        end
       end
 
       log.info "  PID is #{process.pid}"

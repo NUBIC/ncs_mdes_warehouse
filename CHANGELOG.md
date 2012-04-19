@@ -6,6 +6,8 @@ NCS Navigator MDES Warehouse History
 
 - Include the input filename in the name of transformers based on
   `VdrXml::Reader`. (#1927)
+- Exclude parent bundler environment when executing subprocess in
+  SubprocessTransformer. (#2012)
 
 0.4.1
 -----
