@@ -8,6 +8,8 @@ NCS Navigator MDES Warehouse History
   `VdrXml::Reader`. (#1927)
 - Exclude parent bundler environment when executing subprocess in
   SubprocessTransformer. (#2012)
+- Strip leading and trailing whitespace from values in one-to-one
+  transformer. (#2028)
 
 0.4.1
 -----

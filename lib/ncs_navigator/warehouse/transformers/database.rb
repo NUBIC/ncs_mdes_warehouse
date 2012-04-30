@@ -327,10 +327,22 @@ module NcsNavigator::Warehouse::Transformers
           raise UnusedColumnsForModelError.new(unused)
         end
         model.new(
-          col_map.inject({}) { |pv, (col_name, var_name)| pv[var_name] = row[col_name]; pv }
+          col_map.inject({}) { |pv, (col_name, var_name)|
+            pv[var_name] = clean_value(row[col_name]);
+            pv
+          }
         )
       end
       alias :call :convert_row
+
+      def clean_value(v)
+        if v.respond_to?(:strip)
+          v.strip
+        else
+          v
+        end
+      end
+      private :clean_value
 
       ##
       # @param [Array<String>] column_names

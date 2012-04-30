@@ -277,6 +277,16 @@ module NcsNavigator::Warehouse::Transformers
             should == 'Elephant graveyard'
         end
 
+        it 'strips leading and trailing whitespace' do
+          model_row(:address_type_other => "\n\t Elephant  graveyard\t ").address_type_oth.
+            should == 'Elephant  graveyard'
+        end
+
+        it 'does not try to strip whitespace when not possible' do
+          model_row(:address_id => -7).address_id.should == '-7'
+          # expect no errors
+        end
+
         describe 'and unused columns' do
           it 'fails with unused columns if requested' do
             options[:on_unused] = :fail
