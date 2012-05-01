@@ -41,6 +41,54 @@ module NcsNavigator::Warehouse
       end
     end
 
+    describe 'add_post_etl_hook' do
+      let(:success_hook) {
+        Object.new.tap do |o|
+          class << o
+            def etl_succeeded; end
+          end
+        end
+      }
+
+      let(:failure_hook) {
+        Object.new.tap do |o|
+          class << o
+            def etl_failed; end
+          end
+        end
+      }
+
+      it 'adds a hook with an `etl_succeeded` method' do
+        config.add_post_etl_hook(success_hook)
+        config.post_etl_hooks.should == [success_hook]
+      end
+
+      it 'adds a hook with an `etl_failed` method' do
+        config.add_post_etl_hook(failure_hook)
+        config.post_etl_hooks.should == [failure_hook]
+      end
+
+      describe 'with an object without either etl callback method' do
+        it 'gives a helpful message if the object is constructable' do
+          lambda { config.add_post_etl_hook(String) }.
+            should raise_error('String does not have an etl_succeeded or etl_failed method. Perhaps you meant String.new?')
+        end
+
+        it 'gives a helpful message if the object is an instance' do
+          lambda { config.add_post_etl_hook('not a good hook') }.
+            should raise_error('"not a good hook" does not have an etl_succeeded or etl_failed method.')
+        end
+
+        it 'does not add the object as a hook' do
+          begin
+            config.add_post_etl_hook('not a good hook')
+          rescue
+          end
+          config.post_etl_hooks.should be_empty
+        end
+      end
+    end
+
     describe '#mdes_version=' do
       context 'for a known version', :slow, :use_mdes, :modifies_warehouse_state  do
         it 'makes the models available' do

@@ -83,6 +83,36 @@ module NcsNavigator::Warehouse
     end
 
     ####
+    #### Hooks
+    ####
+
+    ##
+    # @return [Array<#etl_succeeded,#etl_failed>] the configured
+    #   post-ETL hooks.
+    def post_etl_hooks
+      @post_etl_hooks ||= []
+    end
+
+    ##
+    # Adds a post-ETL hook to the list for this warehouse instance.
+    #
+    # @return [void]
+    # @param [#etl_succeeded,#etl_failed] the hook
+    def add_post_etl_hook(candidate)
+      expected_methods = [:etl_succeeded, :etl_failed]
+      implemented_methods = expected_methods.select { |m| candidate.respond_to?(m) }
+      if implemented_methods.empty?
+        msg = "#{candidate.inspect} does not have an #{expected_methods.join(' or ')} method."
+        if candidate.respond_to?(:new)
+          msg += " Perhaps you meant #{candidate}.new?"
+        end
+        raise Error, msg
+      else
+        post_etl_hooks << candidate
+      end
+    end
+
+    ####
     #### MDES version
     ####
 

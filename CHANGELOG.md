@@ -1,13 +1,18 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
-0.4.2
+0.5.0
 -----
+
+- Add "post-ETL hooks" to ETL process: objects with callbacks which
+  are executed when the ETL completes. (#1725)
 
 - Include the input filename in the name of transformers based on
   `VdrXml::Reader`. (#1927)
+
 - Exclude parent bundler environment when executing subprocess in
   SubprocessTransformer. (#2012)
+
 - Strip leading and trailing whitespace from values in one-to-one
   transformer. (#2028)
 

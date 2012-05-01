@@ -53,8 +53,10 @@ module NcsNavigator::Warehouse
       end
 
       if statuses.detect { |s| !s.transform_errors.empty? }
+        dispatch_post_etl_hooks(:etl_failed)
         false
       else
+        dispatch_post_etl_hooks(:etl_succeeded)
         true
       end
     end
@@ -67,5 +69,16 @@ module NcsNavigator::Warehouse
         )
     end
     private :build_status_for
+
+    def dispatch_post_etl_hooks(method)
+      configuration.post_etl_hooks.each do |hook|
+        begin
+          hook.send(method, statuses) if hook.respond_to?(method)
+        rescue => e
+          log.error("Error invoking #{method.inspect} on #{hook.inspect}: #{e.class} #{e}.")
+        end
+      end
+    end
+    private :dispatch_post_etl_hooks
   end
 end

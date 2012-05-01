@@ -12,6 +12,7 @@ module NcsNavigator
     autoload :DataMapper,          'ncs_navigator/warehouse/data_mapper'
     autoload :DatabaseInitializer, 'ncs_navigator/warehouse/database_initializer'
     autoload :Models,              'ncs_navigator/warehouse/models'
+    autoload :PostEtlHooks,        'ncs_navigator/warehouse/post_etl_hooks'
     autoload :PostgreSQL,          'ncs_navigator/warehouse/postgresql'
     autoload :TableModeler,        'ncs_navigator/warehouse/table_modeler'
     autoload :Transformers,        'ncs_navigator/warehouse/transformers'

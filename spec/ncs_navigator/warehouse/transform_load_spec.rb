@@ -162,10 +162,82 @@ module NcsNavigator::Warehouse
         end
       end
 
-      describe 'sending e-mail' do
-        it 'sends on success'
+      describe 'with post-ETL hooks' do
+        let(:hook_a) { RecordingHook.new }
+        let(:hook_success) { RecordingHook.new(:succeeded) }
+        let(:hook_failure) { RecordingHook.new(:failed) }
+        let(:hook_error) {
+          Class.new do
+            def etl_succeeded(ts)
+              fail 'Hook broke'
+            end
+            alias :etl_failed :etl_succeeded
+          end.new
+        }
 
-        it 'sends on failure'
+        let(:hooks_invoked) {
+          [hook_a, hook_success, hook_failure].map(&:invoked?)
+        }
+
+        before do
+          config.add_post_etl_hook(hook_a)
+          config.add_post_etl_hook(hook_success)
+          config.add_post_etl_hook(hook_failure)
+        end
+
+        shared_examples 'all hooks' do
+          before do
+            loader.run
+          end
+
+          it 'sends each hook the statuses' do
+            hook_a.transform_statuses.size.should == 1
+          end
+
+          it 'runs all the hooks even when one fails' do
+            config.post_etl_hooks.unshift hook_error
+
+            loader.run
+
+            hooks_invoked.should == expected_invoke_pattern
+          end
+        end
+
+        describe 'when the transform fails' do
+          let(:expected_invoke_pattern) { [true, false, true] }
+
+          before do
+            config.add_transformer(BlockTransformer.new { |s| fail 'Nope.' })
+          end
+
+          include_examples 'all hooks'
+
+          it 'runs all the hooks that have an etl_failed method' do
+            hooks_invoked.should == expected_invoke_pattern
+          end
+
+          it 'sends each hook the overall status' do
+            hook_a.should be_failure
+          end
+        end
+
+        describe 'when the transform succeeds' do
+          let(:expected_invoke_pattern) { [true, true, false] }
+
+          before do
+            config.add_transformer(BlockTransformer.new { })
+          end
+
+          include_examples 'all hooks'
+
+          it 'runs all the hooks that have an etl_succeeded method' do
+            hooks_invoked.should == expected_invoke_pattern
+          end
+
+          it 'sends each hook the overall status' do
+            hook_a.should be_success
+          end
+        end
       end
 
       # This is a crappy test; it would be better if it could be done
@@ -193,6 +265,37 @@ module NcsNavigator::Warehouse
 
       def transform(status)
         @block.call(status)
+      end
+    end
+
+    class ::RecordingHook
+      attr_reader :transform_statuses
+
+      def initialize(*modes)
+        @invoked = false
+        @modes = modes.empty? ? [:succeeded, :failed] : modes
+
+        @modes.each do |mode|
+          instance_eval <<-RUBY
+            def etl_#{mode}(transform_statuses)
+              @invoked = true
+              @transform_statuses = transform_statuses
+              @success = #{mode == :succeeded}
+            end
+          RUBY
+        end
+      end
+
+      def invoked?
+        @invoked
+      end
+
+      def success?
+        @success
+      end
+
+      def failure?
+        !@success.nil? && !@success
       end
     end
   end
