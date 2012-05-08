@@ -14,12 +14,12 @@ task :spec => 'spec:all'
 
 namespace :spec do
   RSpec::Core::RakeTask.new(:fast) do |t|
-    t.pattern = "spec/**/*_spec.rb"
+    t.pattern = ENV['SPEC_PATTERN'] || "spec/**/*_spec.rb"
     t.rspec_opts = %q(--tag ~slow)
   end
 
   RSpec::Core::RakeTask.new(:all) do |t|
-    t.pattern = "spec/**/*_spec.rb"
+    t.pattern = ENV['SPEC_PATTERN'] || "spec/**/*_spec.rb"
   end
 end
 
