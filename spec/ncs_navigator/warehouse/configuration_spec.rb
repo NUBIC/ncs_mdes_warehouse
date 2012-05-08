@@ -189,7 +189,10 @@ module NcsNavigator::Warehouse
 
     describe '#shell_io' do
       it 'is $stderr by default' do
-        config.shell_io.should be($stderr)
+        config.shell_io.object_id.should be($stderr.object_id)
+        # `should be($stderr)` and `should equal($stderr)` do not work
+        # with RSpec 2.10 and ci_reporter 1.6.6 because `should` is
+        # apparently delegated to the wrapped stream.
       end
 
       it 'can be set' do
