@@ -5,6 +5,7 @@ require 'forwardable'
 module NcsNavigator::Warehouse
   class TransformLoad
     extend Forwardable
+    include StringifyTrace
 
     attr_reader :configuration
     attr_reader :statuses
@@ -34,12 +35,14 @@ module NcsNavigator::Warehouse
                   transformer.transform(status)
                 rescue => e
                   shell.say_line("\nTransform failed. (See log for more detail.)")
-                  status.add_error("Transform failed. #{e.class}: #{e}.")
+                  msg = "Transform failed. #{e.class}: #{e}\n#{stringify_trace(e.backtrace)}"
+                  log.error(msg)
+                  status.add_error(msg)
                 end
               end
             rescue DataObjects::IntegrityError => e
               shell.say_line("\nTransform failed with data integrity error. (See log for more detail.)")
-              log.error("Transform failed with data integrity error: #{e}.")
+              log.error("Transform failed with data integrity error: #{e}.\n#{stringify_trace(e)}")
               status.add_error("Transform failed with data integrity error: #{e}.")
             end
             status.end_time = Time.now

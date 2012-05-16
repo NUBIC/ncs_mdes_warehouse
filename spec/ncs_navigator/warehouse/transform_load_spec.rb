@@ -114,12 +114,13 @@ module NcsNavigator::Warehouse
 
       describe 'with a failure' do
         let(:runs) { [] }
+        let(:statuses) { TransformStatus.all(:order => [:id.desc]) }
 
         before do
           config.add_transformer(BlockTransformer.new { |s| runs << 'A' })
           config.add_transformer(BlockTransformer.new { |s|
               runs << 'B'
-              fail 'No thanks.'
+              fail 'No thanks'
             })
           config.add_transformer(BlockTransformer.new { |s| runs << 'C3' })
           @result = loader.run
@@ -131,6 +132,11 @@ module NcsNavigator::Warehouse
 
         it 'returns false' do
           @result.should == false
+        end
+
+        it 'records the error including the trace' do
+          statuses[1].transform_errors.first.message.
+            should =~ /No thanks\n.*#{File.basename(__FILE__)}:\s*\d+/
         end
       end
 

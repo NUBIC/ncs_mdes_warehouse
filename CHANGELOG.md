@@ -16,6 +16,11 @@ NCS Navigator MDES Warehouse History
 - Strip leading and trailing whitespace from values in one-to-one
   transformer. (#2028)
 
+- Catch all exceptions during enumeration in EnumTransformer. (#2070)
+
+- Log caught exceptions during ETL. Previously they were only reported
+  to the shell and stored in the transform status table. (#2070)
+
 0.4.1
 -----
 
