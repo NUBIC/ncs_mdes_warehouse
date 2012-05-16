@@ -128,6 +128,54 @@ module NcsNavigator::Warehouse::Transformers
           # in `before`
         end
       end
+
+      describe 'with an enumeration that throws an exception' do
+        let(:failing_enum) {
+          Class.new do
+            include Enumerable
+
+            def initialize(records); @records = records; end
+
+            def each
+              @records.each_with_index do |r, i|
+                if i == 2
+                  raise IndexError, "don't like 2"
+                else
+                  yield r
+                end
+              end
+            end
+          end.new(records)
+        }
+
+        subject { EnumTransformer.new(config, failing_enum) }
+
+        let(:error) {
+          transform_status.should have(1).transform_errors
+          transform_status.transform_errors.first
+        }
+
+        before do
+          records.each do |m|
+            m.stub!(:valid?).and_return(true)
+            m.stub!(:save).and_return(true)
+          end
+
+          subject.transform(transform_status)
+        end
+
+        it 'records the exception type' do
+          error.message.should =~ /IndexError/
+        end
+
+        it 'records the exception message' do
+          error.message.should =~ /don't like 2/
+        end
+
+        it 'records the stacktrace' do
+          error.message.should =~ /#{File.basename(__FILE__)}:\s*\d+/
+        end
+      end
     end
   end
 end

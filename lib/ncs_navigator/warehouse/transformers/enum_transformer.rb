@@ -10,6 +10,7 @@ module NcsNavigator::Warehouse::Transformers
   # thousands of instances without having them all in memory at once.
   class EnumTransformer
     extend Forwardable
+    include NcsNavigator::Warehouse::StringifyTrace
 
     ##
     # @return [Enumerable] the enumeration that will be transformed.
@@ -41,6 +42,18 @@ module NcsNavigator::Warehouse::Transformers
     # @param [TransformStatus] status
     # @return [void]
     def transform(status)
+      begin
+        do_transform(status)
+      rescue Exception => e
+        msg = "Enumeration failed. #{e.class}: #{e}\n#{stringify_trace(e.backtrace)}"
+        log.error msg
+        status.add_error(msg)
+      end
+    end
+
+    private
+
+    def do_transform(status)
       enum.each do |record|
         apply_global_values_if_necessary(record)
         if record.valid?
@@ -64,8 +77,6 @@ module NcsNavigator::Warehouse::Transformers
         status.record_count += 1
       end
     end
-
-    private
 
     def record_ident(rec)
       # No composite keys in the MDES
