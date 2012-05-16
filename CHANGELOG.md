@@ -21,6 +21,10 @@ NCS Navigator MDES Warehouse History
 - Log caught exceptions during ETL. Previously they were only reported
   to the shell and stored in the transform status table. (#2070)
 
+- An enumerator may communicate recoverable errors to EnumTransformer
+  by yielding one or more TransformErrors as part of its
+  enumeration. (#2073)
+
 0.4.1
 -----
 

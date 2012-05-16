@@ -4,10 +4,25 @@ require 'forwardable'
 
 module NcsNavigator::Warehouse::Transformers
   ##
-  # A transformer that accepts a series of model instances in the form
-  # of a ruby Enumerable. An enumerable might be as simple as an
-  # array, or it might be a custom class that streams through
-  # thousands of instances without having them all in memory at once.
+  # A transformer that accepts a series of model instances and
+  # {TransformError}s in the form of a ruby Enumerable. An enumerable
+  # might be as simple as an array, or it might be a custom class that
+  # streams through thousands of instances without having them all in
+  # memory at once.
+  #
+  # Each value yielded by the enumerable may be either an instance of
+  # an MDES model or a {TransformError}. If it is a model instance, it
+  # will have global values (e.g., PSU ID) applied as necessary,
+  # validated, and saved.
+  #
+  # On the other hand, If it is a `TransformError` the error will be
+  # associated with the status for the transform run. The benefit of
+  # the enumeration yielding a `TransformError` instead of throwing an
+  # exception is that the enumeration may continue after the error is
+  # reported. If the error is unrecoverable, the enum should throw an
+  # exception instead of returning a
+  # `TransformError`. `EnumTransformer` will handle recording the
+  # error appropriately in that case.
   class EnumTransformer
     extend Forwardable
     include NcsNavigator::Warehouse::StringifyTrace
@@ -55,27 +70,41 @@ module NcsNavigator::Warehouse::Transformers
 
     def do_transform(status)
       enum.each do |record|
-        apply_global_values_if_necessary(record)
-        if record.valid?
-          log.debug("Saving valid record #{record_ident record}.")
-          begin
-            unless record.save
-              msg = "Could not save valid record #{record.inspect}. #{record_messages(record).join(' ')}"
-              log.error msg
-              status.unsuccessful_record(record, msg)
-            end
-          rescue => e
-            msg = "Error on save. #{e.class}: #{e}."
+        case record
+        when NcsNavigator::Warehouse::TransformError
+          receive_transform_error(record, status)
+        else
+          save_model_instance(record, status)
+        end
+      end
+    end
+
+    def save_model_instance(record, status)
+      apply_global_values_if_necessary(record)
+      if record.valid?
+        log.debug("Saving valid record #{record_ident record}.")
+        begin
+          unless record.save
+            msg = "Could not save valid record #{record.inspect}. #{record_messages(record).join(' ')}"
             log.error msg
             status.unsuccessful_record(record, msg)
           end
-        else
-          msg = "Invalid record. #{record_messages(record).join(' ')}"
+        rescue => e
+          msg = "Error on save. #{e.class}: #{e}."
           log.error msg
           status.unsuccessful_record(record, msg)
         end
-        status.record_count += 1
+      else
+        msg = "Invalid record. #{record_messages(record).join(' ')}"
+        log.error msg
+        status.unsuccessful_record(record, msg)
       end
+      status.record_count += 1
+    end
+
+    def receive_transform_error(error, status)
+      error.id = nil
+      status.transform_errors << error
     end
 
     def record_ident(rec)

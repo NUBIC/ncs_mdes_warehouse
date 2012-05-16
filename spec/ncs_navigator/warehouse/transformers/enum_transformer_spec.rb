@@ -176,6 +176,32 @@ module NcsNavigator::Warehouse::Transformers
           error.message.should =~ /#{File.basename(__FILE__)}:\s*\d+/
         end
       end
+
+      describe 'with an enumeration that yields a transform error' do
+        before do
+          records.each do |m|
+            m.should_receive(:valid?).and_return(true)
+            m.should_receive(:save).and_return(true)
+          end
+
+          records[1, 0] = NcsNavigator::Warehouse::TransformError.
+            new(:message => 'I give up', :id => -922)
+
+          subject.transform(transform_status)
+        end
+
+        it 'saves all the good records' do
+          # in before
+        end
+
+        it 'associates the error with the status' do
+          transform_status.transform_errors.collect(&:message).should == ['I give up']
+        end
+
+        it 'ignores any provided error id' do
+          transform_status.transform_errors.first.id.should be_nil
+        end
+      end
     end
   end
 end
