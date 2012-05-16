@@ -59,6 +59,15 @@ module NcsNavigator::Warehouse
     property :record_id,   String, :length => 255
 
     belongs_to :transform_status, TransformStatus, :required => true
+
+    def self.for_exception(exception, context_message=nil)
+      TransformError.new(:message => [
+          context_message,
+          "#{exception.class}: #{exception}",
+          StringifyTrace.stringify_trace(exception.backtrace)
+        ].compact.join("\n")
+      )
+    end
   end
 
   TransformError.finalize

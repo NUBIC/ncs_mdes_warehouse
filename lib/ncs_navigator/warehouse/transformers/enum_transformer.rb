@@ -60,9 +60,9 @@ module NcsNavigator::Warehouse::Transformers
       begin
         do_transform(status)
       rescue Exception => e
-        msg = "Enumeration failed. #{e.class}: #{e}\n#{stringify_trace(e.backtrace)}"
-        log.error msg
-        status.add_error(msg)
+        err = NcsNavigator::Warehouse::TransformError.for_exception(e, 'Enumeration failed.')
+        log.error err.message
+        status.transform_errors << err
       end
     end
 

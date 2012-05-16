@@ -32,4 +32,35 @@ module NcsNavigator::Warehouse
       end
     end
   end
+
+  describe TransformError do
+    describe '.for_exception' do
+      let(:exception) { begin; raise IndexError, 'Pick a different one'; rescue => e; e; end }
+      let(:actual) { TransformError.for_exception(exception, 'What is happening?') }
+
+      it 'provides a message' do
+        actual.message.should_not be_nil
+      end
+
+      describe 'the message' do
+        let(:message) { actual.message }
+
+        it 'includes the provided context' do
+          message.should =~ /What is happening\?/
+        end
+
+        it 'includes the exception type' do
+          message.should =~ /IndexError/
+        end
+
+        it 'includes the exception message' do
+          message.should =~ /Pick a different one/
+        end
+
+        it 'includes the stack trace' do
+          message.should =~ /#{File.basename(__FILE__)}\:\s*\d+/
+        end
+      end
+    end
+  end
 end
