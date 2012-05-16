@@ -103,7 +103,9 @@ RSpec.configure do |config|
   ###### tmpdir
 
   config.after do
-    @tmpdir.rmtree if @tmpdir && !ENV['KEEP_TMP']
+    # Not sure how the tmpdir could be gone if the instance var is
+    # set, but it seems to happen in CI sometimes.
+    @tmpdir.rmtree if (@tmpdir && @tmpdir.exist? && !ENV['KEEP_TMP'])
   end
 
   # @return [Pathname] the path to an existing temporary director
