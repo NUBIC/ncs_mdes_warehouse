@@ -78,9 +78,11 @@ module NcsNavigator::Warehouse
     def dispatch_post_etl_hooks(method)
       configuration.post_etl_hooks.each do |hook|
         begin
-          hook.send(method, statuses) if hook.respond_to?(method)
+          args = { :transform_statuses => statuses, :configuration => configuration }
+          hook.send(method, args) if hook.respond_to?(method)
         rescue => e
-          log.error("Error invoking #{method.inspect} on #{hook.inspect}: #{e.class} #{e}.")
+          log.error(
+            "Error invoking #{method.inspect} on #{hook.inspect}: #{e.class} #{e}.\n#{stringify_trace(e.backtrace)}")
         end
       end
     end

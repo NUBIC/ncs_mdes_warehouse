@@ -6,9 +6,13 @@ module NcsNavigator::Warehouse
   # with the warehouse.
   #
   # A post-ETL hook is an object which responds to either
-  # `etl_succeeded` or `etl_failed` (or both). Each method takes one
-  # argument: the list of {TransformStatus}es describing the ETL
-  # process that was just completed.
+  # `etl_succeeded` or `etl_failed` (or both). Each method takes a
+  # single hash argument which, when the method is called, will
+  # contain the following keys:
+  #
+  # * `:transform_statuses` the list of {TransformStatus}es describing
+  #   the ETL process that was just completed
+  # * `:configuration` a reference to the warehouse {Configuration}.
   #
   # @see Configuration#add_post_etl_hook
   module PostEtlHooks

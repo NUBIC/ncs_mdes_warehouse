@@ -200,6 +200,10 @@ module NcsNavigator::Warehouse
             hook_a.transform_statuses.size.should == 1
           end
 
+          it 'sends each hook the configuration' do
+            hook_a.configuration.should == config
+          end
+
           it 'runs all the hooks even when one fails' do
             config.post_etl_hooks.unshift hook_error
 
@@ -275,7 +279,7 @@ module NcsNavigator::Warehouse
     end
 
     class ::RecordingHook
-      attr_reader :transform_statuses
+      attr_reader :transform_statuses, :configuration
 
       def initialize(*modes)
         @invoked = false
@@ -283,9 +287,10 @@ module NcsNavigator::Warehouse
 
         @modes.each do |mode|
           instance_eval <<-RUBY
-            def etl_#{mode}(transform_statuses)
+            def etl_#{mode}(args)
               @invoked = true
-              @transform_statuses = transform_statuses
+              @transform_statuses = args[:transform_statuses]
+              @configuration = args[:configuration]
               @success = #{mode == :succeeded}
             end
           RUBY
