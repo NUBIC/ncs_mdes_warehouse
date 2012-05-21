@@ -39,7 +39,17 @@ EXPECTED
         (irb):   2:in `irb_binding'
  workspace.rb:  80:in `eval'
 foo/caller.rb:1024:in `<main>'
-             :    :something up over here
+something up over here
+EXPECTED
+      end
+
+      it 'aligns lines without specific context info' do
+        StringifyTrace.stringify_trace(simple_trace + ['bar/zap.rb:423']).
+          should == <<-EXPECTED.chomp
+        (irb):   2:in `irb_binding'
+ workspace.rb:  80:in `eval'
+foo/caller.rb:1024:in `<main>'
+   bar/zap.rb: 423
 EXPECTED
       end
     end
