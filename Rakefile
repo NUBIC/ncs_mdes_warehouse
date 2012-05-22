@@ -26,7 +26,7 @@ end
 namespace :generate do
   task :models do
     NcsNavigator::Warehouse::TableModeler.for_version(
-      '2.0',
+      ENV['MDES_VERSION'] || '2.0',
       :path => 'generated_models'
     ).model!
   end
