@@ -2,7 +2,7 @@ require 'ncs_navigator/warehouse'
 require 'ncs_navigator/warehouse/data_mapper'
 
 module NcsNavigator::Warehouse::Models::TwoPointZero
-  class PregScreenEhKnowNcs2
+  class PregScreenEhKnowNcs_2
     include DataMapper::Resource
     include NcsNavigator::Warehouse::Models::MdesModel
 
@@ -17,7 +17,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :ps_eh,
-               'NcsNavigator::Warehouse::Models::TwoPointZero::PregScreenEh2',
+               'NcsNavigator::Warehouse::Models::TwoPointZero::PregScreenEh_2',
                :child_key => [ :ps_eh_id ], :required => true
     property   :how_know_ncs,
                NcsNavigator::Warehouse::DataMapper::NcsString,

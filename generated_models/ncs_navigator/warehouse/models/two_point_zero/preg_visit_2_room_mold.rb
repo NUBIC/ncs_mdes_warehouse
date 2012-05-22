@@ -17,7 +17,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :pv2,
-               'NcsNavigator::Warehouse::Models::TwoPointZero::PregVisit2',
+               'NcsNavigator::Warehouse::Models::TwoPointZero::PregVisit_2',
                :child_key => [ :pv2_id ], :required => true
     property   :room_mold,
                NcsNavigator::Warehouse::DataMapper::NcsString,

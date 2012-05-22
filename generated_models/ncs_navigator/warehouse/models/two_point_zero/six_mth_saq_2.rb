@@ -2,7 +2,7 @@ require 'ncs_navigator/warehouse'
 require 'ncs_navigator/warehouse/data_mapper'
 
 module NcsNavigator::Warehouse::Models::TwoPointZero
-  class SixMthSaq2
+  class SixMthSaq_2
     include DataMapper::Resource
     include NcsNavigator::Warehouse::Models::MdesModel
 

@@ -2,7 +2,7 @@ require 'ncs_navigator/warehouse'
 require 'ncs_navigator/warehouse/data_mapper'
 
 module NcsNavigator::Warehouse::Models::TwoPointZero
-  class PregVisit1PdecorateRoom2
+  class PregVisit1PdecorateRoom_2
     include DataMapper::Resource
     include NcsNavigator::Warehouse::Models::MdesModel
 
@@ -17,7 +17,7 @@ module NcsNavigator::Warehouse::Models::TwoPointZero
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :pv1,
-               'NcsNavigator::Warehouse::Models::TwoPointZero::PregVisit12',
+               'NcsNavigator::Warehouse::Models::TwoPointZero::PregVisit_1_2',
                :child_key => [ :pv1_id ], :required => true
     property   :pdecorate_room,
                NcsNavigator::Warehouse::DataMapper::NcsString,
