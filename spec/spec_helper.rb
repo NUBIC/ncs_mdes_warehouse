@@ -38,11 +38,12 @@ RSpec.configure do |config|
   ###### MDES model loading
 
   # Each test run can only operate against one version of the MDES at
-  # a time. When the system supports more than one version, the CI
-  # build should be set up to run with this environment variable set
-  # with each supported version.
+  # a time. The CI build is set up to run serially with this
+  # environment variable set with each supported version.
   def spec_mdes_version
-    ENV['SPEC_MDES_VERSION'] || NcsNavigator::Warehouse::DEFAULT_MDES_VERSION
+    @spec_mdes_version ||=
+      (ENV['SPEC_MDES_VERSION'] || NcsNavigator::Warehouse::DEFAULT_MDES_VERSION).
+      gsub(/[^\d\.]/, '')
   end
 
   config.before(:each, :use_mdes) do
