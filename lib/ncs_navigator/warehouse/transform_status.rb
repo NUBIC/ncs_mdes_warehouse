@@ -14,8 +14,8 @@ module NcsNavigator::Warehouse
     # tests). This method creates a new instance which works around
     # this problem, at the cost of the instances not being accurately
     # persistable.
-    def self.memory_only(name)
-      TransformStatus.new(:name => name).tap do |s|
+    def self.memory_only(name, attrs={})
+      TransformStatus.new(attrs.merge(:name => name)).tap do |s|
         def s.transform_errors
           @transform_errors ||= []
         end

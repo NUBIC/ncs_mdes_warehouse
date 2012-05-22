@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
   end
 
   s.add_dependency 'bcdatabase', '~> 1.1'
+  s.add_dependency 'actionmailer', '~> 3.0'
 
   s.add_development_dependency 'rspec', '~> 2.6'
   s.add_development_dependency 'rake', '~> 0.9.2'

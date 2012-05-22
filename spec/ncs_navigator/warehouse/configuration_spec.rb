@@ -332,6 +332,32 @@ module NcsNavigator::Warehouse
       end
     end
 
+    describe '#set_up_action_mailer' do
+      before do
+        config.set_up_action_mailer
+      end
+
+      it 'sets the SMTP settings from navigator.ini' do
+        ActionMailer::Base.smtp_settings[:address].should == 'smtp.ncs.gov'
+      end
+
+      it 'sets the delivery mode to SMTP' do
+        ActionMailer::Base.delivery_method.should == :smtp
+      end
+
+      it 'sets the template path appropriately' do
+        ActionMailer::Base.view_paths.collect(&:to_s).should == [
+          File.expand_path('../../../../lib/ncs_navigator/warehouse/mailer_templates', __FILE__)
+        ]
+      end
+
+      it 'only gets set up once' do
+        ActionMailer::Base.delivery_method = :test
+        config.set_up_action_mailer
+        ActionMailer::Base.delivery_method.should == :test
+      end
+    end
+
     describe 'bcdatabase' do
       describe 'group', :modifies_warehouse_state do
         subject { config.bcdatabase_group }

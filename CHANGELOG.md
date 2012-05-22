@@ -7,6 +7,9 @@ NCS Navigator MDES Warehouse History
 - Add "post-ETL hooks" to ETL process: objects with callbacks which
   are executed when the ETL completes. (#1725)
 
+- Add post-ETL hook for sending e-mail when the ETL process completes,
+  indicating success or failure. (#1601)
+
 - Include the input filename in the name of transformers based on
   `VdrXml::Reader`. (#1927)
 

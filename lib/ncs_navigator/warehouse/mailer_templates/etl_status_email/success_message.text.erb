@@ -1,0 +1,7 @@
+An MDES Warehouse transform and load process ran, starting at <%= @start_time %>.
+
+All transformations executed successfully.
+
+Executing <%= @transform_count %> transform<%= 's' if @transform_count != 1 %>
+took <%= @transform_duration %> and
+produced <%= @record_count %> total record<%= 's' if @record_count != 1 %>.

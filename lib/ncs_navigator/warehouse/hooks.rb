@@ -15,6 +15,7 @@ module NcsNavigator::Warehouse
   # * `:configuration` a reference to the warehouse {Configuration}.
   #
   # @see Configuration#add_post_etl_hook
-  module PostEtlHooks
+  module Hooks
+    autoload :EtlStatusEmail, 'ncs_navigator/warehouse/hooks/etl_status_email'
   end
 end

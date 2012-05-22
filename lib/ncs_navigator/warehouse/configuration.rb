@@ -187,6 +187,26 @@ module NcsNavigator::Warehouse
       @navigator = NcsNavigator::Configuration.new(ini_file)
     end
 
+    ###
+    ### E-mail
+    ###
+
+    ##
+    # Configures `ActionMailer` with the options implied by the suite
+    # configuration.
+    #
+    # @return [void]
+    def set_up_action_mailer
+      return if @action_mailer_set_up
+      require 'action_mailer'
+      ActionMailer::Base.delivery_method = :smtp
+      ActionMailer::Base.smtp_settings = navigator.action_mailer_smtp_settings
+      ActionMailer::Base.view_paths = [
+        File.expand_path('../mailer_templates', __FILE__)
+      ]
+      @action_mailer_set_up = true
+    end
+
     ####
     #### Bcdatabase
     ####
