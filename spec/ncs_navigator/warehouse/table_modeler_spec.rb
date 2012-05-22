@@ -90,8 +90,14 @@ module NcsNavigator::Warehouse
     it 'preserves non-reversible table names' do
       table.instance_eval { @name = 'generational_tableau_1' }
       subject.load!
-      Spec::ModeledTables::GenerationalTableau1.
+      Spec::ModeledTables::GenerationalTableau_1.
         storage_names[:default].should == 'generational_tableau_1'
+    end
+
+    it 'preserves numeric suffixes intact' do
+      table.instance_eval { @name = 'generational_tableau2_3_1' }
+      subject.load!
+      lambda { Spec::ModeledTables::GenerationalTableau2_3_1 }.should_not raise_error(NameError)
     end
 
     [:default, :mdes_warehouse_working, :mdes_warehouse_reporting].each do |repo|

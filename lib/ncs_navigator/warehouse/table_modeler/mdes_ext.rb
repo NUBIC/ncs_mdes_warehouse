@@ -19,7 +19,12 @@ module NcsNavigator
 
     class TransmissionTable
       def wh_model_name(module_name=nil)
-        [module_name, name.camelize].compact.join('::')
+        name_text, numeric_suffix = name.scan(/^(.*?)([_\d]*)$/).first
+
+        [
+          module_name,
+          [name_text.camelize, numeric_suffix].compact.join
+        ].compact.join('::')
       end
 
       def wh_variables
