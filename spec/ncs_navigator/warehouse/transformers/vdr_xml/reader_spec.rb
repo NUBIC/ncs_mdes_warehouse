@@ -1,4 +1,4 @@
-require File.expand_path('../../../../../spec_helper', __FILE__)
+require 'spec_helper'
 
 class NcsNavigator::Warehouse::Transformers::VdrXml
   describe Reader, :use_mdes do
