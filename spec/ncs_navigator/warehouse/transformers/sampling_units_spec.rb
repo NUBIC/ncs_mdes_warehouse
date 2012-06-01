@@ -14,7 +14,8 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     it 'yields everything in MDES order' do
-      subject.to_a.collect { |i| i.class.to_s.demodulize }.should == %w(StudyCenter Psu Ssu Ssu Tsu)
+      subject.to_a.collect { |i| i.class.to_s.demodulize }.
+        should == %w(StudyCenter Psu Psu Ssu Ssu Ssu Tsu)
     end
 
     describe 'emitted Study Center' do
@@ -68,7 +69,7 @@ module NcsNavigator::Warehouse::Transformers
       let(:ssus) { subject.to_a.select { |emitted| emitted.is_a?(ssu_model) } }
 
       it 'includes all the SSUs from the configuration' do
-        ssus.collect(&:ssu_id).sort.should == %w(24 42)
+        ssus.collect(&:ssu_id).sort.should == %w(204 24 42)
       end
 
       describe 'an exemplar' do
@@ -83,7 +84,7 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         it 'has the SC ID' do
-          ssu.sc_id.should == '20000029'
+          ssu.sc_id.should == test_sc_id
         end
 
         it 'has the PSU ID' do
@@ -112,7 +113,7 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         it 'has the SC ID' do
-          tsu.sc_id.should == '20000029'
+          tsu.sc_id.should == test_sc_id
         end
 
         it 'has the PSU ID' do
