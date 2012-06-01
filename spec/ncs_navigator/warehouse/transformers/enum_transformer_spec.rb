@@ -86,6 +86,50 @@ module NcsNavigator::Warehouse::Transformers
         end
       end
 
+      describe 'with an instance with an invalid PSU' do
+        before do
+          records[0].should_receive(:save).and_return(true)
+          records[1].should_not_receive(:save)
+          records[2].should_receive(:save).and_return(true)
+
+          records[1].psu_id = '20000041'
+        end
+
+        it 'does not save that instance' do
+          subject.transform(transform_status)
+        end
+
+        it 'saves the other instances' do
+          subject.transform(transform_status)
+        end
+
+        it 'records an error' do
+          subject.transform(transform_status)
+          transform_status.transform_errors.collect(&:record_id).should == ['2']
+        end
+
+        describe 'the recorded error' do
+          let(:error) { transform_status.transform_errors.first }
+
+          before do
+            subject.transform(transform_status)
+          end
+
+          it 'has the correct model class' do
+            error.model_class.should == Sample.to_s
+          end
+
+          it 'has the record ID' do
+            error.record_id.should == '2'
+          end
+
+          it 'has a message' do
+            error.message.should ==
+              'Invalid PSU ID "20000041". The list of valid PSU IDs for this Study Center is ["20000030", "20000042"].'
+          end
+        end
+      end
+
       describe 'with an unsaveable instance' do
         before do
           records[0].should_receive(:save).and_return(true)

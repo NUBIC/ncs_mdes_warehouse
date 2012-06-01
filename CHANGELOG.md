@@ -6,6 +6,8 @@ NCS Navigator MDES Warehouse History
 
 - Add models for MDES 2.1 and 2.2. (#1973)
 
+- Verify PSU IDs in EnumTransformer. (#2044)
+
 0.5.0
 -----
 
