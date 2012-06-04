@@ -31,7 +31,7 @@ module NcsNavigator::Warehouse::Transformers
     # @return [Enumerable] the enumeration that will be transformed.
     attr_reader :enum
 
-    def_delegators :@configuration, :log, :shell
+    def_delegators :@configuration, :log, :shell, :foreign_key_index
 
     ##
     # @param [Configuration] configuration
@@ -75,8 +75,10 @@ module NcsNavigator::Warehouse::Transformers
           receive_transform_error(record, status)
         else
           save_model_instance(record, status)
+          foreign_key_index.record_and_verify(record)
         end
       end
+      foreign_key_index.report_errors(status)
     end
 
     def save_model_instance(record, status)

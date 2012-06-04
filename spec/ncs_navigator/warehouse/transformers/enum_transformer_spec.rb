@@ -13,6 +13,14 @@ module NcsNavigator::Warehouse::Transformers
       property :name, String, :required => true
     end
 
+    class Subsample
+      include ::DataMapper::Resource
+
+      property :id, Integer, :key => true
+      belongs_to :sample,
+        'NcsNavigator::Warehouse::Transformers::Sample', :child_key => [ :sample_id ]
+    end
+
     before(:all) do
       DataMapper.finalize
     end
@@ -127,6 +135,25 @@ module NcsNavigator::Warehouse::Transformers
             error.message.should ==
               'Invalid PSU ID "20000041". The list of valid PSU IDs for this Study Center is ["20000030", "20000042"].'
           end
+        end
+      end
+
+      describe 'with an unsatisfied foreign key' do
+        let(:error) { transform_status.transform_errors.first }
+
+        before do
+          records << Subsample.new(:id => 3, :sample_id => 912)
+
+          records.each do |m|
+            m.stub!(:valid?).and_return(true)
+            m.stub!(:save).and_return(true)
+          end
+
+          subject.transform(transform_status)
+        end
+
+        it 'reports the unsatisfied foreign key' do
+          error.message.should =~ /Unsatisfied foreign key sample_id=912/
         end
       end
 
