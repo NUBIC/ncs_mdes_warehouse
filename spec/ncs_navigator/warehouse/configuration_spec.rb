@@ -41,6 +41,19 @@ module NcsNavigator::Warehouse
       end
     end
 
+    describe '#foreign_key_index' do
+      it 'provides an index by default' do
+        config.foreign_key_index.should respond_to(:record_and_verify)
+      end
+
+      it 'allows the index to be overridden' do
+        i = Transformers::ForeignKeyIndex.new
+
+        config.foreign_key_index = i
+        config.foreign_key_index.should be(i)
+      end
+    end
+
     describe 'add_post_etl_hook' do
       let(:success_hook) {
         Object.new.tap do |o|

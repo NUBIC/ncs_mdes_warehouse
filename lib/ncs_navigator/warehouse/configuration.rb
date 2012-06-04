@@ -82,6 +82,27 @@ module NcsNavigator::Warehouse
       end
     end
 
+    ##
+    # The foreign key index used during an ETL run. The default value
+    # is correct for virtually any case.
+    #
+    # @return [Object]
+    def foreign_key_index
+      @foreign_key_index ||= Transformers::ForeignKeyIndex.new
+    end
+
+    ##
+    # Specify a different foreign key index implementation to
+    # use. This will only rarely be necessary or useful. The default
+    # value is correct for virtually any case.
+    #
+    # @return [void]
+    # @param [#record_and_verify,#report_errors] index the replacement
+    #   foreign key index implementation.
+    def foreign_key_index=(index)
+      @foreign_key_index = index
+    end
+
     ####
     #### Hooks
     ####

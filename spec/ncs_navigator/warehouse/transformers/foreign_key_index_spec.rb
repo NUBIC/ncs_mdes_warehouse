@@ -70,6 +70,12 @@ module NcsNavigator::Warehouse::Transformers
           errors.first.message.should ==
             'Unsatisfied foreign key frob_id=4 referencing NcsNavigator::Warehouse::Transformers::Frob.'
         end
+
+        it 'only reports the error once if #report_errors is called multiple times' do
+          fk_index.report_errors(transform_status)
+
+          errors.size.should == 1
+        end
       end
 
       it 'reports multiple failed references for a single record' do
