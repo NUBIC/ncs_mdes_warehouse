@@ -471,6 +471,22 @@ module NcsNavigator::Warehouse
         subject.bcdatabase_group.should == :custom
       end
 
+      it 'evaluates constants from NcsNavigator::Warehouse::Transformers' do
+        write_file do |f|
+          f.puts 'c.log_file = "#{EnumTransformer}.log"'
+        end
+
+        subject.log_file.to_s.should == 'NcsNavigator::Warehouse::Transformers::EnumTransformer.log'
+      end
+
+      it 'reports missing constants as bare' do
+        write_file do |f|
+          f.puts 'c.add_transformer = ATransformerIForgotToRequire'
+        end
+
+        lambda { subject }.should raise_error(/uninitialized constant ATransformerIForgotToRequire/)
+      end
+
       describe 'source file tracking' do
         it 'knows what file it came from' do
           write_file { }

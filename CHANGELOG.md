@@ -8,6 +8,9 @@ NCS Navigator MDES Warehouse History
 
 - Verify PSU IDs in EnumTransformer. (#2044)
 
+- Resolve constants in configuration files against
+  `NcsNavigator::Warehouse::Transformers` to reduce clutter.
+
 0.5.0
 -----
 

@@ -26,6 +26,15 @@ class NcsNavigator::Warehouse::Configuration
       eval unless @evaled
       @base_configuration
     end
+
+    def self.const_missing(const)
+      [NcsNavigator::Warehouse::Transformers].each do |ns|
+        if ns.const_defined?(const)
+          return ns.const_get(const)
+        end
+      end
+      super
+    end
   end
 
   ##
