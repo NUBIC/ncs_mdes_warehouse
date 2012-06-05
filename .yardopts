@@ -4,4 +4,3 @@
 --files CHANGELOG.md
 --readme README.md
 lib/**/*.rb
-generated_models/**/*.rb
