@@ -13,6 +13,7 @@ module NcsNavigator::Warehouse
   module Transformers
     autoload :Database,              'ncs_navigator/warehouse/transformers/database'
     autoload :EnumTransformer,       'ncs_navigator/warehouse/transformers/enum_transformer'
+    autoload :Filters,               'ncs_navigator/warehouse/transformers/filters'
     autoload :SamplingUnits,         'ncs_navigator/warehouse/transformers/sampling_units'
     autoload :SubprocessTransformer, 'ncs_navigator/warehouse/transformers/subprocess_transformer'
     autoload :VdrXml,                'ncs_navigator/warehouse/transformers/vdr_xml'

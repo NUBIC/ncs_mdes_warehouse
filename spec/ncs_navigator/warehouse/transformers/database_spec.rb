@@ -192,6 +192,7 @@ module NcsNavigator::Warehouse::Transformers
 
     describe '.create_transformer' do
       let(:enumerator_def) { sample_class }
+      let(:filter) { Object.new.tap { |x| def x.apply(y); y; end } }
       subject { enumerator_def.create_transformer(configuration) }
 
       it 'creates an EnumTransformer' do
@@ -203,10 +204,17 @@ module NcsNavigator::Warehouse::Transformers
       end
 
       describe 'with options' do
-        subject { enumerator_def.create_transformer(configuration, :repository => :alpha) }
+        subject {
+          enumerator_def.create_transformer(configuration,
+            :repository => :alpha, :filters => [filter])
+        }
 
         it 'passes the options to the enumerable constructor' do
           subject.enum.repository_name.should == :alpha
+        end
+
+        it 'passes the filters to the transformer constructor' do
+          subject.filters.should == [filter]
         end
       end
     end

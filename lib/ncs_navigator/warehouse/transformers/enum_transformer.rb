@@ -31,16 +31,31 @@ module NcsNavigator::Warehouse::Transformers
     # @return [Enumerable] the enumeration that will be transformed.
     attr_reader :enum
 
+    ##
+    # @return [Filters] the filters in use on this transformer.
+    attr_reader :filters
+
     def_delegators :@configuration, :log, :shell
 
     ##
     # @param [Configuration] configuration
     # @param [Enumerable] enum
-    def initialize(configuration, enum)
+    # @param [Hash<Symbol, Object>] options
+    # @option options [Array<#call>,#call] :filters a list of
+    #   filters to use for this transformer
+    #
+    # @see Filters
+    def initialize(configuration, enum, options={})
       @configuration = configuration
       @enum = enum
+      filter_list = options.delete(:filters)
+      @filters = Filters.new(filter_list ? [*filter_list].compact : [])
     end
 
+    ##
+    # A human-readable name for this transformer.
+    #
+    # @return [String]
     def name
       enum_name = if enum.respond_to?(:name)
                     enum.name
@@ -74,7 +89,9 @@ module NcsNavigator::Warehouse::Transformers
         when NcsNavigator::Warehouse::TransformError
           receive_transform_error(record, status)
         else
-          save_model_instance(record, status)
+          filters.call([record]).each do |filtered_record|
+            save_model_instance(filtered_record, status)
+          end
         end
       end
     end

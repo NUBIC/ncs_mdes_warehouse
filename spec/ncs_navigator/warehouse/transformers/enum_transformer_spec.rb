@@ -246,6 +246,31 @@ module NcsNavigator::Warehouse::Transformers
           transform_status.transform_errors.first.id.should be_nil
         end
       end
+
+      describe 'with a filter set' do
+        let(:filter_one) { lambda { |recs| recs.each { |r| r.name = 'FILTERED' }; recs } }
+        let(:filter_two) { lambda { |recs| recs.each { |r| r.name.downcase! }; recs } }
+        let(:replacing_filter) { lambda { |recs| [records[1]] } }
+
+        def transformer_with_filters(*filters)
+          EnumTransformer.new(config, records, :filters => filters)
+        end
+
+        it 'applies all the filters' do
+
+          transformer_with_filters(filter_one, filter_two).transform(transform_status)
+
+          records.each { |m| m.name.should == 'filtered' }
+        end
+
+        it 'saves only the results from the filter' do
+          records[0].should_not_receive(:save)
+          records[2].should_not_receive(:save)
+          records[1].should_receive(:save).exactly(3).times
+
+          transformer_with_filters(replacing_filter).transform(transform_status)
+        end
+      end
     end
   end
 end

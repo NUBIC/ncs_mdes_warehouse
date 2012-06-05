@@ -8,8 +8,8 @@ module NcsNavigator::Warehouse::Transformers
       ##
       # @return [#transform] a transformer that loads the MDES data in
       #   the specified VDR XML file.
-      def from_file(config, filename) # <- TODO better solution
-        EnumTransformer.new(config, Reader.new(config, filename))
+      def from_file(config, filename, options={}) # <- TODO better solution
+        EnumTransformer.new(config, Reader.new(config, filename), options)
       end
 
       ##
@@ -17,10 +17,12 @@ module NcsNavigator::Warehouse::Transformers
       #   warehouse.
       # @param list [String,Array<String>] the files to consider. This
       #   may be either a glob or an explicit list of files.
+      # @param options [Hash<Symbol, Object>] options for the
+      #   resulting transformer.
       #
       # @return [#transform] a transformer for the most recently
       #   modified VDR XML file from the given list of files.
-      def from_most_recent_file(config, list)
+      def from_most_recent_file(config, list, options={})
         files =
           if String === list
             Dir[list].tap { |a| fail "Glob #{list} does not match any files." if a.empty? }
@@ -31,7 +33,8 @@ module NcsNavigator::Warehouse::Transformers
         from_file(
           config,
           files.collect { |fn| [fn, File.stat(fn).mtime] }.
-            sort_by { |fn, mtime| mtime }.reverse.first.first)
+            sort_by { |fn, mtime| mtime }.reverse.first.first,
+          options)
       end
     end
   end
