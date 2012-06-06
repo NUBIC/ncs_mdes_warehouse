@@ -11,6 +11,14 @@ NCS Navigator MDES Warehouse History
 - Resolve constants in configuration files against
   `NcsNavigator::Warehouse::Transformers` to reduce clutter.
 
+- Add "filter" concept to EnumTransformer. (#2125)
+
+- Extract cleanup behavior in VDR XML reader into a filter
+  (CodedAsMissingFilter). (#2125)
+
+- Extract automatic `psu_id` and `recruit_type` setting from
+  EnumTransformer into a filter (ApplyGlobalValuesFilter). (#2125)
+
 0.5.0
 -----
 
