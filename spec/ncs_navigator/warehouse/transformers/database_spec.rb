@@ -192,7 +192,7 @@ module NcsNavigator::Warehouse::Transformers
 
     describe '.create_transformer' do
       let(:enumerator_def) { sample_class }
-      let(:filter) { Object.new.tap { |x| def x.apply(y); y; end } }
+      let(:filter) { Object.new.tap { |x| def x.call(y); y; end } }
       subject { enumerator_def.create_transformer(configuration) }
 
       it 'creates an EnumTransformer' do
@@ -214,7 +214,7 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         it 'passes the filters to the transformer constructor' do
-          subject.filters.should == [filter]
+          subject.filters.to_a.should == [filter]
         end
       end
     end
