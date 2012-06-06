@@ -24,9 +24,9 @@ module NcsNavigator::Warehouse::Transformers
         end
       }
       let(:records) { [
-          Sample.new(:id => 1, :name => 'One'),
-          Sample.new(:id => 2, :name => 'Two'),
-          Sample.new(:id => 3, :name => 'Three')
+          Sample.new(:id => 1, :psu_id => '20000030', :name => 'One'),
+          Sample.new(:id => 2, :psu_id => '20000030', :name => 'Two'),
+          Sample.new(:id => 3, :psu_id => '20000030', :name => 'Three')
         ] }
       let(:transform_status) { NcsNavigator::Warehouse::TransformStatus.memory_only('test') }
       subject { EnumTransformer.new(config, records) }
@@ -39,30 +39,6 @@ module NcsNavigator::Warehouse::Transformers
 
         subject.transform(transform_status)
         transform_status.transform_errors.should be_empty
-      end
-
-      it 'automatically sets the PSU ID if necessary' do
-        records[1].psu_id = '20000042'
-
-        records.each do |m|
-          m.should_receive(:valid?).and_return(true)
-          m.should_receive(:save).and_return(true)
-        end
-
-        subject.transform(transform_status)
-        records.collect(&:psu_id).should == %w(20000030 20000042 20000030)
-      end
-
-      it 'automatically sets recruit_type if necessary' do
-        records[2].recruit_type = '1'
-
-        records.each do |m|
-          m.should_receive(:valid?).and_return(true)
-          m.should_receive(:save).and_return(true)
-        end
-
-        subject.transform(transform_status)
-        records.collect(&:recruit_type).should == %w(3 3 1)
       end
 
       describe 'with an invalid instance' do

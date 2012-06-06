@@ -97,7 +97,6 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     def save_model_instance(record, status)
-      apply_global_values_if_necessary(record)
       if !has_valid_psu?(record)
         msg = "Invalid PSU ID #{record.psu_id.inspect}. The list of valid PSU IDs for this Study Center is #{@configuration.navigator.psus.collect(&:id).inspect}."
         log.error "#{record_ident record}: #{msg}"
@@ -141,20 +140,6 @@ module NcsNavigator::Warehouse::Transformers
           "#{e} (#{prop}=#{v.inspect})."
         }
       }.flatten
-    end
-
-    def apply_global_values_if_necessary(record)
-      {
-        :psu_id => @configuration.navigator.psus.first.id,
-        :recruit_type => @configuration.navigator.recruitment_type_id
-      }.each do |attr, value|
-        setter = :"#{attr}="
-        if record.respond_to?(setter) && record.respond_to?(attr)
-          unless record.send(attr)
-            record.send(setter, value)
-          end
-        end
-      end
     end
 
     ##
