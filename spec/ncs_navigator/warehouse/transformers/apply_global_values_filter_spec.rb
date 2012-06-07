@@ -6,12 +6,8 @@ module NcsNavigator::Warehouse::Transformers
       ApplyGlobalValuesFilter.new(spec_config, :values => { :first_name => 'Fred' })
     }
 
-    let(:person) { get_model(:Person).new }
-    let(:contact) { get_model(:Contact).new }
-
-    def get_model(name)
-      spec_config.models_module.const_get(name)
-    end
+    let(:person) { mdes_model(:Person).new }
+    let(:contact) { mdes_model(:Contact).new }
 
     it 'applies a global value if the record has that variable and it is not set' do
       filter.call([person])

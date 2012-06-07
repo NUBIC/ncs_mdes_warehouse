@@ -35,6 +35,10 @@ RSpec.configure do |config|
     end
   end
 
+  def mdes_model(name)
+    spec_config.models_module.const_get(name)
+  end
+
   ###### MDES model loading
 
   # Each test run can only operate against one version of the MDES at
