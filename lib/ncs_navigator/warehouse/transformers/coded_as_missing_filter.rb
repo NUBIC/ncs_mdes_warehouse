@@ -15,48 +15,61 @@ module NcsNavigator::Warehouse::Transformers
   #   is one of these error codes (e.g., a comments field whose value
   #   is '-7').
   #
-  # This filter is stateless and should be configured without
-  # instantiation.
+  # This filter may be used with or without instantiation.
   class CodedAsMissingFilter
     MISSING_CODES = %w(-3 -4 -6 -7)
 
     class << self
       def call(records)
-        records.collect { |r| process(r) }.compact
+        singleton.call(records)
       end
 
       private
 
-      def process(record)
-        return nil if MISSING_CODES.include?(record.key.first)
-
-        remove_missing_foreign_keys(record)
-        remove_missing_noncoded_values(record)
-
-        record
+      def singleton
+        @singleton ||= CodedAsMissingFilter.new
       end
+    end
 
-      def remove_missing_foreign_keys(record)
-        record.class.relationships.each do |rel|
-          reference_key = rel.child_key.first.name
-          reference_value = record.send(reference_key)
-          next unless reference_value
-          if MISSING_CODES.include?(reference_value) || reference_value.strip.empty?
-            record.send("#{reference_key}=", nil)
-          end
+    def initialize(configuration=nil, options={})
+    end
+
+    def call(records)
+      records.collect { |r| process(r) }.compact
+    end
+
+    private
+
+    def process(record)
+      return nil if MISSING_CODES.include?(record.key.first)
+
+      remove_missing_foreign_keys(record)
+      remove_missing_noncoded_values(record)
+
+      record
+    end
+
+    def remove_missing_foreign_keys(record)
+      record.class.relationships.each do |rel|
+        reference_key = rel.child_key.first.name
+        reference_value = record.send(reference_key)
+        next unless reference_value
+        if MISSING_CODES.include?(reference_value) || reference_value.strip.empty?
+          record.send("#{reference_key}=", nil)
         end
       end
+    end
 
-      def remove_missing_noncoded_values(record)
-        record.class.properties.each do |prop|
-          unless prop.required? || prop.options[:set]
-            prop_value = record.send(prop.name)
-            if MISSING_CODES.include?(prop_value)
-              record.send("#{prop.name}=", nil)
-            end
+    def remove_missing_noncoded_values(record)
+      record.class.properties.each do |prop|
+        unless prop.required? || prop.options[:set]
+          prop_value = record.send(prop.name)
+          if MISSING_CODES.include?(prop_value)
+            record.send("#{prop.name}=", nil)
           end
         end
       end
     end
+
   end
 end
