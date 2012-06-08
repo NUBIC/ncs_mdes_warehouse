@@ -2,6 +2,10 @@ require 'spec_helper'
 
 module NcsNavigator::Warehouse::Transformers
   describe CodedAsMissingFilter, :use_mdes do
+    def call(records)
+      filter.call(records)
+    end
+
     def self.it_filters_missing_code(bad_code)
       it "removes a record whose primary key is #{bad_code.inspect}" do
         records = [
@@ -58,9 +62,7 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     describe '.call' do
-      def call(records)
-        CodedAsMissingFilter.call(records)
-      end
+      let(:filter) { CodedAsMissingFilter }
 
       %w(-3 -4 -6 -7).each do |bad_code|
         it_filters_missing_code(bad_code)
@@ -70,15 +72,24 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     describe '#call' do
-      def call(records)
-        CodedAsMissingFilter.new(spec_config).call(records)
-      end
+      let(:filter) { CodedAsMissingFilter.new(spec_config) }
 
       %w(-3 -4 -6 -7).each do |bad_code|
         it_filters_missing_code(bad_code)
       end
 
       include_context 'with blanks'
+
+      describe 'with additional codes' do
+        let(:filter) { CodedAsMissingFilter.new(spec_config, :additional_codes => %w(-47)) }
+
+        %w(-3 -4 -47 -6 -7).each do |bad_code|
+          it_filters_missing_code(bad_code)
+        end
+
+        include_context 'with blanks'
+      end
+
     end
   end
 end

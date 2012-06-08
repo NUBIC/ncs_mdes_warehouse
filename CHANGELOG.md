@@ -22,6 +22,9 @@ NCS Navigator MDES Warehouse History
 - Add two filters for cleaning up outreach event records without
   associated SSUs. (#2130, #2131)
 
+- Allow additional values to be specified for cleanup in
+  CodedAsMissingFilter. (#2139)
+
 0.5.0
 -----
 

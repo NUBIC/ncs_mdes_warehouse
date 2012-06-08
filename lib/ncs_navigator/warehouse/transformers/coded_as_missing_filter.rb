@@ -15,9 +15,13 @@ module NcsNavigator::Warehouse::Transformers
   #   is one of these error codes (e.g., a comments field whose value
   #   is '-7').
   #
+  # If the `:additional_codes` option is passed to the constructor,
+  # those codes will be used in addition to the default list (i.e.,
+  # -3, -4, -6, -7).
+  #
   # This filter may be used with or without instantiation.
   class CodedAsMissingFilter
-    MISSING_CODES = %w(-3 -4 -6 -7)
+    DEFAULT_MISSING_CODES = %w(-3 -4 -6 -7)
 
     class << self
       def call(records)
@@ -31,7 +35,19 @@ module NcsNavigator::Warehouse::Transformers
       end
     end
 
+    attr_reader :missing_codes
+
+    ##
+    # @param configuration [Configuration]
+    # @param options [Hash<Symbol, Object>]
+    # @option options [Array<String>] :additional_codes a list of
+    #   other codes (beyond the defaults) which will also be treated
+    #   as "missing" for the purposes of this filter.
     def initialize(configuration=nil, options={})
+      @missing_codes = DEFAULT_MISSING_CODES.dup
+      if options[:additional_codes]
+        @missing_codes += options[:additional_codes]
+      end
     end
 
     def call(records)
@@ -41,7 +57,7 @@ module NcsNavigator::Warehouse::Transformers
     private
 
     def process(record)
-      return nil if MISSING_CODES.include?(record.key.first)
+      return nil if missing_codes.include?(record.key.first)
 
       remove_missing_foreign_keys(record)
       remove_missing_noncoded_values(record)
@@ -54,7 +70,7 @@ module NcsNavigator::Warehouse::Transformers
         reference_key = rel.child_key.first.name
         reference_value = record.send(reference_key)
         next unless reference_value
-        if MISSING_CODES.include?(reference_value) || reference_value.strip.empty?
+        if missing_codes.include?(reference_value) || reference_value.strip.empty?
           record.send("#{reference_key}=", nil)
         end
       end
@@ -64,7 +80,7 @@ module NcsNavigator::Warehouse::Transformers
       record.class.properties.each do |prop|
         unless prop.required? || prop.options[:set]
           prop_value = record.send(prop.name)
-          if MISSING_CODES.include?(prop_value)
+          if missing_codes.include?(prop_value)
             record.send("#{prop.name}=", nil)
           end
         end
