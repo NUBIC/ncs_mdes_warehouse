@@ -4,7 +4,7 @@ module NcsNavigator::Warehouse::Transformers
   describe NoSsuOutreachAllSsusFilter, :use_mdes do
     describe '#initialize' do
       it 'defaults the SSU list to the configuration list' do
-        NoSsuOutreachAllSsusFilter.new(spec_config).ssu_ids.should == %w(42 24 204)
+        NoSsuOutreachAllSsusFilter.new(spec_config).ssu_ids.sort.should == %w(204 24 42)
       end
 
       it 'accepts an override SSU ID list (mainly for testing)' do
