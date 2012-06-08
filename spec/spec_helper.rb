@@ -35,8 +35,17 @@ RSpec.configure do |config|
     end
   end
 
+  ##
+  # Returns the MDES model for name.
+  #
+  # @param name [Symbol] an MDES table name or a warehouse model name
+  # @return [Class]
   def mdes_model(name)
-    spec_config.models_module.const_get(name)
+    begin
+      spec_config.models_module.const_get(name)
+    rescue NameError
+      spec_config.models_module.mdes_order.find { |model| model.mdes_table_name.to_s == name.to_s }
+    end
   end
 
   ###### MDES model loading
