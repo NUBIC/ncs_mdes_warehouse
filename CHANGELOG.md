@@ -19,6 +19,9 @@ NCS Navigator MDES Warehouse History
 - Extract automatic `psu_id` and `recruit_type` setting from
   EnumTransformer into a filter (ApplyGlobalValuesFilter). (#2125)
 
+- Add two filters for cleaning up outreach event records without
+  associated SSUs. (#2130, #2131)
+
 0.5.0
 -----
 
