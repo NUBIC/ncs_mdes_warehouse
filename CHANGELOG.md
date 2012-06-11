@@ -13,8 +13,8 @@ NCS Navigator MDES Warehouse History
 
 - Add "filter" concept to EnumTransformer. (#2125)
 
-- Extract cleanup behavior in VDR XML reader into a filter
-  (CodedAsMissingFilter). (#2125)
+- Extract cleanup behavior in VDR XML reader into two filters
+  (CodedAsMissingFilter and NoBlankForeignKeysFilter). (#2125, #2144)
 
 - Extract automatic `psu_id` and `recruit_type` setting from
   EnumTransformer into a filter (ApplyGlobalValuesFilter). (#2125)
