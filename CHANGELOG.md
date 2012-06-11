@@ -25,6 +25,8 @@ NCS Navigator MDES Warehouse History
 - Allow additional values to be specified for cleanup in
   CodedAsMissingFilter. (#2139)
 
+- Add `count` subcommand to `mdes-wh`. (#2142)
+
 0.5.0
 -----
 
