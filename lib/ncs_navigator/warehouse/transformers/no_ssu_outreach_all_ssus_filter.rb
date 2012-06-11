@@ -73,10 +73,10 @@ module NcsNavigator::Warehouse::Transformers
       @replicated_outreach_event_ids[oe_id] = replica_ids.collect(&:last)
 
       replica_ids.collect { |ssu_id, replica_oe_id|
-        outreach_event.dup.tap do |replica|
-          replica.ssu_id = ssu_id
-          replica.outreach_event_id = replica_oe_id
-        end
+        outreach_event.class.new(
+          outreach_event.attributes.
+            merge(:ssu_id => ssu_id, :outreach_event_id => replica_oe_id)
+        )
       }
     end
 
@@ -90,11 +90,12 @@ module NcsNavigator::Warehouse::Transformers
       associated_key_name = record.class.key.first.name
 
       replica_oe_ids.collect { |replica_oe_id|
-        record.dup.tap do |replica|
-          replica.outreach_event_id = replica_oe_id;
-          replica.send("#{associated_key_name}=",
-            create_associated_replica_id(replica.key.first, replica_oe_id))
-        end
+        record.class.new(
+          record.attributes.merge(
+            :outreach_event_id => replica_oe_id,
+            associated_key_name => create_associated_replica_id(record.key.first, replica_oe_id)
+          )
+        )
       }
     end
 

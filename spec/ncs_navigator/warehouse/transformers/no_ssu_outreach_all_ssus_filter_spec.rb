@@ -73,6 +73,14 @@ module NcsNavigator::Warehouse::Transformers
             result[3].incident_id.should == '0'
             result[1].outreach_type.should == '11'
           end
+
+          # This test added because .dup does not work on DM model
+          # instances. This test takes advantage of one of the
+          # symptoms to ensure that the implementation is creating
+          # properly persistable replicas.
+          it 'will persist all attributes' do
+            result[2].dirty_attributes.keys.collect(&:name).should include(:outreach_type)
+          end
         end
       end
     end
@@ -126,6 +134,15 @@ module NcsNavigator::Warehouse::Transformers
             it 'has all the properties of the source record' do
               associated_model_results.collect { |r| r.send(an_associated_model_property) }.uniq.
                 should == ['foo']
+            end
+
+            # This test added because .dup does not work on DM model
+            # instances. This test takes advantage of one of the
+            # symptoms to ensure that the implementation is creating
+            # properly persistable replicas.
+            it 'will persist all attributes' do
+              associated_model_results[1].dirty_attributes.keys.collect(&:name).
+                should include(an_associated_model_property)
             end
           end
         end
