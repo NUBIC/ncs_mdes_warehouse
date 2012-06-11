@@ -69,8 +69,8 @@ module NcsNavigator::Warehouse::Transformers
       record.class.relationships.each do |rel|
         reference_key = rel.child_key.first.name
         reference_value = record.send(reference_key)
-        next unless reference_value
-        if missing_codes.include?(reference_value) || reference_value.strip.empty?
+
+        if reference_value && missing_codes.include?(reference_value)
           record.send("#{reference_key}=", nil)
         end
       end

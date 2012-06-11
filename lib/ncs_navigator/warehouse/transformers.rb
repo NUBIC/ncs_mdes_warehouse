@@ -16,6 +16,7 @@ module NcsNavigator::Warehouse
     autoload :Database,                'ncs_navigator/warehouse/transformers/database'
     autoload :EnumTransformer,         'ncs_navigator/warehouse/transformers/enum_transformer'
     autoload :Filters,                 'ncs_navigator/warehouse/transformers/filters'
+    autoload :NoBlankForeignKeysFilter,       'ncs_navigator/warehouse/transformers/no_blank_foreign_keys_filter'
     autoload :NoSsuOutreachAllSsusFilter,     'ncs_navigator/warehouse/transformers/no_ssu_outreach_all_ssus_filter'
     autoload :NoSsuOutreachPlaceholderFilter, 'ncs_navigator/warehouse/transformers/no_ssu_outreach_placeholder_filter'
     autoload :SamplingUnits,           'ncs_navigator/warehouse/transformers/sampling_units'

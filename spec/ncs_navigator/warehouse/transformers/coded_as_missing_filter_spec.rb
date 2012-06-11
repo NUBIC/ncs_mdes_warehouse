@@ -41,34 +41,12 @@ module NcsNavigator::Warehouse::Transformers
       end
     end
 
-    shared_context 'with blanks' do
-      describe 'with blanks' do
-        it 'nils a blank foreign key' do
-          records = [
-            mdes_model(:Person).new(:person_id => '4', :new_address_id => "\t")
-          ]
-
-          call(records).first.new_address_id.should be_nil
-        end
-
-        it 'leaves other blank values alone' do
-          records = [
-            mdes_model(:Person).new(:person_id => '4', :first_name => "  \n")
-          ]
-
-          call(records).first.first_name.should == "  \n"
-        end
-      end
-    end
-
     describe '.call' do
       let(:filter) { CodedAsMissingFilter }
 
       %w(-3 -4 -6 -7).each do |bad_code|
         it_filters_missing_code(bad_code)
       end
-
-      include_context 'with blanks'
     end
 
     describe '#call' do
@@ -78,18 +56,13 @@ module NcsNavigator::Warehouse::Transformers
         it_filters_missing_code(bad_code)
       end
 
-      include_context 'with blanks'
-
       describe 'with additional codes' do
         let(:filter) { CodedAsMissingFilter.new(spec_config, :additional_codes => %w(-47)) }
 
         %w(-3 -4 -47 -6 -7).each do |bad_code|
           it_filters_missing_code(bad_code)
         end
-
-        include_context 'with blanks'
       end
-
     end
   end
 end
