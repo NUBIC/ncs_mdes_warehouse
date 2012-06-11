@@ -68,9 +68,9 @@ module NcsNavigator::Warehouse::Transformers
     def replicate_outreach_across_ssus(outreach_event)
       oe_id = outreach_event.outreach_event_id
 
-      replica_ids = ssu_ids.collect { |ssu_id| [ssu_id, create_replica_oe_id(oe_id, ssu_id)] }
+      replica_ids = ssu_ids.collect { |ssu_id| [ssu_id, create_replica_id(oe_id, ssu_id)] }
 
-      @replicated_outreach_event_ids[oe_id] = replica_ids.collect(&:last)
+      @replicated_outreach_event_ids[oe_id] = replica_ids
 
       replica_ids.collect { |ssu_id, replica_oe_id|
         outreach_event.class.new(
@@ -80,7 +80,7 @@ module NcsNavigator::Warehouse::Transformers
       }
     end
 
-    def create_replica_oe_id(base_id, ssu_id)
+    def create_replica_id(base_id, ssu_id)
       [base_id, ssu_id].join('-')
     end
 
@@ -89,18 +89,14 @@ module NcsNavigator::Warehouse::Transformers
 
       associated_key_name = record.class.key.first.name
 
-      replica_oe_ids.collect { |replica_oe_id|
+      replica_oe_ids.collect { |ssu_id, replica_oe_id|
         record.class.new(
           record.attributes.merge(
             :outreach_event_id => replica_oe_id,
-            associated_key_name => create_associated_replica_id(record.key.first, replica_oe_id)
+            associated_key_name => create_replica_id(record.key.first, ssu_id)
           )
         )
       }
-    end
-
-    def create_associated_replica_id(base_id, replica_oe_id)
-      [base_id, replica_oe_id].join('|')
     end
   end
 end

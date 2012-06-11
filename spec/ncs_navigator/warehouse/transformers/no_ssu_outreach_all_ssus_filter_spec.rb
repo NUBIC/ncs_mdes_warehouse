@@ -128,7 +128,7 @@ module NcsNavigator::Warehouse::Transformers
 
             it 'has a unique ID' do
               associated_model_results.collect { |r| r.send(associated_model_key) }.
-                should == %w(11|402-A 11|402-X 11|402-Y 11|402-N)
+                should == %w(11-A 11-X 11-Y 11-N)
             end
 
             it 'has all the properties of the source record' do
