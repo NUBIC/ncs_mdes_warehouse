@@ -8,7 +8,7 @@ module NcsNavigator::Warehouse::Transformers
       include ::DataMapper::Resource
 
       property :psu_id, String
-      property :recruit_type, String
+      property :recruit_type, String, :format => /^\d$/
       property :id, Integer, :key => true
       property :name, String, :required => true
     end
@@ -46,15 +46,37 @@ module NcsNavigator::Warehouse::Transformers
           records[0].should_receive(:save).and_return(true)
           records[1].should_receive(:save).and_return(true)
           records[2].name = nil
+          records[2].recruit_type = 'H'
 
           subject.transform(transform_status)
         end
 
-        it 'records the invalid instance' do
-          err = transform_status.transform_errors.first
-          err.model_class.should == Sample.to_s
-          err.record_id.should == '3'
-          err.message.should == 'Invalid record. Name must not be blank (name=nil).'
+        it 'records each invalidity separately' do
+          transform_status.transform_errors.size.should == 2
+        end
+
+        describe 'the error for an invalidity' do
+          let(:err) { transform_status.transform_errors.sort_by { |te| te.message }.last }
+
+          it "knows the record's class" do
+            err.model_class.should == Sample.to_s
+          end
+
+          it 'knows the record ID' do
+            err.record_id.should == '3'
+          end
+
+          it 'has the invalidity message' do
+            err.message.should == 'Invalid: Recruit type has an invalid format.'
+          end
+
+          it 'knows the invalid attribute' do
+            err.attribute_name.should == 'recruit_type'
+          end
+
+          it 'knows the invalid value' do
+            err.attribute_value.should == '"H"'
+          end
         end
 
         it 'saves the other instances' do

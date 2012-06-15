@@ -115,9 +115,16 @@ module NcsNavigator::Warehouse::Transformers
           status.unsuccessful_record(record, msg)
         end
       else
-        msg = "Invalid record. #{record_messages(record).join(' ')}"
-        log.error msg
-        status.unsuccessful_record(record, msg)
+        log.error "Invalid record. #{record_messages(record).join(' ')}"
+        record.errors.keys.each do |prop|
+          record.errors[prop].each do |e|
+            status.unsuccessful_record(
+              record, "Invalid: #{e}.",
+              :attribute_name => prop,
+              :attribute_value => record.send(prop).inspect
+            )
+          end
+        end
       end
       status.record_count += 1
     end

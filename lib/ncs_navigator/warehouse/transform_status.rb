@@ -38,12 +38,13 @@ module NcsNavigator::Warehouse
       self.transform_errors << TransformError.new(:message => message)
     end
 
-    def unsuccessful_record(record, message)
+    def unsuccessful_record(record, message, error_attributes={})
       self.transform_errors <<
-        TransformError.new(
+        TransformError.new({
           :model_class => record.class.name,
           :record_id => (record.key.first if record && record.key),
-          :message => message)
+          :message => message
+        }.merge(error_attributes))
     end
   end
 
@@ -57,6 +58,8 @@ module NcsNavigator::Warehouse
     property :message,     Text,   :required => true
     property :model_class, String, :length => 255
     property :record_id,   String, :length => 255
+    property :attribute_name,  String, :length => 255
+    property :attribute_value, Text
 
     belongs_to :transform_status, TransformStatus, :required => true
 

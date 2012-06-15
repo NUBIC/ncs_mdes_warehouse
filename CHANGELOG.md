@@ -4,6 +4,10 @@ NCS Navigator MDES Warehouse History
 0.6.1
 -----
 
+- Change validation error reporting: Each validation error in
+  EnumTransformer now produces a separate TransformError. (Previously
+  they were concatenated into a single error.) (#2155)
+
 0.6.0
 -----
 
