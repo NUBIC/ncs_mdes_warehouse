@@ -123,7 +123,15 @@ module NcsNavigator::Warehouse::Transformers
 
           it 'has a message' do
             error.message.should ==
-              'Invalid PSU ID "20000041". The list of valid PSU IDs for this Study Center is ["20000030", "20000042"].'
+              'Invalid PSU ID. The list of valid PSU IDs for this Study Center is ["20000030", "20000042"].'
+          end
+
+          it 'has the PSU attribute' do
+            error.attribute_name.should == 'psu_id'
+          end
+
+          it 'has the invalid value' do
+            error.attribute_value.should == '"20000041"'
           end
         end
       end

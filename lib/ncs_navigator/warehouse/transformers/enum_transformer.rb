@@ -98,9 +98,11 @@ module NcsNavigator::Warehouse::Transformers
 
     def save_model_instance(record, status)
       if !has_valid_psu?(record)
-        msg = "Invalid PSU ID #{record.psu_id.inspect}. The list of valid PSU IDs for this Study Center is #{@configuration.navigator.psus.collect(&:id).inspect}."
+        msg = "Invalid PSU ID. The list of valid PSU IDs for this Study Center is #{@configuration.navigator.psus.collect(&:id).inspect}."
         log.error "#{record_ident record}: #{msg}"
-        status.unsuccessful_record(record, msg)
+        status.unsuccessful_record(record, msg,
+          :attribute_name => 'psu_id',
+          :attribute_value => record.psu_id.inspect)
       elsif record.valid?
         log.debug("Saving valid record #{record_ident record}.")
         begin
