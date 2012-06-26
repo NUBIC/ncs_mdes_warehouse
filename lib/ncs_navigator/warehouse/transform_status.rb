@@ -1,5 +1,6 @@
 require 'ncs_navigator/warehouse'
 require 'ncs_navigator/warehouse/data_mapper'
+require 'json'
 
 module NcsNavigator::Warehouse
   ##
@@ -70,6 +71,28 @@ module NcsNavigator::Warehouse
           StringifyTrace.stringify_trace(exception.backtrace)
         ].compact.join("\n")
       )
+    end
+
+    ##
+    # Provides fpr a JSON serialization that is compatible with
+    # {SubprocessTransformer}.
+    #
+    # @return [Hash] a key-value object containing just the
+    #   serializable components of this instance
+    def as_json
+      model.properties.
+        reject { |p| [:id, :transform_status_id].include?(p.name) }.
+        inject({}) { |json, prop|
+          value = self.send(prop.name)
+          json[prop.name.to_s] = value if value
+          json
+        }
+    end
+
+    ##
+    # @return [String] single-line JSON serialization of {#as_json}.
+    def to_json
+      as_json.to_json
     end
   end
 

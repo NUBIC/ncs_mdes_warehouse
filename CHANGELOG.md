@@ -8,6 +8,9 @@ NCS Navigator MDES Warehouse History
   EnumTransformer now produces a separate TransformError. (Previously
   they were concatenated into a single error.) (#2155)
 
+- Provide a SubprocessTransformer-compatible JSON serialization on
+  TransformError. (#2199)
+
 0.6.0
 -----
 
