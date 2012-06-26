@@ -1,5 +1,5 @@
 module NcsNavigator
   module Warehouse
-    VERSION = '0.6.1.pre'
+    VERSION = '0.6.1'
   end
 end
