@@ -68,12 +68,11 @@ RSpec.configure do |config|
 
   config.after(:each, :use_database) do
     DataMapper.repository.adapter.execute("SET client_min_messages = warning")
-    ::DataMapper::Model.descendants.each do |model|
-      begin
-        DataMapper.repository.adapter.execute("TRUNCATE TABLE #{model.storage_name} CASCADE")
-      rescue DataObjects::SyntaxError
-        # table was never created
-      end
+    tables = ::DataMapper::Model.descendants.collect { |model| model.storage_name }
+    begin
+      DataMapper.repository.adapter.execute("TRUNCATE TABLE #{tables.join(', ')} CASCADE")
+    rescue DataObjects::SyntaxError
+      # table was never created
     end
   end
 
