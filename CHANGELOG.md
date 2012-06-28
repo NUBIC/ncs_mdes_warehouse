@@ -4,6 +4,9 @@ NCS Navigator MDES Warehouse History
 0.6.2
 -----
 
+- Added `Configuration#model` to find a model class for a particular
+  table name or unqualified class name in the current MDES version.
+
 0.6.1
 -----
 

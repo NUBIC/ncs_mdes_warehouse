@@ -35,11 +35,7 @@ RSpec.configure do |config|
   # @param name [Symbol] an MDES table name or a warehouse model name
   # @return [Class]
   def mdes_model(name)
-    begin
-      spec_config.models_module.const_get(name)
-    rescue NameError
-      spec_config.models_module.mdes_order.find { |model| model.mdes_table_name.to_s == name.to_s }
-    end
+    spec_config.model(name)
   end
 
   ###### modifies_warehouse_state

@@ -127,6 +127,50 @@ module NcsNavigator::Warehouse
       # see above for test of non-default value
     end
 
+    describe '#model' do
+      context 'for a known version', :slow, :use_mdes, :modifies_warehouse_state do
+        describe 'by table name' do
+          let(:actual) { config.model('link_contact') }
+
+          it 'finds the model' do
+            actual.to_s.should =~ /LinkContact$/
+          end
+
+          it 'returns a class' do
+            actual.should be_a Class
+          end
+
+          it 'returns a class in the models module' do
+            actual.to_s.should =~ %r[^#{config.models_module.to_s}]
+          end
+
+          it 'returns nil if no match' do
+            config.model('quux').should be_nil
+          end
+        end
+
+        describe 'by model name' do
+          let(:actual) { config.model(:Person) }
+
+          it 'finds the model' do
+            actual.to_s.should =~ /Person$/
+          end
+
+          it 'returns a class' do
+            actual.should be_a Class
+          end
+
+          it 'returns a class in the models module' do
+            actual.to_s.should =~ %r[^#{config.models_module.to_s}]
+          end
+
+          it 'returns nil if no match' do
+            config.model(:Foo).should be_nil
+          end
+        end
+      end
+    end
+
     describe '#navigator' do
       it 'defaults to the global default instance' do
         config.navigator.should be(NcsNavigator.configuration)
