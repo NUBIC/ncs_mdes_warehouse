@@ -75,13 +75,21 @@ RSpec.configure do |config|
   end
 
   config.after(:each, :use_database) do
-    DataMapper.repository.adapter.execute("SET client_min_messages = warning")
-    tables = ::DataMapper::Model.descendants.collect { |model| model.storage_name }
-    begin
-      DataMapper.repository.adapter.execute("TRUNCATE TABLE #{tables.join(', ')} CASCADE")
-    rescue DataObjects::SyntaxError => e
-      # table was never created
-      $stderr.puts "Post-spec truncation failed: #{e}. This may not indicate a problem; just letting you know."
+    [:working, :reporting].each do |db|
+      repo_name = "mdes_warehouse_#{db}".to_sym
+      adapter = DataMapper.repository(repo_name).adapter
+      adapter.execute("SET client_min_messages = warning")
+
+      tables = adapter.
+        select("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
+      unless tables.empty?
+        begin
+          DataMapper.repository.adapter.execute("TRUNCATE TABLE #{tables.join(', ')} CASCADE")
+        rescue DataObjects::SyntaxError => e
+          # some table was never created
+          $stderr.puts "Post-spec truncation failed: #{e}. This may not indicate a problem; just letting you know."
+        end
+      end
     end
   end
 
