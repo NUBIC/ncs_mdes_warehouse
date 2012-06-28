@@ -21,17 +21,11 @@ RSpec.configure do |config|
   # multiple times. It also contains the configuration pointing to the
   # test database schemas.
   def spec_config
-    @spec_config || fail("Flag specs that use spec_config with :use_mdes or :use_database")
-  end
+    require 'spec_warehouse_config'
 
-  def init_spec_config
-    @spec_config ||= NcsNavigator::Warehouse::Configuration.new.tap do |c|
-      c.mdes_version = spec_mdes_version
+    @spec_config ||= NcsNavigator::Warehouse::Spec.configuration.tap do |c|
       c.output_level = :quiet
       c.log_file = tmpdir + 'spec.log'
-      c.bcdatabase_group = ENV['CI_RUBY'] ? :public_ci_postgresql9 : :local_postgresql
-      c.bcdatabase_entries[:working] = :mdes_warehouse_working_test
-      c.bcdatabase_entries[:reporting] = :mdes_warehouse_reporting_test
     end
   end
 
@@ -46,21 +40,6 @@ RSpec.configure do |config|
     rescue NameError
       spec_config.models_module.mdes_order.find { |model| model.mdes_table_name.to_s == name.to_s }
     end
-  end
-
-  ###### MDES model loading
-
-  # Each test run can only operate against one version of the MDES at
-  # a time. The CI build is set up to run serially with this
-  # environment variable set with each supported version.
-  def spec_mdes_version
-    @spec_mdes_version ||=
-      (ENV['SPEC_MDES_VERSION'] || NcsNavigator::Warehouse::DEFAULT_MDES_VERSION).
-      gsub(/[^\d\.]/, '')
-  end
-
-  config.before(:each, :use_mdes) do
-    init_spec_config
   end
 
   ###### modifies_warehouse_state
@@ -80,14 +59,10 @@ RSpec.configure do |config|
   ###### use_database
 
   config.before(:each, :use_database) do
-    init_spec_config
-
     $db_init ||=
       begin
         init = NcsNavigator::Warehouse::DatabaseInitializer.new(spec_config)
         init.set_up_repository(:both)
-        init.replace_schema
-        init.clone_working_to_reporting
       end
   end
 

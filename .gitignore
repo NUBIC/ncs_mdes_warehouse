@@ -6,3 +6,4 @@ reports
 *.sqlite3
 logs
 pkg
+*.log
