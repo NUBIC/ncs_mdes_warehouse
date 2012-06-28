@@ -79,8 +79,9 @@ RSpec.configure do |config|
     tables = ::DataMapper::Model.descendants.collect { |model| model.storage_name }
     begin
       DataMapper.repository.adapter.execute("TRUNCATE TABLE #{tables.join(', ')} CASCADE")
-    rescue DataObjects::SyntaxError
+    rescue DataObjects::SyntaxError => e
       # table was never created
+      $stderr.puts "Post-spec truncation failed: #{e}. This may not indicate a problem; just letting you know."
     end
   end
 
