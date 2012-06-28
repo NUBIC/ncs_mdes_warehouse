@@ -3,6 +3,7 @@ require 'ncs_navigator/warehouse'
 require 'bcdatabase'
 require 'benchmark'
 require 'forwardable'
+require 'tempfile'
 
 require 'ncs_navigator/warehouse/data_mapper'
 require 'ncs_navigator/warehouse/data_mapper_patches'
