@@ -9,6 +9,7 @@ require 'ncs_navigator/configuration'
 $LOAD_PATH.push File.expand_path('..', __FILE__)
 
 require 'global_state_helper'
+require 'spec_warehouse_config'
 
 require 'dm-core'
 
@@ -36,6 +37,17 @@ RSpec.configure do |config|
   # @return [Class]
   def mdes_model(name)
     spec_config.model(name)
+  end
+
+  ###### MDES model loading
+
+  def spec_mdes_version
+    NcsNavigator::Warehouse::Spec.mdes_version
+  end
+
+  config.before(:each, :use_mdes) do
+    # Specs with :use_mdes may expect the warehouse models to be loaded
+    spec_config
   end
 
   ###### modifies_warehouse_state
