@@ -15,6 +15,7 @@ module NcsNavigator::Warehouse
     autoload :CodedAsMissingFilter,    'ncs_navigator/warehouse/transformers/coded_as_missing_filter'
     autoload :Database,                'ncs_navigator/warehouse/transformers/database'
     autoload :EnumTransformer,         'ncs_navigator/warehouse/transformers/enum_transformer'
+    autoload :EventStartFromContactTransformer, 'ncs_navigator/warehouse/transformers/event_start_from_contact_transformer'
     autoload :Filters,                 'ncs_navigator/warehouse/transformers/filters'
     autoload :NoBlankForeignKeysFilter,       'ncs_navigator/warehouse/transformers/no_blank_foreign_keys_filter'
     autoload :NoSsuOutreachAllSsusFilter,     'ncs_navigator/warehouse/transformers/no_ssu_outreach_all_ssus_filter'

@@ -7,6 +7,9 @@ NCS Navigator MDES Warehouse History
 - Added `Configuration#model` to find a model class for a particular
   table name or unqualified class name in the current MDES version.
 
+- Added transformer for automatically setting event start dates from
+  the earliest associated contact (if any). (#2194)
+
 0.6.1
 -----
 
