@@ -1,8 +1,10 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
-0.6.3
+0.7.0
 -----
+
+- Check foreign keys in memory during ETL. (#2013)
 
 0.6.2
 -----
