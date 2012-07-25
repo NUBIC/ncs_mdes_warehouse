@@ -27,6 +27,7 @@ RSpec.configure do |config|
     @spec_config ||= NcsNavigator::Warehouse::Spec.configuration.tap do |c|
       c.output_level = :quiet
       c.log_file = tmpdir + 'spec.log'
+      c.foreign_key_index = NcsNavigator::Warehouse::Transformers::ForeignKeyIndex.new(:existing_key_provider => nil)
     end
   end
 

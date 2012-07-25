@@ -29,6 +29,7 @@ module NcsNavigator::Warehouse::Transformers
       let(:config) {
         NcsNavigator::Warehouse::Configuration.new.tap do |c|
           c.log_file = tmpdir + 'enum_transformer_test.log'
+          c.foreign_key_index = ForeignKeyIndex.new(:existing_key_provider => nil)
         end
       }
       let(:records) { [

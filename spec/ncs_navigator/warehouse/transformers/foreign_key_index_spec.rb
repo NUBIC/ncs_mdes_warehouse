@@ -19,13 +19,31 @@ module NcsNavigator::Warehouse::Transformers
       property :id, Integer, :key => true
     end
 
-    before(:all) do
+    before(:each) do
       DataMapper.finalize
     end
 
-    let(:fk_index) { ForeignKeyIndex.new }
+    let(:fk_index) { ForeignKeyIndex.new(:existing_key_provider => key_provider) }
+    let(:key_provider) { ForeignKeyIndex::StaticKeyProvider.new(Addr.to_s => [120, 180]) }
     let(:transform_status) { NcsNavigator::Warehouse::TransformStatus.memory_only('test') }
     let(:errors) { transform_status.transform_errors }
+
+    describe '#initialize' do
+      describe ':existing_key_provider' do
+        it 'defaults to a database provider' do
+          ForeignKeyIndex.new.existing_key_provider.should be_a ForeignKeyIndex::DatabaseKeyProvider
+        end
+
+        it 'uses the provided instance' do
+          fk_index.existing_key_provider.should be key_provider
+        end
+
+        it 'disables existing key resolution when set to nil explicitly' do
+          provider = ForeignKeyIndex.new(:existing_key_provider => nil).existing_key_provider
+          provider.existing_keys(Addr).should be_nil
+        end
+      end
+    end
 
     describe 'reporting errors' do
       before do
@@ -43,6 +61,13 @@ module NcsNavigator::Warehouse::Transformers
       it 'does not report for a key which is not initially satisfied but is later' do
         fk_index.record_and_verify(Addr.new(:frob_id => 4, :id => 1))
         fk_index.record_and_verify(Frob.new(:id => 4))
+        fk_index.report_errors(transform_status)
+
+        errors.should == []
+      end
+
+      it 'does not report for a key which is provided by the external key provider' do
+        fk_index.record_and_verify(Addr.new(:id => 8, :old_one_id => 120))
         fk_index.report_errors(transform_status)
 
         errors.should == []

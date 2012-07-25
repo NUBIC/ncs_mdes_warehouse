@@ -13,7 +13,33 @@ module NcsNavigator::Warehouse::Transformers
   #
   # @see Configuration#foreign_key_index
   class ForeignKeyIndex
-    def initialize
+    autoload :DatabaseKeyProvider, 'ncs_navigator/warehouse/transformers/foreign_key_index/database_key_provider'
+    autoload :StaticKeyProvider,   'ncs_navigator/warehouse/transformers/foreign_key_index/static_key_provider'
+
+    ##
+    # The object that will be used to pre-initialize the known keys list for
+    # a particular model. It has a single method (`existing_keys`) which takes
+    # a single argument, the model class for which keys should be provided, and
+    # returns an array of the known keys for that model.
+    #
+    # `existing_keys` will be called at most once for each model class. It will
+    # be called the first time either a record of the model's type is
+    # encountered or the first time a foreign key of the model's type is
+    # encountered.
+    #
+    # @return [#existing_keys]
+    attr_reader :existing_key_provider
+
+    ##
+    # @param [Hash<Symbol, Object>] options
+    # @option options [#existing_keys] :existing_key_provider (an instance of DatabaseKeyProvider)
+    #   See {#existing_key_provider} for more information.
+    def initialize(options={})
+      @existing_key_provider = if options.has_key?(:existing_key_provider)
+        options[:existing_key_provider] || StaticKeyProvider.new # empty if nil
+      else
+        DatabaseKeyProvider.new
+      end
       @seen_keys = {}
     end
 
@@ -73,7 +99,10 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     def seen_keys(model_class)
-      @seen_keys[model_class.to_s] ||= Set.new
+      @seen_keys[model_class.to_s] ||= begin
+        existing_keys = existing_key_provider.existing_keys(model_class) || []
+        Set.new(existing_keys)
+      end
     end
 
     def interim_unsatisfied
