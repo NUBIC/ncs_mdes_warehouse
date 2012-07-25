@@ -27,50 +27,20 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       it 'verifies the specification version matches the runtime MDES version'
 
       it 'yields all records' do
-        reader.to_a.size.should == 7
+        reader.to_a.size.should == 8
       end
 
       it 'yields the records using their model classes' do
         reader.collect { |rec| rec.class.name.demodulize }.should ==
-          %w(StudyCenter Psu Ssu ListingUnit Person LinkContact Email)
+          %w(StudyCenter Psu Ssu Ssu ListingUnit Person LinkContact Email)
       end
 
       it 'reads variable values' do
         person.first_name.should == 'Josephine'
       end
 
-      it 'converts a -3 FK to no assocation' do
-        person.new_address_id.should be_nil
-      end
-
-      it 'converts a -7 FK to no assocation' do
-        listing_unit.tsu_id.should be_nil
-      end
-
       it 'ignores random attributes' do
         listing_unit.list_source.should == "3"
-      end
-
-      it 'converts an "unknown" code in a text field to no value' do
-        study_center.comments.should be_nil
-      end
-
-      it 'leaves alone "unknown" codes in coded fields' do
-        person.sex.should == "-6"
-      end
-
-      it 'completely ignores records whose key is an "unknown" code' do
-        reader.select { |rec| rec.class.name =~ /Ssu$/ }.collect(&:key).should == [['13']]
-      end
-
-      describe 'with a blank variable value' do
-        it 'converts a blank FK to no association' do
-          link_contact.instrument_id.should be_nil
-        end
-
-        it 'leaves another blank value as blank' do
-          person.last_name.should == ''
-        end
       end
 
       it 'handles table-named variables' do

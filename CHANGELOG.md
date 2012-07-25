@@ -1,12 +1,53 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
+0.6.3
+-----
+
+0.6.2
+-----
+
+- Added `Configuration#model` to find a model class for a particular
+  table name or unqualified class name in the current MDES version.
+
+- Added transformer for automatically setting event start dates from
+  the earliest associated contact (if any). (#2194)
+
+0.6.1
+-----
+
+- Change validation error reporting: Each validation error in
+  EnumTransformer now produces a separate TransformError. (Previously
+  they were concatenated into a single error.) (#2155)
+
+- Provide a SubprocessTransformer-compatible JSON serialization on
+  TransformError. (#2199)
+
 0.6.0
 -----
 
 - Add models for MDES 2.1 and 2.2. (#1973)
 
 - Verify PSU IDs in EnumTransformer. (#2044)
+
+- Resolve constants in configuration files against
+  `NcsNavigator::Warehouse::Transformers` to reduce clutter.
+
+- Add "filter" concept to EnumTransformer. (#2125)
+
+- Extract cleanup behavior in VDR XML reader into two filters
+  (CodedAsMissingFilter and NoBlankForeignKeysFilter). (#2125, #2144)
+
+- Extract automatic `psu_id` and `recruit_type` setting from
+  EnumTransformer into a filter (ApplyGlobalValuesFilter). (#2125)
+
+- Add two filters for cleaning up outreach event records without
+  associated SSUs. (#2130, #2131)
+
+- Allow additional values to be specified for cleanup in
+  CodedAsMissingFilter. (#2139)
+
+- Add `count` subcommand to `mdes-wh`. (#2142)
 
 0.5.0
 -----

@@ -9,6 +9,7 @@ require 'ncs_navigator/configuration'
 $LOAD_PATH.push File.expand_path('..', __FILE__)
 
 require 'global_state_helper'
+require 'spec_warehouse_config'
 
 require 'dm-core'
 
@@ -21,33 +22,32 @@ RSpec.configure do |config|
   # multiple times. It also contains the configuration pointing to the
   # test database schemas.
   def spec_config
-    @spec_config || fail("Flag specs that use spec_config with :use_mdes or :use_database")
-  end
+    require 'spec_warehouse_config'
 
-  def init_spec_config
-    @spec_config ||= NcsNavigator::Warehouse::Configuration.new.tap do |c|
-      c.mdes_version = spec_mdes_version
+    @spec_config ||= NcsNavigator::Warehouse::Spec.configuration.tap do |c|
       c.output_level = :quiet
       c.log_file = tmpdir + 'spec.log'
-      c.bcdatabase_group = ENV['CI_RUBY'] ? :public_ci_postgresql9 : :local_postgresql
-      c.bcdatabase_entries[:working] = :mdes_warehouse_working_test
-      c.bcdatabase_entries[:reporting] = :mdes_warehouse_reporting_test
     end
+  end
+
+  ##
+  # Returns the MDES model for name.
+  #
+  # @param name [Symbol] an MDES table name or a warehouse model name
+  # @return [Class]
+  def mdes_model(name)
+    spec_config.model(name)
   end
 
   ###### MDES model loading
 
-  # Each test run can only operate against one version of the MDES at
-  # a time. The CI build is set up to run serially with this
-  # environment variable set with each supported version.
   def spec_mdes_version
-    @spec_mdes_version ||=
-      (ENV['SPEC_MDES_VERSION'] || NcsNavigator::Warehouse::DEFAULT_MDES_VERSION).
-      gsub(/[^\d\.]/, '')
+    NcsNavigator::Warehouse::Spec.mdes_version
   end
 
   config.before(:each, :use_mdes) do
-    init_spec_config
+    # Specs with :use_mdes may expect the warehouse models to be loaded
+    spec_config
   end
 
   ###### modifies_warehouse_state
@@ -67,24 +67,28 @@ RSpec.configure do |config|
   ###### use_database
 
   config.before(:each, :use_database) do
-    init_spec_config
-
     $db_init ||=
       begin
         init = NcsNavigator::Warehouse::DatabaseInitializer.new(spec_config)
         init.set_up_repository(:both)
-        init.replace_schema
-        init.clone_working_to_reporting
       end
   end
 
   config.after(:each, :use_database) do
-    DataMapper.repository.adapter.execute("SET client_min_messages = warning")
-    ::DataMapper::Model.descendants.each do |model|
-      begin
-        DataMapper.repository.adapter.execute("TRUNCATE TABLE #{model.storage_name} CASCADE")
-      rescue DataObjects::SyntaxError
-        # table was never created
+    [:working, :reporting].each do |db|
+      repo_name = "mdes_warehouse_#{db}".to_sym
+      adapter = DataMapper.repository(repo_name).adapter
+      adapter.execute("SET client_min_messages = warning")
+
+      tables = adapter.
+        select("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
+      unless tables.empty?
+        begin
+          DataMapper.repository.adapter.execute("TRUNCATE TABLE #{tables.join(', ')} CASCADE")
+        rescue DataObjects::SyntaxError => e
+          # some table was never created
+          $stderr.puts "Post-spec truncation failed: #{e}. This may not indicate a problem; just letting you know."
+        end
       end
     end
   end

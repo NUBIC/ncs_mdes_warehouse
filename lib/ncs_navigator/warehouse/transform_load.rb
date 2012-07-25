@@ -3,6 +3,12 @@ require 'ncs_navigator/warehouse'
 require 'forwardable'
 
 module NcsNavigator::Warehouse
+  ##
+  # Executes the ETL process for a given configuration.
+  #
+  # The configuration is "used up" after one execution; to run ETL
+  # multiple times in the same process, the configuration will need to
+  # be reloaded.
   class TransformLoad
     extend Forwardable
     include StringifyTrace

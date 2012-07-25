@@ -406,7 +406,7 @@ module NcsNavigator::Warehouse::Transformers
       #   enumerable.
       # @see EnumTransformer
       def create_transformer(configuration, options={})
-        EnumTransformer.new(configuration, new(configuration, options))
+        EnumTransformer.new(configuration, new(configuration, options), options)
       end
     end
 

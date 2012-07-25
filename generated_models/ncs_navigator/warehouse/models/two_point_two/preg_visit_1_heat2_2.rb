@@ -17,7 +17,7 @@ module NcsNavigator::Warehouse::Models::TwoPointTwo
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :key => true, :required => true, :length => 1..36 }
     belongs_to :pv1,
-               'NcsNavigator::Warehouse::Models::TwoPointTwo::PregVisit_2',
+               'NcsNavigator::Warehouse::Models::TwoPointTwo::PregVisit_1_2',
                :child_key => [ :pv1_id ], :required => true
     property   :heat2,
                NcsNavigator::Warehouse::DataMapper::NcsString,

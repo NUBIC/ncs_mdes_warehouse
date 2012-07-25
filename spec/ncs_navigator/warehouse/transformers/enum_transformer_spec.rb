@@ -8,7 +8,7 @@ module NcsNavigator::Warehouse::Transformers
       include ::DataMapper::Resource
 
       property :psu_id, String
-      property :recruit_type, String
+      property :recruit_type, String, :format => /^\d$/
       property :id, Integer, :key => true
       property :name, String, :required => true
     end
@@ -32,9 +32,9 @@ module NcsNavigator::Warehouse::Transformers
         end
       }
       let(:records) { [
-          Sample.new(:id => 1, :name => 'One'),
-          Sample.new(:id => 2, :name => 'Two'),
-          Sample.new(:id => 3, :name => 'Three')
+          Sample.new(:id => 1, :psu_id => '20000030', :name => 'One'),
+          Sample.new(:id => 2, :psu_id => '20000030', :name => 'Two'),
+          Sample.new(:id => 3, :psu_id => '20000030', :name => 'Three')
         ] }
       let(:transform_status) { NcsNavigator::Warehouse::TransformStatus.memory_only('test') }
       subject { EnumTransformer.new(config, records) }
@@ -49,44 +49,42 @@ module NcsNavigator::Warehouse::Transformers
         transform_status.transform_errors.should be_empty
       end
 
-      it 'automatically sets the PSU ID if necessary' do
-        records[1].psu_id = '20000042'
-
-        records.each do |m|
-          m.should_receive(:valid?).and_return(true)
-          m.should_receive(:save).and_return(true)
-        end
-
-        subject.transform(transform_status)
-        records.collect(&:psu_id).should == %w(20000030 20000042 20000030)
-      end
-
-      it 'automatically sets recruit_type if necessary' do
-        records[2].recruit_type = '1'
-
-        records.each do |m|
-          m.should_receive(:valid?).and_return(true)
-          m.should_receive(:save).and_return(true)
-        end
-
-        subject.transform(transform_status)
-        records.collect(&:recruit_type).should == %w(3 3 1)
-      end
-
       describe 'with an invalid instance' do
         before do
           records[0].should_receive(:save).and_return(true)
           records[1].should_receive(:save).and_return(true)
           records[2].name = nil
+          records[2].recruit_type = 'H'
 
           subject.transform(transform_status)
         end
 
-        it 'records the invalid instance' do
-          err = transform_status.transform_errors.first
-          err.model_class.should == Sample.to_s
-          err.record_id.should == '3'
-          err.message.should == 'Invalid record. Name must not be blank (name=nil).'
+        it 'records each invalidity separately' do
+          transform_status.transform_errors.size.should == 2
+        end
+
+        describe 'the error for an invalidity' do
+          let(:err) { transform_status.transform_errors.sort_by { |te| te.message }.last }
+
+          it "knows the record's class" do
+            err.model_class.should == Sample.to_s
+          end
+
+          it 'knows the record ID' do
+            err.record_id.should == '3'
+          end
+
+          it 'has the invalidity message' do
+            err.message.should == 'Invalid: Recruit type has an invalid format.'
+          end
+
+          it 'knows the invalid attribute' do
+            err.attribute_name.should == 'recruit_type'
+          end
+
+          it 'knows the invalid value' do
+            err.attribute_value.should == '"H"'
+          end
         end
 
         it 'saves the other instances' do
@@ -133,7 +131,15 @@ module NcsNavigator::Warehouse::Transformers
 
           it 'has a message' do
             error.message.should ==
-              'Invalid PSU ID "20000041". The list of valid PSU IDs for this Study Center is ["20000030", "20000042"].'
+              'Invalid PSU ID. The list of valid PSU IDs for this Study Center is ["20000030", "20000042"].'
+          end
+
+          it 'has the PSU attribute' do
+            error.attribute_name.should == 'psu_id'
+          end
+
+          it 'has the invalid value' do
+            error.attribute_value.should == '"20000041"'
           end
         end
       end
@@ -271,6 +277,31 @@ module NcsNavigator::Warehouse::Transformers
 
         it 'ignores any provided error id' do
           transform_status.transform_errors.first.id.should be_nil
+        end
+      end
+
+      describe 'with a filter set' do
+        let(:filter_one) { lambda { |recs| recs.each { |r| r.name = 'FILTERED' }; recs } }
+        let(:filter_two) { lambda { |recs| recs.each { |r| r.name.downcase! }; recs } }
+        let(:replacing_filter) { lambda { |recs| [records[1]] } }
+
+        def transformer_with_filters(*filters)
+          EnumTransformer.new(config, records, :filters => filters)
+        end
+
+        it 'applies all the filters' do
+
+          transformer_with_filters(filter_one, filter_two).transform(transform_status)
+
+          records.each { |m| m.name.should == 'filtered' }
+        end
+
+        it 'saves only the results from the filter' do
+          records[0].should_not_receive(:save)
+          records[2].should_not_receive(:save)
+          records[1].should_receive(:save).exactly(3).times
+
+          transformer_with_filters(replacing_filter).transform(transform_status)
         end
       end
     end

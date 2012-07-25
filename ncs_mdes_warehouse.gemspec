@@ -15,10 +15,11 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib", "generated_models"]
 
-  s.add_dependency 'ncs_mdes', '~> 0.6'
+  s.add_dependency 'ncs_mdes', '~> 0.6', '>= 0.6.1'
   s.add_dependency 'ncs_navigator_configuration', '~> 0.2'
 
-  s.add_dependency 'activesupport', '~> 3.0'
+  # Post-3.2.4 breaks DataMapper due to https://github.com/rails/rails/pull/6857
+  s.add_dependency 'activesupport', '~> 3.0', '< 3.2.4'
   s.add_dependency 'i18n', '~> 0.4' # required by activesupport
 
   s.add_dependency 'thor', '~> 0.14.6'

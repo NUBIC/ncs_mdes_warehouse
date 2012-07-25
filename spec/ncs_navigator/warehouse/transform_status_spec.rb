@@ -62,5 +62,46 @@ module NcsNavigator::Warehouse
         end
       end
     end
+
+    describe '#to_json' do
+      let(:error) {
+        TransformError.new(
+          :message => "It's\n complicated",
+          :model_class => SampleRecordishThing.to_s,
+          :record_id => '45-T',
+          :attribute_name => 'Fred',
+          :attribute_value => 'MacMurray'
+        )
+      }
+      let(:json) { error.to_json }
+      let(:parsed) { JSON.parse(json) }
+
+      it 'is a single line' do
+        json.should_not =~ /\n/
+      end
+
+      describe 'the JSON contents' do
+        %w(message model_class record_id attribute_name attribute_value).each do |prop|
+          it "includes the #{prop.gsub('_', ' ')}" do
+            parsed[prop].should == error.send(prop)
+          end
+
+          it "does not include #{prop.gsub('_', ' ')} when it isn't set" do
+            error.send("#{prop}=", nil)
+            parsed.should_not have_key(prop)
+          end
+        end
+
+        it 'never contains the transform status ID' do
+          error.transform_status_id = 5
+          parsed.should_not have_key('transform_status_id')
+        end
+
+        it "never contains the error's own ID" do
+          error.id = 7
+          parsed.should_not have_key('id')
+        end
+      end
+    end
   end
 end

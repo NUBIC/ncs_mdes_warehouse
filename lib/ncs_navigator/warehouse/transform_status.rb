@@ -1,5 +1,6 @@
 require 'ncs_navigator/warehouse'
 require 'ncs_navigator/warehouse/data_mapper'
+require 'json'
 
 module NcsNavigator::Warehouse
   ##
@@ -38,12 +39,13 @@ module NcsNavigator::Warehouse
       self.transform_errors << TransformError.new(:message => message)
     end
 
-    def unsuccessful_record(record, message)
+    def unsuccessful_record(record, message, error_attributes={})
       self.transform_errors <<
-        TransformError.new(
+        TransformError.new({
           :model_class => record.class.name,
           :record_id => (record.key.first if record && record.key),
-          :message => message)
+          :message => message
+        }.merge(error_attributes))
     end
   end
 
@@ -57,6 +59,8 @@ module NcsNavigator::Warehouse
     property :message,     Text,   :required => true
     property :model_class, String, :length => 255
     property :record_id,   String, :length => 255
+    property :attribute_name,  String, :length => 255
+    property :attribute_value, Text
 
     belongs_to :transform_status, TransformStatus, :required => true
 
@@ -67,6 +71,28 @@ module NcsNavigator::Warehouse
           StringifyTrace.stringify_trace(exception.backtrace)
         ].compact.join("\n")
       )
+    end
+
+    ##
+    # Provides fpr a JSON serialization that is compatible with
+    # {SubprocessTransformer}.
+    #
+    # @return [Hash] a key-value object containing just the
+    #   serializable components of this instance
+    def as_json
+      model.properties.
+        reject { |p| [:id, :transform_status_id].include?(p.name) }.
+        inject({}) { |json, prop|
+          value = self.send(prop.name)
+          json[prop.name.to_s] = value if value
+          json
+        }
+    end
+
+    ##
+    # @return [String] single-line JSON serialization of {#as_json}.
+    def to_json
+      as_json.to_json
     end
   end
 

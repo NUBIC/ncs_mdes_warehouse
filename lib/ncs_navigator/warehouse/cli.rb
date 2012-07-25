@@ -91,6 +91,39 @@ DESC
       end
     end
 
+    desc 'count', 'Prints record counts for a warehouse instance'
+    method_option 'working', :type => :boolean, :default => false,
+      :desc => 'Count for the working database instead of reporting'
+    method_option 'include-empty', :type => :boolean, :default => false,
+      :desc => 'Includes counts for all tables, including empty ones'
+    def count
+      db = DatabaseInitializer.new(configuration)
+      db.set_up_repository(options['working'] ? :working : :reporting)
+
+      configuration.shell.clear_line_then_say("Loading MDES models...")
+      configuration.models_module
+
+      configuration.shell.clear_line_then_say("Counting...")
+      counts = configuration.models_module.mdes_order.
+        collect { |model| [model.mdes_table_name, model.count] }
+      unless options['include-empty']
+        counts.reject! { |table, count| count == 0 }
+      end
+
+      if counts.empty?
+        configuration.shell.clear_line_and_say("All tables empty.\n")
+        exit 1
+      else
+        max_lengths = counts.inject([0, 0]) { |lengths, row|
+          lengths.zip(row.collect { |e| e.to_s.size }).collect { |sizes| sizes.max }
+        }
+        configuration.shell.clear_line_and_say('')
+        counts.each do |table_name, count|
+          configuration.shell.say_line "%#{max_lengths[0]}s %d" % [table_name, count]
+        end
+      end
+    end
+
     desc 'compare', 'Compares the contents of two warehouses, A & B.'
     long_desc <<-DESC
 Compares the contents of the MDES tables in two warehouses.

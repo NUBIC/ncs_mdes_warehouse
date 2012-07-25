@@ -84,10 +84,7 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       elsif @current_model_class
         if !is_open && node.local_name == @current_model_class.mdes_table_name
           # on the way out of this record
-          rec = build_current_instance
-          unless MISSING_CODES.include?(rec.key.first)
-            yield rec
-          end
+          yield build_current_instance
           @current_model_class = nil
           @record_count += 1
           shell.clear_line_then_say('%6d records (%3.1f per second); up to %s' %
@@ -121,15 +118,6 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
 
     def should_filter_out(model_class, variable_name, value)
       return true if variable_name == :transaction_type
-
-      if is_foreign_key_in_current_model?(variable_name)
-        return MISSING_CODES.include?(value) || value.strip.empty?
-      end
-
-      property = @current_model_class.properties.find { |p| p.name == variable_name }
-      unless property.required? || property.options[:set]
-        return MISSING_CODES.include?(value)
-      end
     end
 
     def is_foreign_key_in_current_model?(variable_name)

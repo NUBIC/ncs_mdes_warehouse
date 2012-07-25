@@ -182,6 +182,22 @@ module NcsNavigator::Warehouse
     end
     private :set_default_mdes_version
 
+    ##
+    # @param [String,Symbol] table_or_model_name either an MDES table
+    #   name or the unqualified name of an MDES Warehouse model
+    #
+    # @return [Class,nil] the model in the current MDES version
+    #   corresponding to the given model or table name, or nil if
+    #   there is no such model
+    def model(table_or_model_name)
+      begin
+        models_module.const_get(table_or_model_name)
+      rescue NameError
+        models_module.mdes_order.
+          find { |model| model.mdes_table_name.to_s == table_or_model_name.to_s }
+      end
+    end
+
     ####
     #### Suite configuration
     ####

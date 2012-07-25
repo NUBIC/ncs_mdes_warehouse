@@ -3,6 +3,7 @@ require 'spec_helper'
 module NcsNavigator::Warehouse::Transformers
   describe VdrXml do
     let(:config) { NcsNavigator::Warehouse::Configuration.new }
+    let(:options) { { :filters => lambda { |x| x } } }
 
     shared_examples 'a VDR transformer' do
       it 'returns a transformer' do
@@ -12,11 +13,15 @@ module NcsNavigator::Warehouse::Transformers
       it 'uses a VDR reader as the enumerable' do
         subject.enum.should be_a VdrXml::Reader
       end
+
+      it 'passes the options to the transformer' do
+        subject.filters.to_a.size.should == 1
+      end
     end
 
     describe '.from_file' do
       let(:path) { File.expand_path('../vdr_xml/made_up_vdr_xml.xml', __FILE__) }
-      subject { VdrXml.from_file(config, path) }
+      subject { VdrXml.from_file(config, path, options) }
 
       it 'uses the given filename' do
         subject.enum.filename.should == path
@@ -27,7 +32,7 @@ module NcsNavigator::Warehouse::Transformers
 
     describe '.from_most_recent_file' do
       let(:path) { tmpdir('contractor-files') }
-      subject { VdrXml.from_most_recent_file(config, list_or_glob) }
+      subject { VdrXml.from_most_recent_file(config, list_or_glob, options) }
 
       before do
         system("touch -t 02030405 '#{path}/a'")

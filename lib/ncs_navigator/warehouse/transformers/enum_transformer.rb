@@ -31,16 +31,31 @@ module NcsNavigator::Warehouse::Transformers
     # @return [Enumerable] the enumeration that will be transformed.
     attr_reader :enum
 
+    ##
+    # @return [Filters] the filters in use on this transformer.
+    attr_reader :filters
+
     def_delegators :@configuration, :log, :shell, :foreign_key_index
 
     ##
     # @param [Configuration] configuration
     # @param [Enumerable] enum
-    def initialize(configuration, enum)
+    # @param [Hash<Symbol, Object>] options
+    # @option options [Array<#call>,#call] :filters a list of
+    #   filters to use for this transformer
+    #
+    # @see Filters
+    def initialize(configuration, enum, options={})
       @configuration = configuration
       @enum = enum
+      filter_list = options.delete(:filters)
+      @filters = Filters.new(filter_list ? [*filter_list].compact : [])
     end
 
+    ##
+    # A human-readable name for this transformer.
+    #
+    # @return [String]
     def name
       enum_name = if enum.respond_to?(:name)
                     enum.name
@@ -74,19 +89,22 @@ module NcsNavigator::Warehouse::Transformers
         when NcsNavigator::Warehouse::TransformError
           receive_transform_error(record, status)
         else
-          save_model_instance(record, status)
-          foreign_key_index.record_and_verify(record)
+          filters.call([record]).each do |filtered_record|
+            save_model_instance(filtered_record, status)
+            foreign_key_index.record_and_verify(record)
+          end
         end
       end
       foreign_key_index.report_errors(status)
     end
 
     def save_model_instance(record, status)
-      apply_global_values_if_necessary(record)
       if !has_valid_psu?(record)
-        msg = "Invalid PSU ID #{record.psu_id.inspect}. The list of valid PSU IDs for this Study Center is #{@configuration.navigator.psus.collect(&:id).inspect}."
+        msg = "Invalid PSU ID. The list of valid PSU IDs for this Study Center is #{@configuration.navigator.psus.collect(&:id).inspect}."
         log.error "#{record_ident record}: #{msg}"
-        status.unsuccessful_record(record, msg)
+        status.unsuccessful_record(record, msg,
+          :attribute_name => 'psu_id',
+          :attribute_value => record.psu_id.inspect)
       elsif record.valid?
         log.debug("Saving valid record #{record_ident record}.")
         begin
@@ -101,9 +119,16 @@ module NcsNavigator::Warehouse::Transformers
           status.unsuccessful_record(record, msg)
         end
       else
-        msg = "Invalid record. #{record_messages(record).join(' ')}"
-        log.error msg
-        status.unsuccessful_record(record, msg)
+        log.error "Invalid record. #{record_messages(record).join(' ')}"
+        record.errors.keys.each do |prop|
+          record.errors[prop].each do |e|
+            status.unsuccessful_record(
+              record, "Invalid: #{e}.",
+              :attribute_name => prop,
+              :attribute_value => record.send(prop).inspect
+            )
+          end
+        end
       end
       status.record_count += 1
     end
@@ -126,20 +151,6 @@ module NcsNavigator::Warehouse::Transformers
           "#{e} (#{prop}=#{v.inspect})."
         }
       }.flatten
-    end
-
-    def apply_global_values_if_necessary(record)
-      {
-        :psu_id => @configuration.navigator.psus.first.id,
-        :recruit_type => @configuration.navigator.recruitment_type_id
-      }.each do |attr, value|
-        setter = :"#{attr}="
-        if record.respond_to?(setter) && record.respond_to?(attr)
-          unless record.send(attr)
-            record.send(setter, value)
-          end
-        end
-      end
     end
 
     ##
