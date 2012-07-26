@@ -80,6 +80,13 @@ module NcsNavigator::Warehouse::Transformers
       interim_unsatisfied.clear
     end
 
+    ##
+    # @return [Boolean] has the index seen a record of the given type with the
+    #   given ID.
+    def seen?(model_class, id)
+      seen_keys(model_class).include?(id)
+    end
+
     private
 
     def verify_relationship(record, belongs_to)
@@ -92,10 +99,6 @@ module NcsNavigator::Warehouse::Transformers
           record.id, record.class.to_s, foreign_model, reference_name, reference_value
         )
       end
-    end
-
-    def seen?(model_class, id)
-      seen_keys(model_class).include?(id)
     end
 
     def seen_keys(model_class)

@@ -6,6 +6,8 @@ NCS Navigator MDES Warehouse History
 
 - Check foreign keys in memory during ETL. (#2013)
 
+- Add duplicate detection and handling to EnumTransformer. (#2319)
+
 0.6.2
 -----
 

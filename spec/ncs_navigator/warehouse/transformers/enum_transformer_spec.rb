@@ -17,8 +17,10 @@ module NcsNavigator::Warehouse::Transformers
       include ::DataMapper::Resource
 
       property :id, Integer, :key => true
+      property :name, String
+      property :age, Integer
       belongs_to :sample,
-        'NcsNavigator::Warehouse::Transformers::Sample', :child_key => [ :sample_id ]
+        'NcsNavigator::Warehouse::Transformers::Sample', :child_key => [ :sample_id ], :required => false
     end
 
     before(:all) do
@@ -303,6 +305,78 @@ module NcsNavigator::Warehouse::Transformers
           records[1].should_receive(:save).exactly(3).times
 
           transformer_with_filters(replacing_filter).transform(transform_status)
+        end
+      end
+
+      describe 'duplicates modes' do
+        let(:sample_1_en) { Subsample.new(:id => 1, :name => 'One', :age => 80) }
+        let(:sample_1_es) { Subsample.new(:id => 1, :name => 'Uno', :age => nil) }
+
+        let(:records) { [sample_1_en, sample_1_es] }
+
+        def transformer_for_dups(mode)
+          EnumTransformer.new(config, records, :duplicates => mode)
+        end
+
+        it 'defaults the duplicates mode to :error' do
+          EnumTransformer.new(config, records).duplicates.should == :error
+        end
+
+        it 'accepts a duplicates mode option' do
+          transformer_for_dups(:ignore).duplicates.should == :ignore
+        end
+
+        it 'fails for an unknown duplicates mode' do
+          lambda { transformer_for_dups(:explode) }.
+            should raise_error(/Unknown duplicates mode :explode\./)
+        end
+
+        describe ':error' do
+          it 'tries to save everything' do
+            sample_1_en.should_receive(:save).and_return(true)
+            sample_1_es.should_receive(:save).and_return(true)
+
+            # If we weren't mocking, the transaction commit would result in
+            # an exception. I don't think it's important to test that here.
+            transformer_for_dups(:error).transform(transform_status)
+            transform_status.transform_errors.should == []
+          end
+        end
+
+        describe ':ignore' do
+          it 'does not try to save the duplicate' do
+            sample_1_en.should_receive(:save).and_return(true)
+            sample_1_es.should_not_receive(:save)
+
+            transformer_for_dups(:ignore).transform(transform_status)
+            transform_status.transform_errors.should == []
+          end
+        end
+
+        describe ':replace' do
+          let(:reloaded_sample) { sample_1_en.clone }
+
+          before do
+            sample_1_en.should_receive(:save).once.and_return(true)
+            sample_1_es.should_not_receive(:save)
+
+            Subsample.should_receive(:get).with(1).and_return(reloaded_sample)
+            reloaded_sample.should_receive(:save).once.and_return(true)
+
+            transformer_for_dups(:replace).transform(transform_status)
+          end
+
+          it 'loads and updates the existing record' do
+            transform_status.transform_errors.should == []
+          end
+
+          it 'replaces a set property with a new value' do
+            reloaded_sample.name.should == 'Uno'
+          end
+
+          it 'replaces a nil property with nil' do
+            reloaded_sample.age.should be_nil
+          end
         end
       end
     end

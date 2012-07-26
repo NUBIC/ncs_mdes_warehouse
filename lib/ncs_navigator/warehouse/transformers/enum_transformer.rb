@@ -35,6 +35,11 @@ module NcsNavigator::Warehouse::Transformers
     # @return [Filters] the filters in use on this transformer.
     attr_reader :filters
 
+    ##
+    # @return [Symbol] the name of the duplicates mode in use on this
+    # transformer.
+    attr_reader :duplicates
+
     def_delegators :@configuration, :log, :shell, :foreign_key_index
 
     ##
@@ -43,6 +48,11 @@ module NcsNavigator::Warehouse::Transformers
     # @param [Hash<Symbol, Object>] options
     # @option options [Array<#call>,#call] :filters a list of
     #   filters to use for this transformer
+    # @option options [:error,:ignore,:replace] the desired behavior when this
+    #   transformer encounters a record with the same PK as one already seen.
+    #   `:error` means blindly save (and let the database error out).
+    #   `:ignore` means do not attempt to save the duplicate.
+    #   `:replace` means substitute the duplicate for the existing record.
     #
     # @see Filters
     def initialize(configuration, enum, options={})
@@ -50,6 +60,8 @@ module NcsNavigator::Warehouse::Transformers
       @enum = enum
       filter_list = options.delete(:filters)
       @filters = Filters.new(filter_list ? [*filter_list].compact : [])
+      @duplicates = options.delete(:duplicates) || :error
+      @duplicates_strategy = select_duplicates_strategy
     end
 
     ##
@@ -98,7 +110,14 @@ module NcsNavigator::Warehouse::Transformers
       foreign_key_index.report_errors(status)
     end
 
-    def save_model_instance(record, status)
+    def save_model_instance(incoming_record, status)
+      record = process_duplicate_if_appropriate(incoming_record)
+      unless record
+        log.info("Ignoring duplicate record #{record_ident incoming_record}.")
+        status.record_count += 1
+        return
+      end
+
       if !has_valid_psu?(record)
         msg = "Invalid PSU ID. The list of valid PSU IDs for this Study Center is #{@configuration.navigator.psus.collect(&:id).inspect}."
         log.error "#{record_ident record}: #{msg}"
@@ -163,6 +182,78 @@ module NcsNavigator::Warehouse::Transformers
         @configuration.navigator.psus.collect(&:id).include?(record.psu_id)
       else
         true
+      end
+    end
+
+    def process_duplicate_if_appropriate(record)
+      if @duplicates_strategy.duplicate?(record)
+        @duplicates_strategy.to_save(record)
+      else
+        record
+      end
+    end
+
+    def select_duplicates_strategy
+      case duplicates
+      when :error
+        ErrorDuplicatesStrategy.new
+      when :ignore
+        IgnoreDuplicatesStrategy.new(@configuration)
+      when :replace
+        ReplaceDuplicatesStrategy.new(@configuration)
+      else
+        fail "Unknown duplicates mode #{duplicates.inspect}."
+      end
+    end
+
+    ##
+    # @private
+    class ErrorDuplicatesStrategy
+      def duplicate?(record)
+        false
+      end
+
+      # to_save will never be called for this strategy
+    end
+
+    ##
+    # @private
+    class AbstractDoSomethingWithDuplicatesStrategy
+      extend Forwardable
+
+      def_delegators :@configuration, :log
+
+      def initialize(configuration)
+        @configuration = configuration
+        @fk_index = configuration.foreign_key_index
+      end
+
+      def duplicate?(record)
+        @fk_index.seen?(record.class, record.key.first)
+      end
+    end
+
+    ##
+    # @private
+    class IgnoreDuplicatesStrategy < AbstractDoSomethingWithDuplicatesStrategy
+      def to_save(duplicate_record)
+        nil
+      end
+    end
+
+    ##
+    # @private
+    class ReplaceDuplicatesStrategy < AbstractDoSomethingWithDuplicatesStrategy
+      def to_save(duplicate_record)
+        log.info "Updating duplicate record #{duplicate_record.class}##{duplicate_record.key.first}"
+
+        reloaded = duplicate_record.class.get(*duplicate_record.key)
+
+        duplicate_record.class.properties.each do |prop|
+          reloaded[prop.name] = duplicate_record[prop.name]
+        end
+
+        reloaded
       end
     end
   end
