@@ -102,8 +102,8 @@ module NcsNavigator::Warehouse::Transformers
           receive_transform_error(record, status)
         else
           filters.call([record]).each do |filtered_record|
-            save_model_instance(filtered_record, status)
-            foreign_key_index.record_and_verify(record)
+            saved_record = save_model_instance(filtered_record, status)
+            foreign_key_index.record_and_verify(saved_record) if saved_record
           end
         end
       end
@@ -118,38 +118,46 @@ module NcsNavigator::Warehouse::Transformers
         return
       end
 
-      if !has_valid_psu?(record)
-        msg = "Invalid PSU ID. The list of valid PSU IDs for this Study Center is #{@configuration.navigator.psus.collect(&:id).inspect}."
-        log.error "#{record_ident record}: #{msg}"
-        status.unsuccessful_record(record, msg,
-          :attribute_name => 'psu_id',
-          :attribute_value => record.psu_id.inspect)
-      elsif record.valid?
-        log.debug("Saving valid record #{record_ident record}.")
-        begin
-          unless record.save
-            msg = "Could not save valid record #{record.inspect}. #{record_messages(record).join(' ')}"
+      saved_record =
+        if !has_valid_psu?(record)
+          msg = "Invalid PSU ID. The list of valid PSU IDs for this Study Center is #{@configuration.navigator.psus.collect(&:id).inspect}."
+          log.error "#{record_ident record}: #{msg}"
+          status.unsuccessful_record(record, msg,
+            :attribute_name => 'psu_id',
+            :attribute_value => record.psu_id.inspect)
+          nil
+        elsif record.valid?
+          log.debug("Saving valid record #{record_ident record}.")
+          begin
+            if record.save
+              record
+            else
+              msg = "Could not save valid record #{record.inspect}. #{record_messages(record).join(' ')}"
+              log.error msg
+              status.unsuccessful_record(record, msg)
+              nil
+            end
+          rescue => e
+            msg = "Error on save. #{e.class}: #{e}."
             log.error msg
             status.unsuccessful_record(record, msg)
+            nil
           end
-        rescue => e
-          msg = "Error on save. #{e.class}: #{e}."
-          log.error msg
-          status.unsuccessful_record(record, msg)
-        end
-      else
-        log.error "Invalid record. #{record_messages(record).join(' ')}"
-        record.errors.keys.each do |prop|
-          record.errors[prop].each do |e|
-            status.unsuccessful_record(
-              record, "Invalid: #{e}.",
-              :attribute_name => prop,
-              :attribute_value => record.send(prop).inspect
-            )
+        else
+          log.error "Invalid record. #{record_messages(record).join(' ')}"
+          record.errors.keys.each do |prop|
+            record.errors[prop].each do |e|
+              status.unsuccessful_record(
+                record, "Invalid: #{e}.",
+                :attribute_name => prop,
+                :attribute_value => record.send(prop).inspect
+              )
+            end
           end
+          nil
         end
-      end
       status.record_count += 1
+      saved_record
     end
 
     def receive_transform_error(error, status)

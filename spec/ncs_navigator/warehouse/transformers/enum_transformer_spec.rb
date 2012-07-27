@@ -27,11 +27,25 @@ module NcsNavigator::Warehouse::Transformers
       DataMapper.finalize
     end
 
+    shared_examples 'a foreign key index updater' do
+      it 'records the IDs of saved records as seen' do
+        expected_saved_record_ids.each do |id|
+          foreign_key_index.seen?(Sample, id).should be_true
+        end
+      end
+
+      it 'does not record the IDs of not-saved records as seen' do
+        expected_not_saved_record_ids.each do |id|
+          foreign_key_index.seen?(Sample, id).should be_false
+        end
+      end
+    end
+
     describe '#transform' do
       let(:config) {
         NcsNavigator::Warehouse::Configuration.new.tap do |c|
           c.log_file = tmpdir + 'enum_transformer_test.log'
-          c.foreign_key_index = ForeignKeyIndex.new(:existing_key_provider => nil)
+          c.foreign_key_index = foreign_key_index
         end
       }
       let(:records) { [
@@ -40,6 +54,7 @@ module NcsNavigator::Warehouse::Transformers
           Sample.new(:id => 3, :psu_id => '20000030', :name => 'Three')
         ] }
       let(:transform_status) { NcsNavigator::Warehouse::TransformStatus.memory_only('test') }
+      let(:foreign_key_index) { ForeignKeyIndex.new(:existing_key_provider => nil) }
       subject { EnumTransformer.new(config, records) }
 
       it 'saves valid records when all are valid' do
@@ -93,6 +108,11 @@ module NcsNavigator::Warehouse::Transformers
         it 'saves the other instances' do
           # in `before`
         end
+
+        let(:expected_saved_record_ids) { [1, 2] }
+        let(:expected_not_saved_record_ids) { [3] }
+
+        include_examples 'a foreign key index updater'
       end
 
       describe 'with an instance with an invalid PSU' do
@@ -102,27 +122,24 @@ module NcsNavigator::Warehouse::Transformers
           records[2].should_receive(:save).and_return(true)
 
           records[1].psu_id = '20000041'
+
+          subject.transform(transform_status)
         end
 
         it 'does not save that instance' do
-          subject.transform(transform_status)
+          # in before
         end
 
         it 'saves the other instances' do
-          subject.transform(transform_status)
+          # in before
         end
 
         it 'records an error' do
-          subject.transform(transform_status)
           transform_status.transform_errors.collect(&:record_id).should == ['2']
         end
 
         describe 'the recorded error' do
           let(:error) { transform_status.transform_errors.first }
-
-          before do
-            subject.transform(transform_status)
-          end
 
           it 'has the correct model class' do
             error.model_class.should == Sample.to_s
@@ -145,6 +162,11 @@ module NcsNavigator::Warehouse::Transformers
             error.attribute_value.should == '"20000041"'
           end
         end
+
+        let(:expected_saved_record_ids) { [1, 3] }
+        let(:expected_not_saved_record_ids) { [2] }
+
+        include_examples 'a foreign key index updater'
       end
 
       describe 'with an unsatisfied foreign key' do
@@ -185,6 +207,11 @@ module NcsNavigator::Warehouse::Transformers
         it 'saves the saveable instances' do
           # in `before`
         end
+
+        let(:expected_saved_record_ids) { [1, 3] }
+        let(:expected_not_saved_record_ids) { [2] }
+
+        include_examples 'a foreign key index updater'
       end
 
       describe 'with an instance that errors on save' do
@@ -207,6 +234,11 @@ module NcsNavigator::Warehouse::Transformers
         it 'saves the saveable instances' do
           # in `before`
         end
+
+        let(:expected_saved_record_ids) { [2, 3] }
+        let(:expected_not_saved_record_ids) { [1] }
+
+        include_examples 'a foreign key index updater'
       end
 
       describe 'with an enumeration that throws an exception' do
@@ -292,8 +324,14 @@ module NcsNavigator::Warehouse::Transformers
           EnumTransformer.new(config, records, :filters => filters)
         end
 
-        it 'applies all the filters' do
+        before do
+          records.each do |r|
+            r.stub!(:valid?).and_return(true)
+            r.stub!(:save).and_return(true)
+          end
+        end
 
+        it 'applies all the filters' do
           transformer_with_filters(filter_one, filter_two).transform(transform_status)
 
           records.each { |m| m.name.should == 'filtered' }
@@ -302,9 +340,20 @@ module NcsNavigator::Warehouse::Transformers
         it 'saves only the results from the filter' do
           records[0].should_not_receive(:save)
           records[2].should_not_receive(:save)
-          records[1].should_receive(:save).exactly(3).times
+          records[1].should_receive(:save).exactly(3).times.and_return(true)
 
           transformer_with_filters(replacing_filter).transform(transform_status)
+        end
+
+        context do
+          before do
+            transformer_with_filters(replacing_filter).transform(transform_status)
+          end
+
+          let(:expected_saved_record_ids) { [2] }
+          let(:expected_not_saved_record_ids) { [1, 3] }
+
+          include_examples 'a foreign key index updater'
         end
       end
 
