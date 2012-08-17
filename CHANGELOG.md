@@ -8,6 +8,9 @@ NCS Navigator MDES Warehouse History
 
 - Add duplicate detection and handling to EnumTransformer. (#2319)
 
+- Add `SqlTransformer` for executing one or more SQL statements from a file.
+  (#1861)
+
 0.6.2
 -----
 

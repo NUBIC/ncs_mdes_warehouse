@@ -22,6 +22,7 @@ module NcsNavigator::Warehouse
     autoload :NoSsuOutreachAllSsusFilter,     'ncs_navigator/warehouse/transformers/no_ssu_outreach_all_ssus_filter'
     autoload :NoSsuOutreachPlaceholderFilter, 'ncs_navigator/warehouse/transformers/no_ssu_outreach_placeholder_filter'
     autoload :SamplingUnits,           'ncs_navigator/warehouse/transformers/sampling_units'
+    autoload :SqlTransformer,          'ncs_navigator/warehouse/transformers/sql_transformer'
     autoload :SubprocessTransformer,   'ncs_navigator/warehouse/transformers/subprocess_transformer'
     autoload :VdrXml,                  'ncs_navigator/warehouse/transformers/vdr_xml'
   end

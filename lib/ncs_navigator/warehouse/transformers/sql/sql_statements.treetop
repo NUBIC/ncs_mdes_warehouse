@@ -1,0 +1,27 @@
+module NcsNavigator::Warehouse::Transformers::Sql
+  grammar SqlStatements
+    rule script
+      stmts:(stmt:statement ';')* last_stmt:statement? {
+        def statements
+          (stmts + [last_stmt]).collect { |s| s.text_value.strip }.reject { |s| s.empty? }
+        end
+
+        def stmts
+          super.elements.map { |e| e.stmt }
+        end
+      }
+    end
+
+    rule statement
+      (sql_string / other_expression)+
+    end
+
+    rule other_expression
+      [^';]+
+    end
+
+    rule sql_string
+      "'" (!"'" .)* "'"
+    end
+  end
+end
