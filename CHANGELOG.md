@@ -1,6 +1,9 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
+0.7.2
+-----
+
 0.7.1
 -----
 
