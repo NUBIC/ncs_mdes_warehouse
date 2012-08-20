@@ -11,6 +11,8 @@ NCS Navigator MDES Warehouse History
 - Add `SqlTransformer` for executing one or more SQL statements from a file.
   (#1861)
 
+- Add models for MDES 3.0. (#2382)
+
 0.6.2
 -----
 
