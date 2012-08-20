@@ -60,7 +60,7 @@ module NcsNavigator::Warehouse::Transformers
       @statements = select_statements(options)
       @name = options.delete(:name) ||
         "SQL Transformer with #{statements.size} statement#{statements.size == 1 ? '' : 's'}"
-      @adapter = options.delete(:adapter) || ::DataMapper.repository(:mdes_warehouse_working).adapter
+      @adapter = options.delete(:adapter)
     end
 
     ##
@@ -76,7 +76,7 @@ module NcsNavigator::Warehouse::Transformers
           log.debug("Executing SQL statement in SQL transformer: \n#{stmt}")
           shell.clear_line_and_say("[#{name}] Executing statement #{i + 1}/#{stmt_ct}...")
           begin
-            result = @adapter.execute(stmt)
+            result = adapter.execute(stmt)
             transform_status.record_count += result.affected_rows
           rescue Exception => e
             transform_status.transform_errors << NcsNavigator::Warehouse::TransformError.
@@ -91,6 +91,11 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     private
+
+    def adapter
+      # Don't memoize if an adapter was not provided as an option.
+      @adapter || ::DataMapper.repository(:mdes_warehouse_working).adapter
+    end
 
     def select_statements(options)
       if options[:statements]

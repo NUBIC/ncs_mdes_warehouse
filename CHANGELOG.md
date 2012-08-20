@@ -4,6 +4,8 @@ NCS Navigator MDES Warehouse History
 0.7.1
 -----
 
+- Defer acquisition of DM adapter in SqlTransformer until first use. (#2386)
+
 0.7.0
 -----
 
