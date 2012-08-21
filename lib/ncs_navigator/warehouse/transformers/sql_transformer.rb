@@ -29,6 +29,7 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     extend Forwardable
+    include NcsNavigator::Warehouse::StringifyTrace
 
     def_delegators :@configuration, :shell, :log
     attr_reader :statements, :name
@@ -72,15 +73,17 @@ module NcsNavigator::Warehouse::Transformers
     def transform(transform_status)
       stmt_ct = statements.size
       statements.each_with_index do |stmt, i|
-        log.debug("Executing SQL statement in SQL transformer: \n#{stmt}")
+        log.info("Executing SQL statement in SQL transformer: \n#{stmt}")
         shell.clear_line_and_say("[#{name}] Executing statement #{i + 1}/#{stmt_ct}...")
         begin
           result = adapter.execute(stmt)
           transform_status.record_count += result.affected_rows
+          log.debug("Previous statement affected #{result.affected_rows} row#{result.affected_rows == 1 ? '' : 's'}.")
         rescue Exception => e
           transform_status.transform_errors << NcsNavigator::Warehouse::TransformError.
             for_exception(e, "Exception while executing SQL statement \"#{stmt}\" (#{i + 1} of #{stmt_ct}).")
           shell.clear_line_and_say("[#{name}] Failed on #{i + 1}/#{stmt_ct}.\n")
+          log.error("Previous statement failed with exception.\n#{e.class}: #{e}\n#{stringify_trace(e.backtrace)}")
           return
         end
       end
