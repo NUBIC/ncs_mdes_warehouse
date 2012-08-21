@@ -96,7 +96,7 @@ module NcsNavigator::Warehouse::Transformers
 
       if reference_value && !seen?(foreign_model, reference_value)
         interim_unsatisfied << RelationshipInstance.new(
-          record.id, record.class.to_s, foreign_model, reference_name, reference_value
+          record.key.first, record.class.to_s, foreign_model, reference_name, reference_value
         )
       end
     end

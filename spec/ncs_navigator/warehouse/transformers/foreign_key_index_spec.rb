@@ -6,7 +6,7 @@ module NcsNavigator::Warehouse::Transformers
       include ::DataMapper::Resource
 
       property :psu_id, String
-      property :id, Integer, :key => true
+      property :a_id, Integer, :key => true
 
       belongs_to :old_one, self, :child_key => [ :old_one_id ]
       belongs_to :frob, 'NcsNavigator::Warehouse::Transformers::Frob', :child_key => [ :frob_id ]
@@ -16,7 +16,7 @@ module NcsNavigator::Warehouse::Transformers
       include ::DataMapper::Resource
 
       property :psu_id, String
-      property :id, Integer, :key => true
+      property :f_id, Integer, :key => true
     end
 
     before(:each) do
@@ -47,27 +47,27 @@ module NcsNavigator::Warehouse::Transformers
 
     describe 'reporting errors' do
       before do
-        fk_index.record_and_verify(Frob.new(:id => 8))
-        fk_index.record_and_verify(Frob.new(:id => 16))
+        fk_index.record_and_verify(Frob.new(:f_id => 8))
+        fk_index.record_and_verify(Frob.new(:f_id => 16))
       end
 
       it 'does not report for a key which is satisfied when it is first recorded' do
-        fk_index.record_and_verify(Addr.new(:frob_id => 8, :id => 1))
+        fk_index.record_and_verify(Addr.new(:frob_id => 8, :a_id => 1))
         fk_index.report_errors(transform_status)
 
         errors.should == []
       end
 
       it 'does not report for a key which is not initially satisfied but is later' do
-        fk_index.record_and_verify(Addr.new(:frob_id => 4, :id => 1))
-        fk_index.record_and_verify(Frob.new(:id => 4))
+        fk_index.record_and_verify(Addr.new(:frob_id => 4, :a_id => 1))
+        fk_index.record_and_verify(Frob.new(:f_id => 4))
         fk_index.report_errors(transform_status)
 
         errors.should == []
       end
 
       it 'does not report for a key which is provided by the external key provider' do
-        fk_index.record_and_verify(Addr.new(:id => 8, :old_one_id => 120))
+        fk_index.record_and_verify(Addr.new(:a_id => 8, :old_one_id => 120))
         fk_index.report_errors(transform_status)
 
         errors.should == []
@@ -76,7 +76,7 @@ module NcsNavigator::Warehouse::Transformers
       it 'does not report for a key which is provided by the external key provider when the associated model class has not previously been referenced' do
         another_index = ForeignKeyIndex.new(:existing_key_provider => key_provider)
 
-        another_index.record_and_verify(Addr.new(:id => 8, :frob_id => 80))
+        another_index.record_and_verify(Addr.new(:a_id => 8, :frob_id => 80))
         another_index.report_errors(transform_status)
 
         errors.should == []
@@ -84,7 +84,7 @@ module NcsNavigator::Warehouse::Transformers
 
       describe 'when a key is never satisfied' do
         before do
-          fk_index.record_and_verify(Addr.new(:frob_id => 4, :id => 1))
+          fk_index.record_and_verify(Addr.new(:frob_id => 4, :a_id => 1))
           fk_index.report_errors(transform_status)
         end
 
@@ -113,7 +113,7 @@ module NcsNavigator::Warehouse::Transformers
       end
 
       it 'reports multiple failed references for a single record' do
-        fk_index.record_and_verify(Addr.new(:id => 1, :frob_id => 2, :old_one_id => 3))
+        fk_index.record_and_verify(Addr.new(:a_id => 1, :frob_id => 2, :old_one_id => 3))
         fk_index.report_errors(transform_status)
 
         errors.collect { |e| e.message.match(/foreign key (\S+)/)[1] }.sort.should ==
