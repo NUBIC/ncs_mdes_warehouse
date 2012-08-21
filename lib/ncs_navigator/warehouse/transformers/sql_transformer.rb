@@ -70,24 +70,21 @@ module NcsNavigator::Warehouse::Transformers
     # @return [void]
     # @param [TransformStatus] transform_status
     def transform(transform_status)
-      NcsNavigator::Warehouse::TransformStatus.transaction do |tx|
-        stmt_ct = statements.size
-        statements.each_with_index do |stmt, i|
-          log.debug("Executing SQL statement in SQL transformer: \n#{stmt}")
-          shell.clear_line_and_say("[#{name}] Executing statement #{i + 1}/#{stmt_ct}...")
-          begin
-            result = adapter.execute(stmt)
-            transform_status.record_count += result.affected_rows
-          rescue Exception => e
-            transform_status.transform_errors << NcsNavigator::Warehouse::TransformError.
-              for_exception(e, "Exception while executing SQL statement \"#{stmt}\" (#{i + 1} of #{stmt_ct}).")
-            shell.clear_line_and_say("[#{name}] Failed on #{i + 1}/#{stmt_ct}.")
-            tx.rollback
-            return
-          end
+      stmt_ct = statements.size
+      statements.each_with_index do |stmt, i|
+        log.debug("Executing SQL statement in SQL transformer: \n#{stmt}")
+        shell.clear_line_and_say("[#{name}] Executing statement #{i + 1}/#{stmt_ct}...")
+        begin
+          result = adapter.execute(stmt)
+          transform_status.record_count += result.affected_rows
+        rescue Exception => e
+          transform_status.transform_errors << NcsNavigator::Warehouse::TransformError.
+            for_exception(e, "Exception while executing SQL statement \"#{stmt}\" (#{i + 1} of #{stmt_ct}).")
+          shell.clear_line_and_say("[#{name}] Failed on #{i + 1}/#{stmt_ct}.\n")
+          return
         end
-        shell.clear_line_and_say("[#{name}] Executed #{stmt_ct} SQL statement#{stmt_ct == 1 ? '' : 's'}.")
       end
+      shell.clear_line_and_say("[#{name}] Executed #{stmt_ct} SQL statement#{stmt_ct == 1 ? '' : 's'}.\n")
     end
 
     private

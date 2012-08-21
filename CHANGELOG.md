@@ -6,6 +6,10 @@ NCS Navigator MDES Warehouse History
 
 - Correct behavior of FK index with database external key provider. (#2387)
 
+- Remove transaction handling in SqlTransformer. (Transformers are automatically
+  wrapped in a transaction, so it's redundant for the transformer to do it
+  itself.)
+
 0.7.1
 -----
 
