@@ -13,6 +13,8 @@ module NcsNavigator::Warehouse::Transformers
       end
 
       def existing_keys(model_class)
+        # validation is to help with the uses of this class in specs
+        fail 'model_class must be a string' unless Class === model_class
         known_keys[model_class.to_s]
       end
     end

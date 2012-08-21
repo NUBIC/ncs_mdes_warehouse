@@ -24,7 +24,7 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     let(:fk_index) { ForeignKeyIndex.new(:existing_key_provider => key_provider) }
-    let(:key_provider) { ForeignKeyIndex::StaticKeyProvider.new(Addr.to_s => [120, 180]) }
+    let(:key_provider) { ForeignKeyIndex::StaticKeyProvider.new(Addr.to_s => [120, 180], Frob.to_s => [80]) }
     let(:transform_status) { NcsNavigator::Warehouse::TransformStatus.memory_only('test') }
     let(:errors) { transform_status.transform_errors }
 
@@ -69,6 +69,15 @@ module NcsNavigator::Warehouse::Transformers
       it 'does not report for a key which is provided by the external key provider' do
         fk_index.record_and_verify(Addr.new(:id => 8, :old_one_id => 120))
         fk_index.report_errors(transform_status)
+
+        errors.should == []
+      end
+
+      it 'does not report for a key which is provided by the external key provider when the associated model class has not previously been referenced' do
+        another_index = ForeignKeyIndex.new(:existing_key_provider => key_provider)
+
+        another_index.record_and_verify(Addr.new(:id => 8, :frob_id => 80))
+        another_index.report_errors(transform_status)
 
         errors.should == []
       end

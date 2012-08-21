@@ -92,7 +92,7 @@ module NcsNavigator::Warehouse::Transformers
     def verify_relationship(record, belongs_to)
       reference_name  = belongs_to.child_key.first.name
       reference_value = record.send(reference_name)
-      foreign_model   = belongs_to.parent_model.to_s
+      foreign_model   = belongs_to.parent_model
 
       if reference_value && !seen?(foreign_model, reference_value)
         interim_unsatisfied << RelationshipInstance.new(

@@ -4,6 +4,8 @@ NCS Navigator MDES Warehouse History
 0.7.2
 -----
 
+- Correct behavior of FK index with database external key provider. (#2387)
+
 0.7.1
 -----
 
