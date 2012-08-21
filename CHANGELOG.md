@@ -4,6 +4,8 @@ NCS Navigator MDES Warehouse History
 0.7.3
 -----
 
+- Correct primary key resolution in FK index. (#2388)
+
 0.7.2
 -----
 
