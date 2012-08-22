@@ -6,6 +6,10 @@ NCS Navigator MDES Warehouse History
 
 - Correct primary key resolution in FK index. (#2388)
 
+- Remove autoload for MDES 2.0 models. MDES models should only be loaded via a
+  warehouse configuration instance. Doing otherwise will likely confuse
+  DataMapper.
+
 0.7.2
 -----
 
