@@ -187,6 +187,25 @@ module NcsNavigator::Warehouse::Transformers
 
           enumerator.to_a(:nothing).should == []
         end
+
+        describe 'execution metadata' do
+          let(:cls) do
+            sample_class do
+              bcdatabase :group => 'test_sqlite', :name => 'people_pro'
+              repository :people_pro
+
+              produce_records :meta, :query => 'SELECT 1' do |row, meta|
+                meta
+              end
+            end
+          end
+
+          let(:actual_meta) { Hash[*enumerator.to_a(:meta).first] }
+
+          it 'includes the warehouse configuration' do
+            actual_meta[:configuration].should == configuration
+          end
+        end
       end
     end
 

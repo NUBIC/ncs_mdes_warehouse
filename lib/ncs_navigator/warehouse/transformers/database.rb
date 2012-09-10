@@ -124,8 +124,9 @@ module NcsNavigator::Warehouse::Transformers
           "Producing records from %-#{producer_name_length}s (%-22s)" % [rp.name, 'loading'])
         log.debug("Executing query for producer #{rp.name}:\n#{rp.query}")
         repository.adapter.select(rp.query).each do |row|
+          meta = { :configuration => @configuration }
           row_count += 1
-          [*rp.row_processor.call(row)].compact.each do |result|
+          [*rp.row_processor.call(row, meta)].compact.each do |result|
             yield result
             result_count += 1
             shell.back_up_and_say(24, "(%-6d in / %-6d out)" % [row_count, result_count])
@@ -234,6 +235,8 @@ module NcsNavigator::Warehouse::Transformers
       # @param [Proc] logic an expression which receives one row from the
       #   data source and returns 0 or more warehouse records. The
       #   return value may be nil (for 0), a single instance, or an Array.
+      #   If the expression accepts two arguments, the second one will be
+      #   a hash of metadata related to the process.
       # @option options :query [String] the query to execute for this
       #   producer. If not specified, the query is `"SELECT * FROM #{name}"`.
       # @return [void]

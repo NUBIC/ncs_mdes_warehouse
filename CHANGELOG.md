@@ -1,8 +1,12 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
-0.7.4
+0.8.0
 -----
+
+- Provide metadata hash to row processors in `Database` transformer. The only
+  provided metadata element at this point is reference to the active warehouse
+  configuration. (#2451)
 
 0.7.3
 -----
