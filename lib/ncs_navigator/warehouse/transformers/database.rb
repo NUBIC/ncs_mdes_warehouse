@@ -125,8 +125,11 @@ module NcsNavigator::Warehouse::Transformers
         log.debug("Executing query for producer #{rp.name}:\n#{rp.query}")
         repository.adapter.select(rp.query).each do |row|
           meta = { :configuration => @configuration }
+          args = [row]
+          args << meta if rp.row_processor.arity > 1
+
           row_count += 1
-          [*rp.row_processor.call(row, meta)].compact.each do |result|
+          [*rp.row_processor.call(*args)].compact.each do |result|
             yield result
             result_count += 1
             shell.back_up_and_say(24, "(%-6d in / %-6d out)" % [row_count, result_count])
