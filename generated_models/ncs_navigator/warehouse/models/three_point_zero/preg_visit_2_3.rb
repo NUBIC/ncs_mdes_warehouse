@@ -153,13 +153,13 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
     property   :admin_date_mm,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 0..2 }
+               { :format => /^([-+]?[\d]{1,9})?$/ }
     property   :admin_date_dd,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 0..2 }
+               { :format => /^([-+]?[\d]{1,9})?$/ }
     property   :admin_date_yy,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 0..4 }
+               { :format => /^([-+]?[\d]{1,9})?$/ }
     property   :hosp_nights,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }

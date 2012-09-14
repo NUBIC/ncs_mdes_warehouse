@@ -61,12 +61,9 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :timing,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-1", "-2", "-3", "-4"] }
-    property   :f_f_name,
+    property   :father_name,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..30 }
-    property   :f_l_name,
-               NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..30 }
+               { :pii => true, :length => 0..60 }
     property   :father_same_hh,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
@@ -230,7 +227,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
 
-    mdes_order :psu_id, :pv1_saq_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :planned, :month_try, :wanted, :timing, :f_f_name, :f_l_name, :father_same_hh, :father_know_preg, :contact_f_now, :contact_f_later, :f_addr_id, :f_addr1_2, :f_addr_2_2, :f_unit_2, :f_city_2, :f_state_2, :f_zipcode_2, :f_zip4_2, :f_phone, :f_age, :time_stamp_2, :past_preg, :num_preg, :age_first, :premature, :miscarry, :time_stamp_3, :cig_past, :cig_past_freq, :cig_past_num, :cig_now, :cig_now_freq, :cig_now_num, :drink_past, :drink_past_num, :drink_past_5, :drink_now, :drink_now_num, :drink_now_5, :time_stamp_4, :learn, :help, :incent, :research, :envir, :community, :know_others, :family, :doctor, :staff, :opin_spouse, :opin_family, :opin_friend, :opin_dr, :experience, :improve, :int_length, :int_stress, :int_repeat, :time_stamp_5
+    mdes_order :psu_id, :pv1_saq_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :planned, :month_try, :wanted, :timing, :father_name, :father_same_hh, :father_know_preg, :contact_f_now, :contact_f_later, :f_addr_id, :f_addr1_2, :f_addr_2_2, :f_unit_2, :f_city_2, :f_state_2, :f_zipcode_2, :f_zip4_2, :f_phone, :f_age, :time_stamp_2, :past_preg, :num_preg, :age_first, :premature, :miscarry, :time_stamp_3, :cig_past, :cig_past_freq, :cig_past_num, :cig_now, :cig_now_freq, :cig_now_num, :drink_past, :drink_past_num, :drink_past_5, :drink_now, :drink_now_num, :drink_now_5, :time_stamp_4, :learn, :help, :incent, :research, :envir, :community, :know_others, :family, :doctor, :staff, :opin_spouse, :opin_family, :opin_friend, :opin_dr, :experience, :improve, :int_length, :int_stress, :int_repeat, :time_stamp_5
 
   end # class
 end # module NcsNavigator::Warehouse::Models::ThreePointZero

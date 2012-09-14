@@ -54,7 +54,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
     property   :name_practice,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => :possible, :length => 0..100 }
+               { :pii => true, :length => 0..100 }
     belongs_to :practice_address,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Address',
                :child_key => [ :practice_address_id ], :required => false

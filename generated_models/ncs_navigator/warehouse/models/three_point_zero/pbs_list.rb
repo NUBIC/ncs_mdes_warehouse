@@ -24,10 +24,10 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :length => 0..3 }
     property   :in_out_frame,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-4"] }
     property   :in_sample,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "-6", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-6", "-4", "-7"] }
     property   :substitute_provider_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..36 }

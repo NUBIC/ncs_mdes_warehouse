@@ -54,7 +54,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
     property   :nir_refusal_reason,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "-5", "-1", "-3", "-4", "-2"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "-5", "-1", "-3", "-4", "-2"] }
     property   :nir_refusal_reason_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
@@ -82,7 +82,16 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :nir_confidentiality,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
-    property   :nir_compensation,
+    property   :nir_compensation1,
+               NcsNavigator::Warehouse::DataMapper::NcsString,
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
+    property   :nir_compensation2,
+               NcsNavigator::Warehouse::DataMapper::NcsString,
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
+    property   :nir_compensation3,
+               NcsNavigator::Warehouse::DataMapper::NcsString,
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
+    property   :nir_compensation4,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_time_commitment,
@@ -146,7 +155,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
 
-    mdes_order :psu_id, :non_interview_respondent_id, :recruit_type, :du_id, :p_id, :r_p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_nir_st, :nir_refusal_reason, :nir_refusal_reason_oth, :nir_low_burden, :nir_busy_schedule, :nir_no_support, :nir_staff_answered, :nir_negative_press, :nir_staff_inhome, :nir_provide_samples, :nir_confidentiality, :nir_compensation, :nir_time_commitment, :nir_friendly_staff, :nir_study_unclear, :nir_child_participation, :nir_fewer_questions, :nir_internet_survey, :nir_enough_info, :nir_enough_info_oth, :nir_communication_freq, :nir_importance, :nir_influence, :nir_friends_family, :nir_oth_recruitment_nonpbr, :nir_oth_recruitment_nonhilo, :nir_oth_recruitment_nonehbr, :nir_oth_recruitment_noneoth, :nir_oth_recruitment_noneoth_oth, :nir_final, :nir_final_oth, :time_stamp_nir_et
+    mdes_order :psu_id, :non_interview_respondent_id, :recruit_type, :du_id, :p_id, :r_p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_nir_st, :nir_refusal_reason, :nir_refusal_reason_oth, :nir_low_burden, :nir_busy_schedule, :nir_no_support, :nir_staff_answered, :nir_negative_press, :nir_staff_inhome, :nir_provide_samples, :nir_confidentiality, :nir_compensation1, :nir_compensation2, :nir_compensation3, :nir_compensation4, :nir_time_commitment, :nir_friendly_staff, :nir_study_unclear, :nir_child_participation, :nir_fewer_questions, :nir_internet_survey, :nir_enough_info, :nir_enough_info_oth, :nir_communication_freq, :nir_importance, :nir_influence, :nir_friends_family, :nir_oth_recruitment_nonpbr, :nir_oth_recruitment_nonhilo, :nir_oth_recruitment_nonehbr, :nir_oth_recruitment_noneoth, :nir_oth_recruitment_noneoth_oth, :nir_final, :nir_final_oth, :time_stamp_nir_et
 
   end # class
 end # module NcsNavigator::Warehouse::Models::ThreePointZero

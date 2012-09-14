@@ -49,6 +49,9 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :time_stamp_1,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
+    property   :time_stamp_ic_st,
+               NcsNavigator::Warehouse::DataMapper::NcsString,
+               { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
     property   :birth_deliver,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "-5", "-1", "-2", "-3", "-4"] }
@@ -58,12 +61,12 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :multiple_num,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
-    property   :child_dob,
-               NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => :possible, :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
     property   :release,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-3", "-4"] }
+    property   :time_stamp_ic_et,
+               NcsNavigator::Warehouse::DataMapper::NcsString,
+               { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
     property   :live_mom,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
@@ -126,7 +129,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "-5", "-1", "-3", "-2", "-4"] }
     property   :plan_feed,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-5", "-1", "-3", "-2", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-2", "-3", "-4"] }
     property   :time_stamp_6,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
@@ -168,13 +171,13 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
     property   :return_job_dt_mm,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 0..2 }
+               { :format => /^([-+]?[\d]{1,9})?$/ }
     property   :return_job_dt_dd,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 0..2 }
+               { :format => /^([-+]?[\d]{1,9})?$/ }
     property   :return_job_dt_yy,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :length => 0..4 }
+               { :format => /^([-+]?[\d]{1,9})?$/ }
     property   :return_job,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
@@ -362,7 +365,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
 
-    mdes_order :psu_id, :bv_3_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :birth_deliver, :multiple, :multiple_num, :child_dob, :release, :live_mom, :live_oth, :time_stamp_2, :time_stamp_3, :recent_move, :own_home, :own_home_oth, :age_home, :length_reside, :length_reside_unit, :num_hh, :military_hh, :time_stamp_4, :renovate, :decorate, :smoke, :smoke_locate, :time_stamp_5, :fed_baby, :how_fed, :plan_feed, :time_stamp_6, :pos_hosp, :pos_home, :sleep_room, :bed, :bed_oth, :time_stamp_7, :hcare, :hcare_oth, :vaccine, :time_stamp_8, :employ2, :return_job_yet, :return_job_dt_mm, :return_job_dt_dd, :return_job_dt_yy, :return_job, :return_job_unit, :work_name_confirm, :work_name, :cwork_address_id, :cwork_address_1, :cwork_address_2, :cwork_unit, :cwork_city, :cwork_state, :cwork_zip, :cwork_zip4, :work_address_id, :work_address1, :work_address2, :work_unit, :work_city, :work_state, :work_zip, :work_zip4, :childcare, :ccare_type, :ccare_type_oth, :ccare_who, :rel_care_oth, :ccare_who_oth, :time_stamp_9, :time_stamp_10, :use_pr_log, :reason_no_pr_log, :reason_no_pr_log_oth, :num_prov_pr_log, :num_prov_rec, :date_visit, :diabetes_1, :highbp_preg, :urine, :preeclamp, :early_labor, :anemia, :nausea, :kidney, :rh_disease, :group_b, :herpes, :vaginosis, :oth_condition, :condition_oth, :m_hospital, :admin_date, :hosp_nights, :diagnose, :time_stamp_11, :participant, :contact_type, :english, :contact_lang, :contact_lang_oth, :interpret, :contact_interpret, :contact_interpret_oth, :time_stamp_12
+    mdes_order :psu_id, :bv_3_id, :recruit_type, :du_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_1, :time_stamp_ic_st, :birth_deliver, :multiple, :multiple_num, :release, :time_stamp_ic_et, :live_mom, :live_oth, :time_stamp_2, :time_stamp_3, :recent_move, :own_home, :own_home_oth, :age_home, :length_reside, :length_reside_unit, :num_hh, :military_hh, :time_stamp_4, :renovate, :decorate, :smoke, :smoke_locate, :time_stamp_5, :fed_baby, :how_fed, :plan_feed, :time_stamp_6, :pos_hosp, :pos_home, :sleep_room, :bed, :bed_oth, :time_stamp_7, :hcare, :hcare_oth, :vaccine, :time_stamp_8, :employ2, :return_job_yet, :return_job_dt_mm, :return_job_dt_dd, :return_job_dt_yy, :return_job, :return_job_unit, :work_name_confirm, :work_name, :cwork_address_id, :cwork_address_1, :cwork_address_2, :cwork_unit, :cwork_city, :cwork_state, :cwork_zip, :cwork_zip4, :work_address_id, :work_address1, :work_address2, :work_unit, :work_city, :work_state, :work_zip, :work_zip4, :childcare, :ccare_type, :ccare_type_oth, :ccare_who, :rel_care_oth, :ccare_who_oth, :time_stamp_9, :time_stamp_10, :use_pr_log, :reason_no_pr_log, :reason_no_pr_log_oth, :num_prov_pr_log, :num_prov_rec, :date_visit, :diabetes_1, :highbp_preg, :urine, :preeclamp, :early_labor, :anemia, :nausea, :kidney, :rh_disease, :group_b, :herpes, :vaginosis, :oth_condition, :condition_oth, :m_hospital, :admin_date, :hosp_nights, :diagnose, :time_stamp_11, :participant, :contact_type, :english, :contact_lang, :contact_lang_oth, :interpret, :contact_interpret, :contact_interpret_oth, :time_stamp_12
 
   end # class
 end # module NcsNavigator::Warehouse::Models::ThreePointZero

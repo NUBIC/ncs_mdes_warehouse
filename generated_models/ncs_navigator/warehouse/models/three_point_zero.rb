@@ -84,10 +84,8 @@ require 'ncs_navigator/warehouse/models/three_point_zero/sampled_persons_ineligi
 require 'ncs_navigator/warehouse/models/three_point_zero/pre_screening_performed'
 require 'ncs_navigator/warehouse/models/three_point_zero/non_interview_provider'
 require 'ncs_navigator/warehouse/models/three_point_zero/non_interview_provider_refusal'
-require 'ncs_navigator/warehouse/models/three_point_zero/person_race_new'
 require 'ncs_navigator/warehouse/models/three_point_zero/provider_role_pbs'
 require 'ncs_navigator/warehouse/models/three_point_zero/provider_logistics'
-require 'ncs_navigator/warehouse/models/three_point_zero/person_ethnic_origin'
 require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit'
 require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_baby_name'
 require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_decorate_room'
@@ -100,9 +98,12 @@ require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_baby_name_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_decorate_room_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_diagnose_2_3'
-require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_ethnic_origin_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_baby_ethnic_origin_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_household_3'
-require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_race_new_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_baby_race_1_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_baby_race_2_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_baby_race_3_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_baby_race_new_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_renovate_room_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_li'
 require 'ncs_navigator/warehouse/models/three_point_zero/birth_visit_li_baby_name'
@@ -170,9 +171,12 @@ require 'ncs_navigator/warehouse/models/three_point_zero/pbs_elig_screener'
 require 'ncs_navigator/warehouse/models/three_point_zero/pbs_elig_screener_day1'
 require 'ncs_navigator/warehouse/models/three_point_zero/pbs_elig_screener_day2'
 require 'ncs_navigator/warehouse/models/three_point_zero/pbs_elig_screener_employ'
-require 'ncs_navigator/warehouse/models/three_point_zero/pbs_elig_screener_ethnic_orig'
+require 'ncs_navigator/warehouse/models/three_point_zero/pbs_elig_screener_ethnic_origin_2'
 require 'ncs_navigator/warehouse/models/three_point_zero/pbs_elig_screener_pr_office'
-require 'ncs_navigator/warehouse/models/three_point_zero/pbs_elig_screener_race'
+require 'ncs_navigator/warehouse/models/three_point_zero/pbs_elig_screener_race_1'
+require 'ncs_navigator/warehouse/models/three_point_zero/pbs_elig_screener_race_2'
+require 'ncs_navigator/warehouse/models/three_point_zero/pbs_elig_screener_race_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/pbs_elig_screener_race_new'
 require 'ncs_navigator/warehouse/models/three_point_zero/ppg_cati'
 require 'ncs_navigator/warehouse/models/three_point_zero/ppg_saq'
 require 'ncs_navigator/warehouse/models/three_point_zero/pre_preg'
@@ -228,15 +232,21 @@ require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_sp_race_2'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_commute_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_cool_3'
-require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_ethnic_origin_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_ethnic_origin_2_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_heat2_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_local_trav_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_pdecorate_room_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_pet_type_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_prenovate_room_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_race_1_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_race_2_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_race_3_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_race_new_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_room_mold_3'
-require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_sp_ethnic_origin_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_sp_ethnic_2_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_sp_race_1_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_sp_race_2_3'
+require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_sp_race_3_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_sp_race_new_3'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_saq'
 require 'ncs_navigator/warehouse/models/three_point_zero/preg_visit_1_saq_2'
@@ -411,7 +421,7 @@ module NcsNavigator
     module Models
       module ThreePointZero
         mdes_version "3.0"
-        mdes_specification_version "3.0.00.00"
+        mdes_specification_version "3.0.00.09"
         mdes_order StudyCenter,
           Psu,
           Ssu,
@@ -488,10 +498,8 @@ module NcsNavigator
           PreScreeningPerformed,
           NonInterviewProvider,
           NonInterviewProviderRefusal,
-          PersonRaceNew,
           ProviderRolePbs,
           ProviderLogistics,
-          PersonEthnicOrigin,
           BirthVisit,
           BirthVisitBabyName,
           BirthVisitDecorateRoom,
@@ -504,9 +512,12 @@ module NcsNavigator
           BirthVisitBabyName_3,
           BirthVisitDecorateRoom_3,
           BirthVisitDiagnose_2_3,
-          BirthVisitEthnicOrigin_3,
+          BirthVisitBabyEthnicOrigin_3,
           BirthVisitHousehold_3,
-          BirthVisitRaceNew_3,
+          BirthVisitBabyRace_1_3,
+          BirthVisitBabyRace_2_3,
+          BirthVisitBabyRace_3_3,
+          BirthVisitBabyRaceNew_3,
           BirthVisitRenovateRoom_3,
           BirthVisitLi,
           BirthVisitLiBabyName,
@@ -574,9 +585,12 @@ module NcsNavigator
           PbsEligScreenerDay1,
           PbsEligScreenerDay2,
           PbsEligScreenerEmploy,
-          PbsEligScreenerEthnicOrig,
+          PbsEligScreenerEthnicOrigin_2,
           PbsEligScreenerPrOffice,
-          PbsEligScreenerRace,
+          PbsEligScreenerRace_1,
+          PbsEligScreenerRace_2,
+          PbsEligScreenerRace_3,
+          PbsEligScreenerRaceNew,
           PpgCati,
           PpgSaq,
           PrePreg,
@@ -632,15 +646,21 @@ module NcsNavigator
           PregVisit_1_3,
           PregVisit1Commute_3,
           PregVisit1Cool_3,
-          PregVisit1EthnicOrigin_3,
+          PregVisit1EthnicOrigin_2_3,
           PregVisit1Heat2_3,
           PregVisit1LocalTrav_3,
           PregVisit1PdecorateRoom_3,
           PregVisit1PetType_3,
           PregVisit1PrenovateRoom_3,
+          PregVisit1Race_1_3,
+          PregVisit1Race_2_3,
+          PregVisit1Race_3_3,
           PregVisit1RaceNew_3,
           PregVisit1RoomMold_3,
-          PregVisit1SpEthnicOrigin_3,
+          PregVisit1SpEthnic_2_3,
+          PregVisit1SpRace_1_3,
+          PregVisit1SpRace_2_3,
+          PregVisit1SpRace_3_3,
           PregVisit1SpRaceNew_3,
           PregVisit1Saq,
           PregVisit1Saq_2,

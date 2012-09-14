@@ -81,7 +81,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :length => 0..5, :format => /^([0-9][0-9]:[0-9][0-9])?$/ }
     property   :best_ttc1_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-3", "-4"] }
     property   :best_ttc1_3,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
@@ -105,7 +105,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :length => 0..5, :format => /^([0-9][0-9]:[0-9][0-9])?$/ }
     property   :best_ttc2_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-3", "-4"] }
     property   :best_ttc2_3,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
@@ -141,7 +141,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :pii => :possible, :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
     property   :age_range_pbs,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4", "1"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
     property   :age_elig,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-6", "-4"] }
@@ -238,6 +238,9 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :educ,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-1", "-2", "-3", "-4"] }
+    property   :ethnic_origin,
+               NcsNavigator::Warehouse::DataMapper::NcsString,
+               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
     property   :person_lang_new,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "-1", "-5", "-2", "-3", "-4"] }
@@ -287,7 +290,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
 
-    mdes_order :psu_id, :pbs_elig_screener_id, :recruit_type, :du_id, :person_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :practice_num, :provider_id, :name_practice, :time_stamp_ico_st1, :female_1, :r_phone_1_id, :r_phone_1, :r_phone_type1, :r_phone_type1_oth, :best_ttc1_1, :best_ttc1_2, :best_ttc1_3, :r_other_phone, :r_phone_2_id, :r_phone_2, :r_phone_type2, :r_phone_type2_oth, :best_ttc2_1, :best_ttc2_2, :best_ttc2_3, :r_email_id, :r_email, :time_stamp_ico_et1, :time_stamp_ico_st2, :time_stamp_ico_et2, :time_stamp_el_st, :r_fname, :r_mname, :r_lname, :person_dob, :age_range_pbs, :age_elig, :address_id, :address_1, :address_2, :unit, :city, :state, :zip, :zip4, :county, :psu_elig_confirm, :time_stamp_el_et, :time_stamp_ps_st, :pregnant, :orig_due_date_mm, :orig_due_date_dd, :orig_due_date_yy, :date_period_mm, :date_period_dd, :date_period_yy, :weeks_preg, :month_preg, :trimester, :first_visit, :other_office_visits, :num_other_office, :ppg_first, :time_stamp_ps_et, :time_stamp_de_st, :loss_continue, :maristat, :educ, :person_lang_new, :person_lang_new_oth, :hh_members, :num_child, :income_4cat, :time_stamp_de_et, :time_stamp_cs_st, :time_stamp_cs_et, :time_stamp_ic_st, :english, :contact_lang_new, :contact_lang_new_oth, :interpret, :contact_interpret, :contact_interpret_oth, :time_stamp_ic_et
+    mdes_order :psu_id, :pbs_elig_screener_id, :recruit_type, :du_id, :person_id, :p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :practice_num, :provider_id, :name_practice, :time_stamp_ico_st1, :female_1, :r_phone_1_id, :r_phone_1, :r_phone_type1, :r_phone_type1_oth, :best_ttc1_1, :best_ttc1_2, :best_ttc1_3, :r_other_phone, :r_phone_2_id, :r_phone_2, :r_phone_type2, :r_phone_type2_oth, :best_ttc2_1, :best_ttc2_2, :best_ttc2_3, :r_email_id, :r_email, :time_stamp_ico_et1, :time_stamp_ico_st2, :time_stamp_ico_et2, :time_stamp_el_st, :r_fname, :r_mname, :r_lname, :person_dob, :age_range_pbs, :age_elig, :address_id, :address_1, :address_2, :unit, :city, :state, :zip, :zip4, :county, :psu_elig_confirm, :time_stamp_el_et, :time_stamp_ps_st, :pregnant, :orig_due_date_mm, :orig_due_date_dd, :orig_due_date_yy, :date_period_mm, :date_period_dd, :date_period_yy, :weeks_preg, :month_preg, :trimester, :first_visit, :other_office_visits, :num_other_office, :ppg_first, :time_stamp_ps_et, :time_stamp_de_st, :loss_continue, :maristat, :educ, :ethnic_origin, :person_lang_new, :person_lang_new_oth, :hh_members, :num_child, :income_4cat, :time_stamp_de_et, :time_stamp_cs_st, :time_stamp_cs_et, :time_stamp_ic_st, :english, :contact_lang_new, :contact_lang_new_oth, :interpret, :contact_interpret, :contact_interpret_oth, :time_stamp_ic_et
 
   end # class
 end # module NcsNavigator::Warehouse::Models::ThreePointZero

@@ -22,29 +22,17 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :baby_loop_3_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :key => true, :required => true, :length => 1..36 }
-    property   :baby_name,
-               NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-4"] }
-    property   :baby_fname,
-               NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..30 }
-    property   :baby_mname,
-               NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..30 }
-    property   :baby_lname,
-               NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :pii => true, :length => 0..30 }
-    property   :baby_sex,
-               NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-4"] }
     property   :baby_bwt_lb,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
     property   :baby_bwt_oz,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
+    property   :baby_ethnic_origin,
+               NcsNavigator::Warehouse::DataMapper::NcsString,
+               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
 
-    mdes_order :psu_id, :p_id, :bv_3_id, :baby_loop_3_id, :baby_name, :baby_fname, :baby_mname, :baby_lname, :baby_sex, :baby_bwt_lb, :baby_bwt_oz
+    mdes_order :psu_id, :p_id, :bv_3_id, :baby_loop_3_id, :baby_bwt_lb, :baby_bwt_oz, :baby_ethnic_origin
 
   end # class
 end # module NcsNavigator::Warehouse::Models::ThreePointZero

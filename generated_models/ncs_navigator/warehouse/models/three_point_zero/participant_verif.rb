@@ -139,6 +139,9 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :child_time,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
+    property   :child_primary_address_confirm_new,
+               NcsNavigator::Warehouse::DataMapper::NcsString,
+               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
     belongs_to :c_address,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Address',
                :child_key => [ :c_address_id ], :required => false
@@ -169,6 +172,9 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :pa_phone,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..10 }
+    property   :child_secondary_address_confirm_new,
+               NcsNavigator::Warehouse::DataMapper::NcsString,
+               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
     belongs_to :s_address,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Address',
                :child_key => [ :s_address_id ], :required => false
@@ -209,7 +215,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
 
-    mdes_order :psu_id, :participant_verif_id, :recruit_type, :du_id, :p_id, :r_p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_pv_st, :mult_child, :child_num, :child_qnum, :name_confirm, :r_fname, :r_mname, :r_lname, :maiden_name, :nicknames, :nickname_1, :nickname_2, :person_dob, :resp_rel_new, :resp_guard_conf, :resp_guard, :g_fname, :g_mname, :g_lname, :resp_pcare, :p_fname, :p_mname, :p_lname, :pcare_rel, :ocare_child, :o_fname, :o_mname, :o_lname, :ocare_rel, :child_time, :c_address_id, :c_address_1, :c_address_2, :c_unit, :c_city, :c_state, :c_zip, :c_zip4, :pa_phone_id, :pa_phone, :s_address_id, :s_address_1, :s_address_2, :s_unit, :s_city, :s_state, :s_zip, :s_zip4, :sa_phone_confirm, :sa_phone_id, :sa_phone, :same_contact_mult_child, :time_stamp_pv_et
+    mdes_order :psu_id, :participant_verif_id, :recruit_type, :du_id, :p_id, :r_p_id, :event_id, :event_type, :event_repeat_key, :instrument_id, :instrument_type, :instrument_version, :instrument_repeat_key, :time_stamp_pv_st, :mult_child, :child_num, :child_qnum, :name_confirm, :r_fname, :r_mname, :r_lname, :maiden_name, :nicknames, :nickname_1, :nickname_2, :person_dob, :resp_rel_new, :resp_guard_conf, :resp_guard, :g_fname, :g_mname, :g_lname, :resp_pcare, :p_fname, :p_mname, :p_lname, :pcare_rel, :ocare_child, :o_fname, :o_mname, :o_lname, :ocare_rel, :child_time, :child_primary_address_confirm_new, :c_address_id, :c_address_1, :c_address_2, :c_unit, :c_city, :c_state, :c_zip, :c_zip4, :pa_phone_id, :pa_phone, :child_secondary_address_confirm_new, :s_address_id, :s_address_1, :s_address_2, :s_unit, :s_city, :s_state, :s_zip, :s_zip4, :sa_phone_confirm, :sa_phone_id, :sa_phone, :same_contact_mult_child, :time_stamp_pv_et
 
   end # class
 end # module NcsNavigator::Warehouse::Models::ThreePointZero
