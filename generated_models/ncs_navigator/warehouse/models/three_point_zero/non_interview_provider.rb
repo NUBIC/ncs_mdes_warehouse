@@ -24,13 +24,13 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                :child_key => [ :provider_id ], :required => true
     property   :nir_type_provider,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "-5", "-7", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-5", "-7", "-4"] }
     property   :nir_type_provider_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
     property   :nir_closed_info,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "-5", "-7", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "-5", "-7", "-4"] }
     property   :nir_closed_info_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
@@ -42,25 +42,25 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-6", "-7", "-4"] }
     property   :who_refused,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-5", "-7", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-5", "-7", "-4"] }
     property   :who_refused_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
     property   :refuser_strength,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-6", "-7", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-6", "-7", "-4"] }
     property   :ref_action_provider,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-7", "-4"] }
     property   :who_confirm_noprenatal,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-5", "-7", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-5", "-7", "-4"] }
     property   :who_confirm_noprenatal_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
     property   :nir_moved_info,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "-5", "-7", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "-5", "-7", "-4"] }
     property   :nir_moved_info_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }

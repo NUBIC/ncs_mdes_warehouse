@@ -204,7 +204,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
     property   :r_hcare,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..3, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "-5 ", "-1", "-2", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-5", "-1", "-2", "-4"] }
     property   :last_visit,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }

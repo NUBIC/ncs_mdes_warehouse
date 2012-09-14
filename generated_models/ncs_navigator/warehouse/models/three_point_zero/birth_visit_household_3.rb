@@ -27,7 +27,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :pii => true, :length => 0..255 }
     property   :child_relat,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "-1", "-2", "-3", "-4"] }
     property   :child_relat_1_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
@@ -39,10 +39,10 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :pii => :possible, :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
     property   :active_duty,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :branch_serv,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..3, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "-7 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-7", "-1", "-2", "-3", "-4"] }
 
     mdes_order :psu_id, :p_id, :bv_3_id, :birth_visit_household_3_id, :fname_hh, :child_relat, :child_relat_1_oth, :child_relat_2_oth, :hh_mem_dob, :active_duty, :branch_serv
 

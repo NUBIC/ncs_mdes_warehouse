@@ -24,7 +24,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :key => true, :required => true, :length => 1..36 }
     property   :baby_name,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "-1", "-2", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-4"] }
     property   :baby_fname,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..30 }

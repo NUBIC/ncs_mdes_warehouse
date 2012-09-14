@@ -120,7 +120,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :length => 0..7, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9])?$/ }
     property   :home_phone_confirm,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..3, :set => ["1 ", "2 ", "-1", "-2", "-7 ", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-7", "-3", "-4"] }
     belongs_to :home_phone,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Telephone',
                :child_key => [ :home_phone_id ], :required => false
@@ -129,7 +129,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :pii => true, :length => 0..10 }
     property   :cell_phone_confirm,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..3, :set => ["1 ", "2 ", "-1", "-2", "-7 ", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-7", "-3", "-4"] }
     belongs_to :cell_phone,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Telephone',
                :child_key => [ :cell_phone_id ], :required => false
@@ -147,7 +147,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
     property   :email_confirm,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..3, :set => ["1 ", "2 ", "-1", "-2", "-7 ", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-7", "-3", "-4"] }
     belongs_to :email,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Email',
                :child_key => [ :email_id ], :required => false
@@ -165,7 +165,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
     property   :contact_1,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..3, :set => ["1 ", "2 ", "-1", "-2", "-7 ", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-7", "-3", "-4"] }
     property   :contact_frnd,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }

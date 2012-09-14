@@ -54,7 +54,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :pii => :possible, :length => 0..4 }
     property   :provider_office_on_frame,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-3", "-4"] }
 
     mdes_order :psu_id, :pbs_elig_screener_id, :pbs_elig_screener_pr_office_id, :provider_id, :other_office_name, :practice_name, :pr_address_id, :pr_address_1, :pr_address_2, :pr_unit, :pr_city, :pr_state, :pr_zip, :pr_zip4, :provider_office_on_frame
 

@@ -141,7 +141,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :pii => :possible, :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
     property   :age_range_pbs,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4", "1 "] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4", "1"] }
     property   :age_elig,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-6", "-4"] }
@@ -174,7 +174,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
     property   :psu_elig_confirm,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..3, :set => ["1 ", "2 ", "-6 ", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-6", "-3", "-4"] }
     property   :time_stamp_el_et,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
@@ -234,7 +234,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
     property   :maristat,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-1", "-2", "-3", "-4"] }
     property   :educ,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-1", "-2", "-3", "-4"] }

@@ -51,7 +51,7 @@ module NcsNavigator::Warehouse::Models::TwoPointTwo
                { :format => /^([-+]?[\d]{1,9})?$/ }
     property   :p_twf_n_collect,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2 ", "3 ", "4 ", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-4"] }
     property   :p_twf_2_collected,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "-5", "-4"] }

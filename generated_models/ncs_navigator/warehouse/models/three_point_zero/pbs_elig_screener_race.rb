@@ -21,7 +21,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :key => true, :required => true, :length => 1..36 }
     property   :race_new,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..3, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ", "10 ", "11 ", "12 ", "13", "14", "15 ", "-5", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "-5", "-1", "-2", "-3", "-4"] }
     property   :race_new_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }

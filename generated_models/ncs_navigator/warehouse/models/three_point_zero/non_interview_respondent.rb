@@ -54,7 +54,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :length => 0..19, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])?$/ }
     property   :nir_refusal_reason,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..3, :set => ["2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ", "10 ", "11 ", "12 ", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "-5", "-1", "-3", "-4", "-2"] }
+               { :required => true, :length => 1..2, :set => ["2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "-5", "-1", "-3", "-4", "-2"] }
     property   :nir_refusal_reason_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }
@@ -63,46 +63,46 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
     property   :nir_busy_schedule,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_no_support,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_staff_answered,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_negative_press,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_staff_inhome,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_provide_samples,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_confidentiality,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_compensation,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_time_commitment,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_friendly_staff,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_study_unclear,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_child_participation,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_fewer_questions,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_internet_survey,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_enough_info,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
@@ -111,10 +111,10 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :pii => :possible, :length => 0..255 }
     property   :nir_communication_freq,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_importance,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-2", "-3", "-4"] }
     property   :nir_influence,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }

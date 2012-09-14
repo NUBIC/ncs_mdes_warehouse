@@ -36,7 +36,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-6", "-4"] }
     property   :ineligible_by,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "-6", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-6", "-4"] }
 
     mdes_order :psu_id, :provider_id, :person_id, :sampled_persons_inelig_id, :age_eligible, :county_of_residence, :pregnancy_eligible, :first_prenatal_visit, :ineligible_by
 

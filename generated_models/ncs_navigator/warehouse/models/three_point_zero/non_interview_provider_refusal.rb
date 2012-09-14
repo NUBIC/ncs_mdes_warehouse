@@ -21,7 +21,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                :child_key => [ :non_interview_provider_id ], :required => true
     property   :refusal_reason_pbs,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ", "-5", "-6", "-7", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "-5", "-6", "-7", "-4"] }
     property   :refusal_reason_pbs_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }

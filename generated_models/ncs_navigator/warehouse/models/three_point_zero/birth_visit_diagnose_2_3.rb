@@ -24,7 +24,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :key => true, :required => true, :length => 1..36 }
     property   :diagnose_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "-5", "-7", "-1", "-2", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-5", "-7", "-1", "-2", "-4"] }
     property   :diagnosis_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }

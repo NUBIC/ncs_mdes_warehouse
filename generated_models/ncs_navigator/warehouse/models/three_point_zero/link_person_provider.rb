@@ -36,7 +36,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-4"] }
     property   :pre_screening_status,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-7", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-7", "-4"] }
     property   :date_first_visit,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }

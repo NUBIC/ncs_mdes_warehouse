@@ -165,58 +165,58 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-1", "-2", "-3", "-4"] }
     property   :learn,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-3", "-4"] }
     property   :help,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-3", "-4"] }
     property   :incent,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-3", "-4"] }
     property   :research,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-3", "-4"] }
     property   :envir,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-3", "-4"] }
     property   :community,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-3", "-4"] }
     property   :know_others,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-3", "-4"] }
     property   :family,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-3", "-4"] }
     property   :doctor,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-3", "-4"] }
     property   :staff,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-3", "-4"] }
     property   :opin_spouse,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-1", "-3", "-4"] }
     property   :opin_family,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-1", "-3", "-4"] }
     property   :opin_friend,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-1", "-3", "-4"] }
     property   :opin_dr,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "-1", "-3", "-4"] }
     property   :experience,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-1", "-3", "-4"] }
     property   :improve,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-1", "-3", "-4"] }
     property   :int_length,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "-1", "-3", "-4"] }
     property   :int_stress,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "-1", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-1", "-3", "-4"] }
     property   :int_repeat,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-4"] }

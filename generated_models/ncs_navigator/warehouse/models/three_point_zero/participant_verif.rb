@@ -90,7 +90,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :pii => :possible, :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
     property   :resp_rel_new,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..3, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ", "10 ", "11 ", "12 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "-1", "-2", "-3", "-4"] }
     property   :resp_guard_conf,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
@@ -120,7 +120,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :pii => true, :length => 0..30 }
     property   :pcare_rel,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..3, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ", "10 ", "11 ", "12 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "-1", "-2", "-3", "-4"] }
     property   :ocare_child,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
@@ -135,7 +135,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :pii => true, :length => 0..30 }
     property   :ocare_rel,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..3, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ", "10 ", "11 ", "12 ", "-1", "-2", "-3", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "-1", "-2", "-3", "-4"] }
     property   :child_time,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }

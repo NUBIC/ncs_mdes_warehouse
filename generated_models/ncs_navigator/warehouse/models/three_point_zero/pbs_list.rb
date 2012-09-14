@@ -24,22 +24,22 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :length => 0..3 }
     property   :in_out_frame,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-4"] }
     property   :in_sample,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "-6", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-6", "-4"] }
     property   :substitute_provider_id,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..36 }
     property   :in_out_psu,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-4"] }
     property   :mos,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :format => /^([-+]?[\d]{1,9})?$/ }
     property   :cert_flag,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "-6", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "-6", "-4"] }
     property   :stratum,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..36 }
@@ -72,7 +72,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true, :length => 1..2, :set => ["1", "2", "-7", "-4"] }
     property   :pr_recruitment_status,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 2..2, :set => ["1 ", "2 ", "3 ", "4 ", "5 ", "-7", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-7", "-4"] }
     property   :pr_recruitment_start_date,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :length => 0..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
