@@ -33,7 +33,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
                { :required => true }
     property   :event_disp_cat,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "9", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "6", "7", "8", "-4"] }
     property   :event_start_date,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..10, :format => /^([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])?$/ }
