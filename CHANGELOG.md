@@ -8,6 +8,8 @@ NCS Navigator MDES Warehouse History
   provided metadata element at this point is reference to the active warehouse
   configuration. (#2451)
 
+- Add models for MDES 3.1. (#2487)
+
 0.7.3
 -----
 
