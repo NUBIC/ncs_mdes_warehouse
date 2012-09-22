@@ -341,6 +341,10 @@ module NcsNavigator::Warehouse::Transformers
       end
       alias :call :convert_row
 
+      ##
+      # Implemented so that this class behaves like a lambda.
+      def arity; 1; end
+
       def clean_value(v)
         if v.respond_to?(:strip)
           v.strip

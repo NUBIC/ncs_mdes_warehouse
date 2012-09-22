@@ -413,6 +413,13 @@ module NcsNavigator::Warehouse::Transformers
             producer.column_map(%w(street)).keys.should == %w(street_loc)
           end
         end
+
+        describe 'the processor' do
+          it 'responds to :arity' do
+            cls.produce_one_for_one(:addresses, address_model, options)
+            producer.row_processor.arity.should == 1
+          end
+        end
       end
     end
   end
