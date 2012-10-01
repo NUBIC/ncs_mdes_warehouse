@@ -157,9 +157,24 @@ module NcsNavigator::Warehouse
 
       @models_module = NcsNavigator::Warehouse::Models.const_get module_name
     end
-    attr_reader :mdes_version
 
     ##
+    # Returns the configured MDES version string.
+    #
+    # N.b.: this method triggers loading the default MDES module and
+    # specification if {#mdes_version=} has not been called yet.
+    #
+    # @return [String] the configured MDES version.
+    def mdes_version
+      mdes.version
+    end
+
+    ##
+    # Returns the specification for the active MDES version.
+    #
+    # N.b.: this method triggers loading the default MDES module and
+    # specification if {#mdes_version=} has not been called yet.
+    #
     # @return [NcsNavigator::Mdes::Specification] the specification
     #   (provided by `ncs_mdes`) for the active MDES version.
     def mdes
@@ -169,6 +184,11 @@ module NcsNavigator::Warehouse
     attr_writer :mdes
 
     ##
+    # Returns the module namespacing the models for the active MDES version.
+    #
+    # N.b.: this method triggers loading the default MDES module and
+    # specification if {#mdes_version=} has not been called yet.
+    #
     # @return [Module] the module namespacing the models for the
     #   active MDES version.
     def models_module

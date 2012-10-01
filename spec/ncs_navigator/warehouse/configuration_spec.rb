@@ -124,6 +124,12 @@ module NcsNavigator::Warehouse
       end
     end
 
+    describe '#mdes_version', :slow, :use_mdes, :modifies_warehouse_state do
+      it 'is a shortcut for extracting the version from #mdes' do
+        spec_config.mdes_version.should == spec_mdes_version
+      end
+    end
+
     describe '#mdes', :slow, :modifies_warehouse_state do
       it 'Uses the default MDES version if called before mdes_version=' do
         config.mdes.version.should == NcsNavigator::Warehouse::DEFAULT_MDES_VERSION

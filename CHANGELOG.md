@@ -4,6 +4,8 @@ NCS Navigator MDES Warehouse History
 0.8.1
 -----
 
+- Fix probably-never-functional `Configuration#mdes_version` reader. (#2553)
+
 0.8.0
 -----
 
