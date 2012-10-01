@@ -274,8 +274,10 @@ module NcsNavigator::Warehouse::Transformers
       # @param [Symbol] name the name of this producer; if you don't
       #   specify a `:query`, the default is to return every row from
       #   the application table with this name.
-      # @param [Class] model the warehouse model to which results of
-      #   the query will be mapped.
+      # @param [Class,Symbol] model_or_reference the warehouse model to which
+      #   the results of the query will be mapped. It can be expressed either
+      #   as the model class itself or the unqualified name of the model. (See
+      #   {Configuration#model}.)
       # @param [Hash] options
       # @option options :query [String] the query to execute for this
       #   producer. If not specified, the query is `"SELECT * FROM #{name}"`.
@@ -292,13 +294,13 @@ module NcsNavigator::Warehouse::Transformers
       #   column map don't match them to anything.
       #
       # @return [void]
-      def produce_one_for_one(name, model, options={})
+      def produce_one_for_one(name, model_or_reference, options={})
         options[:column_map] =
           (options[:column_map] || {}).inject({}) { |h, (k, v)| h[k.to_s] = v.to_s; h }
         options[:ignored_columns] = (options[:ignored_columns] || []).collect(&:to_s)
 
         record_producers <<
-          OneForOneProducer.new(name, options.delete(:query), model, self, options)
+          OneForOneProducer.new(name, options.delete(:query), model_or_reference, self, options)
       end
     end
 
@@ -313,11 +315,11 @@ module NcsNavigator::Warehouse::Transformers
     ##
     # The class encapsulating one call to {DSL#produce_one_for_one}
     class OneForOneProducer < RecordProducer
-      attr_reader :model, :options, :dsl_host
+      attr_reader :model_or_reference, :options, :dsl_host
 
-      def initialize(name, query, model, dsl_host, options)
+      def initialize(name, query, model_or_reference, dsl_host, options)
         super(name, query, self)
-        @model = model
+        @model_or_reference = model_or_reference
         @dsl_host = dsl_host
         @options = options
       end
@@ -325,14 +327,14 @@ module NcsNavigator::Warehouse::Transformers
       ##
       # Produces a single instance of {#model} using the values in the
       # row as mapped by {#column_map}.
-      def convert_row(row)
-        col_map = column_map(row.members)
+      def convert_row(row, meta)
+        col_map = column_map(row.members, meta[:configuration])
         unused = row.members.collect(&:to_s) - col_map.keys - ignored_columns
 
         if on_unused == :fail && !unused.empty?
           raise UnusedColumnsForModelError.new(unused)
         end
-        model.new(
+        model(meta[:configuration]).new(
           col_map.inject({}) { |pv, (col_name, var_name)|
             pv[var_name] = clean_value(row[col_name]);
             pv
@@ -343,7 +345,23 @@ module NcsNavigator::Warehouse::Transformers
 
       ##
       # Implemented so that this class behaves like a lambda.
-      def arity; 1; end
+      def arity; 2; end
+
+      ##
+      # @param configuration [Configuration]
+      #
+      # @return [Class] the model for this producer. If {#model_or_reference}
+      #   is a symbolic reference, this method resolves it using the given
+      #   configuration.
+      def model(configuration)
+        case model_or_reference
+        when Class
+          model_or_reference
+        else
+          configuration.model(model_or_reference) or
+            fail("There is no table or model named #{model_or_reference.inspect} in MDES #{configuration.mdes_version}.")
+        end
+      end
 
       def clean_value(v)
         if v.respond_to?(:strip)
@@ -356,12 +374,15 @@ module NcsNavigator::Warehouse::Transformers
 
       ##
       # @param [Array<String>] column_names
+      # @param [Configuration] configuration the configuration to use to resolve
+      #   model references, if necessary.
+      #
       # @return [Hash<String, String>] a mapping from the given
       #   column names to MDES variable names for the configured
       #   model. This mapping reflects both the configured explicit
       #   mapping and the heuristic.
-      def column_map(column_names)
-        available_props = model.properties.collect { |p| p.name.to_s }
+      def column_map(column_names, configuration)
+        available_props = model(configuration).properties.collect { |p| p.name.to_s }
         available_props -= options[:column_map].values
 
         column_names.inject(options[:column_map].dup) do |map, column|

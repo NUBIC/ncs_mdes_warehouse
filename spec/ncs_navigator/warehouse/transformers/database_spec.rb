@@ -273,6 +273,7 @@ module NcsNavigator::Warehouse::Transformers
         let(:options) { {} }
         let(:cls) { sample_class }
         let(:producer) { cls.record_producers.first }
+        let(:row_meta) { {} }
 
         def make_row(contents)
           Struct.new(*contents.keys).new.tap do |r|
@@ -284,7 +285,7 @@ module NcsNavigator::Warehouse::Transformers
 
         def model_row(row)
           cls.produce_one_for_one(:addresses, address_model, options)
-          producer.row_processor.call(make_row(row))
+          producer.row_processor.call(make_row(row), row_meta)
         end
 
         it 'maps a column to the property with the same name' do
@@ -312,6 +313,36 @@ module NcsNavigator::Warehouse::Transformers
         it 'does not try to strip whitespace when not possible' do
           model_row(:address_id => -7).address_id.should == '-7'
           # expect no errors
+        end
+
+        describe 'and a symbolic model' do
+          let(:address_model) { :Address }
+          let(:mock_config) { mock('Configuration') }
+
+          before do
+            row_meta[:configuration] = mock_config
+            mock_config.stub!(:model).and_return(Database::DSL::TestModels::Address)
+          end
+
+          it 'resolves the model using the configuration' do
+            mock_config.should_receive(:model).with(address_model).and_return(Database::DSL::TestModels::Address)
+
+            model_row(:street => '42 Foo').street.should == '42 Foo'
+          end
+
+          it 'throws an exception if the model does not exist' do
+            mock_config.should_receive(:model).with(address_model).and_return(nil)
+            mock_config.stub!(:mdes_version).and_return('3.4')
+
+            expect { model_row(:street => '42 Baz') }.
+              to raise_error('There is no table or model named :Address in MDES 3.4.')
+          end
+
+          it 'can retrieve the column map' do
+            options[:column_map] = { :street_loc => :street }
+            cls.produce_one_for_one(:addresses, address_model, options)
+            producer.column_map(%w(street street_loc), mock_config).keys.should == %w(street_loc)
+          end
         end
 
         describe 'and unused columns' do
@@ -349,7 +380,7 @@ module NcsNavigator::Warehouse::Transformers
 
             it 'fails appropriately' do
               begin
-                producer.call(make_row :address_type => '-5', :address_length => '6')
+                producer.call(make_row(:address_type => '-5', :address_length => '6'), row_meta)
                 fail "Exception not thrown"
               rescue Database::UnusedColumnsForModelError => e
                 e.unused.should == %w(address_length)
@@ -358,13 +389,13 @@ module NcsNavigator::Warehouse::Transformers
 
             it 'does not fail if the global setting is overridden' do
               options[:on_unused] = :ignore
-              lambda { producer.call(make_row :address_type => '-5', :address_length => '6') }.
+              lambda { producer.call(make_row(:address_type => '-5', :address_length => '6'), row_meta) }.
                 should_not raise_error
             end
 
             it 'can be ignored by modifying the global setting' do
               cls.on_unused_columns :ignore
-              lambda { producer.call(make_row :address_type => '-5', :address_length => '6') }.
+              lambda { producer.call(make_row(:address_type => '-5', :address_length => '6'), row_meta) }.
                 should_not raise_error
             end
           end
@@ -405,19 +436,19 @@ module NcsNavigator::Warehouse::Transformers
 
           it 'does not include the default mapping in the total map' do
             cls.produce_one_for_one(:addresses, address_model, options)
-            producer.column_map(%w(street street_loc)).keys.should == %w(street_loc)
+            producer.column_map(%w(street street_loc), configuration).keys.should == %w(street_loc)
           end
 
           it 'always includes explicit mapping values in the total map' do
             cls.produce_one_for_one(:addresses, address_model, options)
-            producer.column_map(%w(street)).keys.should == %w(street_loc)
+            producer.column_map(%w(street), configuration).keys.should == %w(street_loc)
           end
         end
 
         describe 'the processor' do
           it 'responds to :arity' do
             cls.produce_one_for_one(:addresses, address_model, options)
-            producer.row_processor.arity.should == 1
+            producer.row_processor.arity.should == 2
           end
         end
       end

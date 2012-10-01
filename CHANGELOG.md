@@ -1,8 +1,16 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
-0.8.1
+0.9.0
 -----
+
+- Support symbolic references to models in `produce_one_for_one` in the database
+  transformer DSL. This results in a minor *BREAKING CHANGE*:
+  `Database::DSL::OneToOneProducer#model` has been renamed `model_or_name` and
+  may give you either the model or a symbolic reference to it. There is a new
+  method `#model(configuration)` which takes a configuration instance and always
+  gives you a model. Similarly, `Database::DSL::OneToOneProducer#column_map` now
+  requires a configuration instance as a second parameter. (#2552)
 
 - Fix probably-never-functional `Configuration#mdes_version` reader. (#2553)
 
