@@ -75,10 +75,12 @@ reporting schema is wiped and replaced with the results.
 DESC
     method_option 'force', :type => 'boolean',
       :desc => 'Copy the working schema to production even if there are errors'
+    method_option 'preserve', :type => 'boolean',
+      :desc => 'Do not wipe the working database before beginning ETL (for debugging)'
     def etl
       db = DatabaseInitializer.new(configuration)
       db.set_up_repository(:both)
-      db.replace_schema
+      db.replace_schema unless options[:preserve]
 
       success = TransformLoad.new(configuration).run
       if success || options['force']
