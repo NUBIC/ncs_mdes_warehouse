@@ -18,6 +18,7 @@ module NcsNavigator::Warehouse
     autoload :EventStartFromContactTransformer, 'ncs_navigator/warehouse/transformers/event_start_from_contact_transformer'
     autoload :Filters,                 'ncs_navigator/warehouse/transformers/filters'
     autoload :ForeignKeyIndex,         'ncs_navigator/warehouse/transformers/foreign_key_index'
+    autoload :MdesCsv,                 'ncs_navigator/warehouse/transformers/mdes_csv'
     autoload :NoBlankForeignKeysFilter,       'ncs_navigator/warehouse/transformers/no_blank_foreign_keys_filter'
     autoload :NoSsuOutreachAllSsusFilter,     'ncs_navigator/warehouse/transformers/no_ssu_outreach_all_ssus_filter'
     autoload :NoSsuOutreachPlaceholderFilter, 'ncs_navigator/warehouse/transformers/no_ssu_outreach_placeholder_filter'
