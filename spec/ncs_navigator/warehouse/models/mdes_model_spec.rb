@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'nokogiri'
 
 module NcsNavigator::Warehouse::Models
   module Spec
@@ -95,7 +96,10 @@ module NcsNavigator::Warehouse::Models
       it 'always emits a transaction_type entry last since the schema requires it, even though it is meaningless' do
         last = xml.root.elements.last
         last.name.should == 'transaction_type'
-        last['nil'].should == 'true'
+        # Nokogiri using libxml2 2.7.3 vs. libxml2 2.8.0 has different behavior for this test.
+        # With 2.7.3, the attribute is named nil. With 2.8.0, it retains the xsi namespace: 'xsi:nil'.
+        attr_name = last.keys.detect { |a| a =~ /nil$/ }
+        last[attr_name].should == 'true'
       end
 
       it 'emits the columns according to the mdes_order' do
