@@ -18,8 +18,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'ncs_mdes', '~> 0.10'
   s.add_dependency 'ncs_navigator_configuration', '~> 0.2'
 
-  # Post-3.2.4 breaks DataMapper due to https://github.com/rails/rails/pull/6857
-  s.add_dependency 'activesupport', '~> 3.0', '< 3.2.4'
+  # AS 3.2.4-3.2.6 break DataMapper due to https://github.com/rails/rails/pull/6857
+  # TODO: simplify this once we can drop support for AS 3.0 and 3.1
+  s.add_dependency 'activesupport', '~> 3.0', '!= 3.2.4', '!= 3.2.5', '!= 3.2.6'
   s.add_dependency 'i18n', '~> 0.4' # required by activesupport
 
   s.add_dependency 'thor', '~> 0.14.6'

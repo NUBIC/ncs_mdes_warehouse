@@ -6,7 +6,7 @@ gemspec
 # activesupport, and builder, bundler takes infinite time to resolve unless you
 # lock it down a little.
 group :resolver_hint do
-  gem 'actionpack', '~> 3.1.8'
+  gem 'actionpack', '~> 3.2.8'
 end
 
 group :development do

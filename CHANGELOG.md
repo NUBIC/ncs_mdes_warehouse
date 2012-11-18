@@ -6,6 +6,10 @@ NCS Navigator MDES Warehouse History
 
 - Add MDES CSV transformer. (#2710)
 
+- Enable use in Rails 3.2.7+ applications. ActiveSupport 3.2.4-3.2.6 had [an
+  issue](https://github.com/rails/rails/pull/6857) which caused a conflict with
+  DataMapper. This issue was fixed in 3.2.7.
+
 0.9.0
 -----
 
