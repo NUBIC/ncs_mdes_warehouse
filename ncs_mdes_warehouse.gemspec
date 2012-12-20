@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib", "generated_models"]
 
-  s.add_dependency 'ncs_mdes', '~> 0.10'
+  s.add_dependency 'ncs_mdes', '~> 0.11'
   s.add_dependency 'ncs_navigator_configuration', '~> 0.2'
 
   # AS 3.2.4-3.2.6 break DataMapper due to https://github.com/rails/rails/pull/6857
@@ -28,7 +28,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'childprocess', '~> 0.2.3'
   s.add_dependency 'json', '~> 1.6'
 
-  s.add_dependency 'nokogiri', '~> 1.5.0'
+  s.add_dependency 'nokogiri', '~> 1.5.6'
   s.add_dependency 'builder', '>= 2.1.2'
 
   %w(
