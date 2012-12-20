@@ -4,6 +4,8 @@ NCS Navigator MDES Warehouse History
 0.10.1
 ------
 
+- Update MDES 3.1 models to 3.1.01.00. (#2750)
+
 0.10.0
 ------
 

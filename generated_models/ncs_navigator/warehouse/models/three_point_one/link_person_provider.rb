@@ -27,7 +27,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
                { :required => true, :length => 1..2, :set => ["1", "2", "-4"] }
     property   :prov_intro_outcome,
                NcsNavigator::Warehouse::DataMapper::NcsString,
-               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "-5", "-7", "-4"] }
+               { :required => true, :length => 1..2, :set => ["1", "2", "3", "4", "5", "-5", "-7", "-4"] }
     property   :prov_intro_outcome_oth,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..255 }

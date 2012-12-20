@@ -567,7 +567,7 @@ module NcsNavigator
     module Models
       module ThreePointOne
         mdes_version "3.1"
-        mdes_specification_version "3.1.00.00"
+        mdes_specification_version "3.1.01.00"
         mdes_order StudyCenter,
           Psu,
           Ssu,
