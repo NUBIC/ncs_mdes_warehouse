@@ -100,7 +100,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :f_zip4_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..4 }
-    belongs_to :f_phone,
+    belongs_to :f_phone_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Telephone',
                :child_key => [ :f_phone_id ], :required => false
     property   :f_phone,

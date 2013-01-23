@@ -184,7 +184,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :email_3,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
-    belongs_to :email,
+    belongs_to :email_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Email',
                :child_key => [ :email_id ], :required => false
     property   :email,

@@ -166,7 +166,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :c_zip4,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..4 }
-    belongs_to :pa_phone,
+    belongs_to :pa_phone_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Telephone',
                :child_key => [ :pa_phone_id ], :required => false
     property   :pa_phone,
@@ -202,7 +202,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :sa_phone_confirm,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
-    belongs_to :sa_phone,
+    belongs_to :sa_phone_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Telephone',
                :child_key => [ :sa_phone_id ], :required => false
     property   :sa_phone,

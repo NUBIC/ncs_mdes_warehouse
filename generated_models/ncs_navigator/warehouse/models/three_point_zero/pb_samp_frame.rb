@@ -112,13 +112,13 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :contact_zip4,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..4 }
-    belongs_to :contact_email,
+    belongs_to :contact_email_record,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Email',
                :child_key => [ :contact_email_id ], :required => false
     property   :contact_email,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..100 }
-    belongs_to :contact_phone_num,
+    belongs_to :contact_phone_num_record,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Telephone',
                :child_key => [ :contact_phone_num_id ], :required => false
     property   :contact_phone_num,
@@ -265,13 +265,13 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :contact_zip4_larger,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..4 }
-    belongs_to :contact_email_larger,
+    belongs_to :contact_email_larger_record,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Email',
                :child_key => [ :contact_email_larger_id ], :required => false
     property   :contact_email_larger,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..100 }
-    belongs_to :contact_phone_num_larger,
+    belongs_to :contact_phone_num_larger_record,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Telephone',
                :child_key => [ :contact_phone_num_larger_id ], :required => false
     property   :contact_phone_num_larger,

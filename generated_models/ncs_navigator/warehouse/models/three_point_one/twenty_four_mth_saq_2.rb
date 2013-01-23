@@ -109,7 +109,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :asq24_country,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..50 }
-    belongs_to :home_phone,
+    belongs_to :home_phone_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Telephone',
                :child_key => [ :home_phone_id ], :required => false
     property   :home_phone,
@@ -118,7 +118,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :other_phone,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => true, :length => 0..10 }
-    belongs_to :email,
+    belongs_to :email_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Email',
                :child_key => [ :email_id ], :required => false
     property   :email,

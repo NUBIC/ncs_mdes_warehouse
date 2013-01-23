@@ -121,7 +121,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :home_phone_confirm,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-7", "-3", "-4"] }
-    belongs_to :home_phone,
+    belongs_to :home_phone_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Telephone',
                :child_key => [ :home_phone_id ], :required => false
     property   :home_phone,
@@ -130,7 +130,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :cell_phone_confirm,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-7", "-3", "-4"] }
-    belongs_to :cell_phone,
+    belongs_to :cell_phone_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Telephone',
                :child_key => [ :cell_phone_id ], :required => false
     property   :cell_phone,
@@ -148,7 +148,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :email_confirm,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-7", "-3", "-4"] }
-    belongs_to :email,
+    belongs_to :email_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Email',
                :child_key => [ :email_id ], :required => false
     property   :email,
@@ -220,7 +220,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :contact_other_ph_1,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
-    belongs_to :contact_phone_2_1,
+    belongs_to :contact_phone_2_1_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Telephone',
                :child_key => [ :contact_phone_2_1_id ], :required => false
     property   :contact_phone_2_1,
@@ -268,7 +268,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :c_zip4_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..4 }
-    belongs_to :contact_phone_2,
+    belongs_to :contact_phone_2_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Telephone',
                :child_key => [ :contact_phone_2_id ], :required => false
     property   :contact_phone_2,
@@ -283,7 +283,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :contact_other_ph_2,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
-    belongs_to :contact_phone_2_2,
+    belongs_to :contact_phone_2_2_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Telephone',
                :child_key => [ :contact_phone_2_2_id ], :required => false
     property   :contact_phone_2_2,
@@ -331,7 +331,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :c_zip4_3,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :pii => :possible, :length => 0..4 }
-    belongs_to :contact_phone_3,
+    belongs_to :contact_phone_3_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Telephone',
                :child_key => [ :contact_phone_3_id ], :required => false
     property   :contact_phone_3,
@@ -346,7 +346,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
     property   :contact_other_ph_3,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
-    belongs_to :contact_phone_2_3,
+    belongs_to :contact_phone_2_3_record,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Telephone',
                :child_key => [ :contact_phone_2_3_id ], :required => false
     property   :contact_phone_2_3,

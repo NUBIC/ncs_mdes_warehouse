@@ -64,7 +64,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :female_1,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
-    belongs_to :r_phone_1,
+    belongs_to :r_phone_1_record,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Telephone',
                :child_key => [ :r_phone_1_id ], :required => false
     property   :r_phone_1,
@@ -88,7 +88,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :r_other_phone,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
-    belongs_to :r_phone_2,
+    belongs_to :r_phone_2_record,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Telephone',
                :child_key => [ :r_phone_2_id ], :required => false
     property   :r_phone_2,
@@ -109,7 +109,7 @@ module NcsNavigator::Warehouse::Models::ThreePointZero
     property   :best_ttc2_3,
                NcsNavigator::Warehouse::DataMapper::NcsString,
                { :required => true, :length => 1..2, :set => ["1", "2", "-1", "-2", "-3", "-4"] }
-    belongs_to :r_email,
+    belongs_to :r_email_record,
                'NcsNavigator::Warehouse::Models::ThreePointZero::Email',
                :child_key => [ :r_email_id ], :required => false
     property   :r_email,
