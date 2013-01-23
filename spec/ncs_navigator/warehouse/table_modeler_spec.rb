@@ -462,6 +462,7 @@ end
       end
 
       let(:child_variable_name) { 'some_tree_id' }
+      let(:additional_variables) { [] }
 
       before do
         table.variables << NcsNavigator::Mdes::Variable.new(child_variable_name).tap do |v|
@@ -471,6 +472,7 @@ end
             v.required = false
           end
         end
+        table.variables.concat(additional_variables)
         tables << parent_table
 
         subject.load!
@@ -526,6 +528,30 @@ end
 
           it 'does not have a suffixed ID attribute' do
             model_class.instance_methods.collect(&:to_s).should_not include('some_tree_id')
+          end
+        end
+
+        describe 'when there is a different variable that matches the child key without the "_id" suffix' do
+          let(:additional_variables) {
+            [
+              NcsNavigator::Mdes::Variable.new('some_tree').tap do |v|
+                v.type = NcsNavigator::Mdes::VariableType.new.tap do |vt|
+                  vt.base_type = :string
+                end
+              end
+            ]
+          }
+
+          it 'names the relationship "*_record"' do
+            model_class.relationships['some_tree_record'].tap do |rel|
+              rel.should_not be_nil
+              rel.options[:child_key].should == [:some_tree_id]
+            end
+          end
+
+          it 'has the other variable accessor' do
+            model_class.properties['some_tree'].class.
+              should == NcsNavigator::Warehouse::DataMapper::NcsText
           end
         end
       end

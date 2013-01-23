@@ -12,7 +12,7 @@ module <%= module_name %>
 
 <% t.wh_variables.each do |v| -%>
 <% if v.table_reference -%>
-    belongs_to :<%= v.wh_reference_name %>,
+    belongs_to :<%= v.wh_reference_name(t) %>,
                '<%= v.table_reference.wh_model_name(module_name) %>',
                :child_key => [ :<%= v.name %> ], :required => <%= !!v.required %>
 <% else -%>

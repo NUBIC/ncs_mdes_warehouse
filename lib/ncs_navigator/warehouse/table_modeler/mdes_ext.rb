@@ -79,10 +79,15 @@ module NcsNavigator
         ].compact
       end
 
-      def wh_reference_name
+      def wh_reference_name(in_table)
         fail 'Does not apply' unless self.table_reference
         if self.name =~ /_id$/
-          self.name.sub(/_id$/, '')
+          possible = self.name.sub(/_id$/, '')
+          if in_table.variables.detect { |other_v| other_v.name == possible }
+            "#{possible}_record"
+          else
+            possible
+          end
         else
           self.name + '_record'
         end
