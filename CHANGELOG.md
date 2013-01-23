@@ -4,6 +4,8 @@ NCS Navigator MDES Warehouse History
 0.10.1
 ------
 
+- Eliminate method name collisions when a generated model would have had
+  both a property and a belongs_to with the same name. (#3184)
 - Update MDES 3.1 models to 3.1.01.00. (#2750)
 
 0.10.0
