@@ -62,7 +62,7 @@
       <sex>-6</sex>
       <age>49</age>
       <age_range>5</age_range>
-      <person_dob>1962-01-01</person_dob>
+      <person_dob xsi:nil="true"/>
       <deceased>2</deceased>
       <ethnic_group>2</ethnic_group>
       <person_lang>1</person_lang>

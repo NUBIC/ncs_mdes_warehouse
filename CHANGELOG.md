@@ -4,6 +4,8 @@ NCS Navigator MDES Warehouse History
 0.10.2
 ------
 
+- Handle `xsi:nil` in `VdrXml::Reader`. (#3217)
+
 0.10.1
 ------
 

@@ -50,6 +50,10 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       it 'strips left over encoded CRs (#1940)' do
         person.person_comment.should == "Likes\r\nline\r\nbreaks"
       end
+
+      it 'reads xsi:nil as nil' do
+        person.person_dob.should be_nil
+      end
     end
   end
 end
