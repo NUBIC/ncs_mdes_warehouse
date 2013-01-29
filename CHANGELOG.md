@@ -5,6 +5,8 @@ NCS Navigator MDES Warehouse History
 ------
 
 - Handle `xsi:nil` in `VdrXml::Reader`. (#3217)
+- Limit caught exceptions in `EnumTransformer` to `StandardError` & subclasses.
+  (#3243)
 
 0.10.1
 ------

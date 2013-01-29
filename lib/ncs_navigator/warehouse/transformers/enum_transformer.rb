@@ -86,7 +86,7 @@ module NcsNavigator::Warehouse::Transformers
     def transform(status)
       begin
         do_transform(status)
-      rescue Exception => e
+      rescue => e
         err = NcsNavigator::Warehouse::TransformError.for_exception(e, 'Enumeration failed.')
         log.error err.message
         status.transform_errors << err
