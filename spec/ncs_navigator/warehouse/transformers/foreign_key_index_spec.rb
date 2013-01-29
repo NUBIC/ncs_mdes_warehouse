@@ -102,7 +102,15 @@ module NcsNavigator::Warehouse::Transformers
 
         it 'includes a useful message' do
           errors.first.message.should ==
-            'Unsatisfied foreign key frob_id=4 referencing NcsNavigator::Warehouse::Transformers::Frob.'
+            'Unsatisfied foreign key referencing NcsNavigator::Warehouse::Transformers::Frob.'
+        end
+
+        it 'includes the referencing attribute name' do
+          errors.first.attribute_name.should == 'frob_id'
+        end
+
+        it 'includes the unsatisfied value' do
+          errors.first.attribute_value.should == '4'
         end
 
         it 'only reports the error once if #report_errors is called multiple times' do
@@ -116,8 +124,8 @@ module NcsNavigator::Warehouse::Transformers
         fk_index.record_and_verify(Addr.new(:a_id => 1, :frob_id => 2, :old_one_id => 3))
         fk_index.report_errors(transform_status)
 
-        errors.collect { |e| e.message.match(/foreign key (\S+)/)[1] }.sort.should ==
-          %w(frob_id=2 old_one_id=3)
+        errors.collect { |e| [e.attribute_name, e.attribute_value] }.sort.should ==
+          [['frob_id', '2'], ['old_one_id', '3']]
       end
     end
   end

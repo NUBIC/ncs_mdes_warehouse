@@ -7,6 +7,8 @@ NCS Navigator MDES Warehouse History
 - Handle `xsi:nil` in `VdrXml::Reader`. (#3217)
 - Limit caught exceptions in `EnumTransformer` to `StandardError` & subclasses.
   (#3243)
+- Use `attribute_name` and `attribute_value` when creating TransformErrors for
+  foreign key violations. (#3189)
 
 0.10.1
 ------

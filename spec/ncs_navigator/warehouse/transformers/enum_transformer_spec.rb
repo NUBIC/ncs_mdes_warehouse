@@ -184,7 +184,7 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         it 'reports the unsatisfied foreign key' do
-          error.message.should =~ /Unsatisfied foreign key sample_id=912/
+          [error.attribute_name, error.attribute_value].should == ['sample_id', '912']
         end
       end
 

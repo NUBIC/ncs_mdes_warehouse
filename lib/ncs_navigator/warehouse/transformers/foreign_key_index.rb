@@ -118,7 +118,8 @@ module NcsNavigator::Warehouse::Transformers
       def create_error
         NcsNavigator::Warehouse::TransformError.new(
           :record_id => record_id, :model_class => model_class,
-          :message => "Unsatisfied foreign key #{reference_key}=#{reference_value} referencing #{foreign_model}."
+          :attribute_name => reference_key, :attribute_value => reference_value.inspect,
+          :message => "Unsatisfied foreign key referencing #{foreign_model}."
         )
       end
     end
