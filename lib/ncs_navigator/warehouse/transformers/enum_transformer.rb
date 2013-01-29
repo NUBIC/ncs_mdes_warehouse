@@ -111,53 +111,39 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     def save_model_instance(incoming_record, status)
+      status.record_count += 1
+
       record = process_duplicate_if_appropriate(incoming_record)
       unless record
         log.info("Ignoring duplicate record #{record_ident incoming_record}.")
-        status.record_count += 1
-        return
+        return nil
       end
 
-      saved_record =
-        if !has_valid_psu?(record)
-          msg = "Invalid PSU ID. The list of valid PSU IDs for this Study Center is #{@configuration.navigator.psus.collect(&:id).inspect}."
-          log.error "#{record_ident record}: #{msg}"
-          status.unsuccessful_record(record, msg,
-            :attribute_name => 'psu_id',
-            :attribute_value => record.psu_id.inspect)
-          nil
-        elsif record.valid?
-          log.debug("Saving valid record #{record_ident record}.")
-          begin
-            if record.save
-              record
-            else
-              msg = "Could not save valid record #{record.inspect}. #{record_messages(record).join(' ')}"
-              log.error msg
-              status.unsuccessful_record(record, msg)
-              nil
-            end
-          rescue => e
-            msg = "Error on save. #{e.class}: #{e}."
+      unless ensure_valid_psu(record, status)
+        return nil
+      end
+
+      if record.valid?
+        log.debug("Saving valid & resolved record #{record_ident record}.")
+        begin
+          if record.save
+            record
+          else
+            msg = "Could not save valid record #{record.inspect}. #{record_messages(record).join(' ')}"
             log.error msg
             status.unsuccessful_record(record, msg)
             nil
           end
-        else
-          log.error "Invalid record. #{record_messages(record).join(' ')}"
-          record.errors.keys.each do |prop|
-            record.errors[prop].each do |e|
-              status.unsuccessful_record(
-                record, "Invalid: #{e}.",
-                :attribute_name => prop,
-                :attribute_value => record.send(prop).inspect
-              )
-            end
-          end
+        rescue => e
+          msg = "Error on save. #{e.class}: #{e}."
+          log.error msg
+          status.unsuccessful_record(record, msg)
           nil
         end
-      status.record_count += 1
-      saved_record
+      else
+        report_validation_errors(record, status)
+        nil
+      end
     end
 
     def receive_transform_error(error, status)
@@ -180,6 +166,19 @@ module NcsNavigator::Warehouse::Transformers
       }.flatten
     end
 
+    def report_validation_errors(record, status)
+      log.error "Invalid record. #{record_messages(record).join(' ')}"
+      record.errors.keys.each do |prop|
+        record.errors[prop].each do |e|
+          status.unsuccessful_record(
+            record, "Invalid: #{e}.",
+            :attribute_name => prop,
+            :attribute_value => record.send(prop).inspect
+          )
+        end
+      end
+    end
+
     ##
     # Has valid PSU is true if:
     #  * The record has no PSU reference, or
@@ -190,6 +189,19 @@ module NcsNavigator::Warehouse::Transformers
         @configuration.navigator.psus.collect(&:id).include?(record.psu_id)
       else
         true
+      end
+    end
+
+    def ensure_valid_psu(record, status)
+      if has_valid_psu?(record)
+        true
+      else
+        msg = "Invalid PSU ID. The list of valid PSU IDs for this Study Center is #{@configuration.navigator.psus.collect(&:id).inspect}."
+        log.error "#{record_ident record}: #{msg}"
+        status.unsuccessful_record(record, msg,
+          :attribute_name => 'psu_id',
+          :attribute_value => record.psu_id.inspect)
+        false
       end
     end
 
