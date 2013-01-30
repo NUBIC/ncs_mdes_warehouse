@@ -6,13 +6,18 @@ NCS Navigator MDES Warehouse History
 
 - Add `--and-pii` option to `emit-xml` to allow for simultaneously producing
   with- and without-PII XML from the same database reads. (#2285)
+
 - Add `--directory` option to `emit-xml` to allow for writing files with the
   default names somewhere other than the current working directory. (#3073)
+
 - Handle `xsi:nil` in `VdrXml::Reader`. (#3217)
+
 - Limit caught exceptions in `EnumTransformer` to `StandardError` & subclasses.
   (#3243)
+
 - Use `attribute_name` and `attribute_value` when creating TransformErrors for
   foreign key violations. (#3189)
+
 - Clean up shell output for `Database`-based enumerators. (Includes #3072.)
 
 0.10.1
@@ -20,6 +25,7 @@ NCS Navigator MDES Warehouse History
 
 - Eliminate method name collisions when a generated model would have had
   both a property and a belongs_to with the same name. (#3184)
+
 - Update MDES 3.1 models to 3.1.01.00. (#2750)
 
 0.10.0
