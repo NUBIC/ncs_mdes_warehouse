@@ -54,8 +54,10 @@ DESC
     method_option 'block-size', :type => :numeric, :aliases => %w(-b),
       :desc => 'The maximum number of records to have in memory at once.',
       :default => 5000
+    method_option 'and-pii', :type => :boolean, :default => false,
+      :desc => 'Emit one XML file without PII and one with.'
     method_option 'include-pii', :type => :boolean, :default => false,
-      :desc => 'Include PII values in the emitted XML.'
+      :desc => 'Include PII values in the emitted XML. (Usually you should prefer --and-pii.)'
     method_option 'zip', :type => :boolean, :default => true,
       :desc => 'Create a zip file alongside the XML. (Use --no-zip to disable.)'
     method_option 'tables', :type => :string,

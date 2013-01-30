@@ -1,9 +1,11 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
-0.10.2
+0.11.0
 ------
 
+- Add `--and-pii` option to `emit-xml` to allow for simultaneously producing
+  with- and without-PII XML from the same database reads. (#2285)
 - Handle `xsi:nil` in `VdrXml::Reader`. (#3217)
 - Limit caught exceptions in `EnumTransformer` to `StandardError` & subclasses.
   (#3243)

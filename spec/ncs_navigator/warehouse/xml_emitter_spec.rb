@@ -5,9 +5,10 @@ require 'zip/zip'
 module NcsNavigator::Warehouse
   describe XmlEmitter, :use_mdes do
     let(:filename) { tmpdir + 'export.xml' }
-    let(:options) { {} }
+    let(:options) { { :zip => false } }
+    let(:emitter) { XmlEmitter.new(spec_config, filename, options) }
     let(:xml) {
-      XmlEmitter.new(spec_config, filename, options).emit_xml
+      emitter.emit_xml
       Nokogiri::XML(File.read(filename))
     }
 
@@ -110,7 +111,7 @@ module NcsNavigator::Warehouse
           xml.xpath('//person/person_id').collect { |e| e.text.strip }.sort.should == %w(QX9 XQ4)
         end
 
-        describe 'and PII' do
+        describe 'and including PII in a single file' do
           let(:xml_first_names) {
             xml.xpath('//person/first_name').collect { |e| e.text.strip }.sort
           }
@@ -127,6 +128,39 @@ module NcsNavigator::Warehouse
           it 'includes PII when requested' do
             options[:'include-pii'] = true
             xml_first_names.should == %w(Quentin Xavier)
+          end
+        end
+
+        describe 'and creating both with- and without-PII variants in parallel' do
+          let(:no_pii_file) { emitter.xml_files.find { |xf| !xf.include_pii? }.filename }
+          let(:pii_file) { emitter.xml_files.find { |xf| xf.include_pii? }.filename }
+
+          let(:no_pii_xml) { Nokogiri::XML(no_pii_file.read) }
+          let(:pii_xml) { Nokogiri::XML(pii_file.read) }
+
+          def first_names_in(xml)
+            xml.xpath('//person/first_name').collect { |e| e.text.strip }.sort
+          end
+
+          before do
+            options[:'and-pii'] = true
+            emitter.emit_xml
+          end
+
+          it 'creates the expected with-PII file' do
+            pii_file.exist?.should be_true
+          end
+
+          it 'creates the expected without-PII file' do
+            no_pii_file.exist?.should be_true
+          end
+
+          it 'includes PII in the PII file' do
+            first_names_in(pii_xml).should == %w(Quentin Xavier)
+          end
+
+          it 'does not include PII in the no-PII file' do
+            first_names_in(no_pii_xml).should == ['', '']
           end
         end
 
@@ -177,6 +211,7 @@ module NcsNavigator::Warehouse
 
     describe 'the generated ZIP file', :slow do
       let(:expected_zipfile) { Pathname.new(filename.to_s + '.zip') }
+      let(:options) { {} }
 
       before do
         stub_model(person_model)
@@ -254,6 +289,63 @@ module NcsNavigator::Warehouse
 
       it 'is a Pathname' do
         subject.should be_a Pathname
+      end
+    end
+
+    describe 'generating PII XML in parallel' do
+      let(:emitter) { XmlEmitter.new(spec_config, provided_filename, options) }
+      let(:options) { { :'and-pii' => true } }
+      let(:provided_filename) { 'emitted.xml' }
+
+      let(:xml_files) { emitter.xml_files }
+      let(:pii_xml_file) { emitter.xml_files.find { |xf| xf.include_pii? } }
+      let(:no_pii_xml_file) { emitter.xml_files.find { |xf| !xf.include_pii? } }
+
+      describe 'filenames' do
+        describe 'when none specified', :slow, :use_mdes do
+          let(:provided_filename) { nil }
+
+          before do
+            NcsNavigator.configuration.psus.first.id = '20000216'
+
+            # Time.parse uses Time.now internally, so this needs to be
+            # defined before starting to register the mock.
+            t = Time.parse('2011-07-28')
+            Time.stub!(:now).and_return(t)
+          end
+
+          it 'uses the normal one for the non-PII variant' do
+            no_pii_xml_file.filename.to_s.should == 'bear_lake-20110728.xml'
+          end
+
+          it 'uses the -PII variant for the one with PII' do
+            pii_xml_file.filename.to_s.should == 'bear_lake-20110728-PII.xml'
+          end
+        end
+
+        describe 'when one is specified' do
+          let(:provided_filename) { 'emitted.xml' }
+
+          it 'uses the specified name for the non-PII variant' do
+            no_pii_xml_file.filename.to_s.should == 'emitted.xml'
+          end
+
+          it 'it adds a -PII infix before the extension for the PII variant' do
+            pii_xml_file.filename.to_s.should == 'emitted-PII.xml'
+          end
+        end
+      end
+
+      it 'produces two files' do
+        emitter.xml_files.size.should == 2
+      end
+
+      it 'produces a with-PII file' do
+        pii_xml_file.should_not be_nil
+      end
+
+      it 'produces a without-PII file' do
+        no_pii_xml_file.should_not be_nil
       end
     end
   end

@@ -20,14 +20,16 @@ module NcsNavigator::Warehouse
     attr_reader :configuration
 
     ##
-    # @return [Pathname] the file to which the XML will be emitted.
-    attr_reader :filename
-
-    ##
     # @return [Array<Models::MdesModel>] the models whose data will be
     #   emitted. This is determined from the `:tables` option to
     #   {#initialize}.
     attr_reader :models
+
+    ##
+    # @private exposed for testing
+    # @return [Array] the configuration objects related to each separate XML
+    #   file emitted in one run.
+    attr_reader :xml_files
 
     def_delegators :@configuration, :shell, :log
 
@@ -99,18 +101,13 @@ XML
     #   produced alongside the XML file?
     def initialize(config, filename, options={})
       @configuration = config
-      @include_pii = options[:'include-pii']
-      @filename = case filename
-                  when Pathname
-                    filename
-                  when nil
-                    self.class.default_filename(configuration, @include_pii)
-                  else
-                    Pathname.new(filename.to_s)
-                  end
       @record_count = 0
       @block_size = options[:'block-size'] || 5000
       @zip = options.has_key?(:zip) ? options[:zip] : true
+
+      @xml_files = determine_files_to_create(filename, options)
+
+
       @models =
         if options[:tables]
           options[:tables].collect { |t| t.to_s }.collect { |t|
@@ -126,70 +123,99 @@ XML
     #
     # @return [void]
     def emit_xml
-      shell.say_line("Exporting to #{filename}#{include_pii? ? ' with PII' : ''}")
-      log.info("Beginning XML export to #{filename}")
+      shell.say_line("Exporting to #{xml_files.collect(&:describe).join(', ')}")
+      log.info("Beginning XML export to #{xml_files.collect(&:describe).join(', ')}")
 
       @start = Time.now
-      filename.open('w') do |f|
-        f.write HEADER_TEMPLATE.result(binding)
-
-        models.each do |model|
-          shell.clear_line_then_say('Writing XML for %33s' % model.mdes_table_name)
-
-          write_all_xml_for_model(f, model)
-        end
-
-        f.write FOOTER_TEMPLATE
+      xml_files.each { |xf| xf.write HEADER_TEMPLATE.result(binding) }
+      models.each do |model|
+        shell.clear_line_then_say('Writing XML for %33s' % model.mdes_table_name)
+        write_all_xml_for_model(model)
       end
+      xml_files.each { |xf| xf.write FOOTER_TEMPLATE }
+      xml_files.each { |xf| xf.close }
       @end = Time.now
+
       msg = "%d records written in %d seconds (%.1f/sec).\n" % [@record_count, emit_time, emit_rate]
       shell.clear_line_then_say(msg)
       log.info(msg)
 
-      if zip?
-        shell.say_line("Zipping to #{zip_filename}")
-        log.info("Zipping to #{zip_filename}")
-        Zip::ZipFile.open(zip_filename, Zip::ZipFile::CREATE) do |zf|
-          zf.add(filename.basename, filename)
-        end
-        log.info("XML export complete")
+      xml_files.each { |xf| xf.zip_if_desired }
+      log.info("XML export complete")
+    end
+
+    ##
+    # @return [Pathname] the single file to which the XML will be emitted.
+    #   Throws an exception if writing to multiple files.
+    def filename
+      if xml_files.size == 1
+        xml_files.first.filename
+      else
+        fail "Emitting more than one file. Use `xml_files` to interrogate."
       end
     end
 
     ##
-    # Will PII be included in the exported XML?
-    #
-    # @return [Boolean]
+    # @return [Boolean] Will PII be included in the exported XML?
+    #   Throws an exception if writing to multiple files.
     def include_pii?
-      @include_pii
+      if xml_files.size == 1
+        xml_files.first.include_pii?
+      else
+        fail "Emitting more than one file. Use `xml_files` to interrogate."
+      end
     end
 
     ##
-    # Will a ZIP archive be created along with the XML?
+    # Will ZIP archive(s) be created along with the XML?
     #
     # @return [Boolean]
     def zip?
       @zip
     end
 
-    ##
-    # @return [Pathname] the filename for the ZIP archive of the XML,
-    #   if any. Currently this is always {#filename} + '.zip'.
-    # @see #zip?
-    def zip_filename
-      @zip_filename ||= filename.to_s + '.zip'
-    end
-
     private
 
-    def write_all_xml_for_model(f, model)
+    def determine_files_to_create(filename, options)
+      if options[:'and-pii']
+        # two files, one with and one without PII
+        no_pii_filename = select_filename(filename, false)
+        with_pii_filename = Pathname.new(no_pii_filename.to_s.sub(/^(.*?)(\..*)$/, '\1-PII\2'))
+        [
+          [false, no_pii_filename],
+          [true, with_pii_filename]
+        ].collect do |include_pii, fn|
+          XmlFile.new(fn, include_pii, @zip, shell, log)
+        end
+      else
+        # one file, PII determined by --include-pii
+        include_pii = options[:'include-pii']
+        actual_filename = select_filename(filename, include_pii)
+        [
+          XmlFile.new(actual_filename, include_pii, @zip, shell, log)
+        ]
+      end
+    end
+
+    def select_filename(filename, include_pii)
+      case filename
+      when Pathname
+        filename
+      when nil
+        self.class.default_filename(configuration, include_pii)
+      else
+        Pathname.new(filename.to_s)
+      end
+    end
+
+    def write_all_xml_for_model(model)
       shell.say(' %20s' % '[loading]')
       count = model.count
       offset = 0
       while offset < count
         shell.back_up_and_say(20, '%20s' % '[loading]')
         model.all(:limit => @block_size, :offset => offset).each do |instance|
-          instance.write_mdes_xml(f, :indent => 3, :margin => 1, :pii => include_pii?)
+          xml_files.each { |xf| xf.write_instance(instance) }
           @record_count += 1
 
           shell.back_up_and_say(20, '%5d (%5.1f/sec)' % [@record_count, emit_rate])
@@ -216,6 +242,53 @@ XML
 
     def emit_rate
       @record_count / emit_time
+    end
+
+    ##
+    # @private
+    #
+    # Encapsulated the data and operations related to one of the files produced
+    # in a run. Consider "related to one of the files" in versus "related to
+    # loading the records".
+    class XmlFile < Struct.new(:filename, :include_pii, :zip, :shell, :log)
+      alias :include_pii? :include_pii
+      alias :zip? :zip
+
+      def describe
+        "#{filename} #{include_pii? ? 'with' : 'without'} PII"
+      end
+
+      def zip_filename
+        @zip_filename ||= filename.to_s + '.zip'
+      end
+
+      def open
+        @handle ||= filename.open('w')
+      end
+      alias :handle :open
+
+      def write(s)
+        handle.write(s)
+      end
+
+      def write_instance(instance)
+        instance.write_mdes_xml(handle, :indent => 3, :margin => 1, :pii => include_pii?)
+      end
+
+      def close
+        @handle && @handle.close
+      end
+
+      def zip_if_desired
+        if zip?
+          shell.say("Zipping to #{zip_filename}")
+          log.info("Zipping to #{zip_filename}")
+          Zip::ZipFile.open(zip_filename, Zip::ZipFile::CREATE) do |zf|
+            zf.add(filename.basename, filename)
+          end
+          shell.clear_line_then_say("Zipped #{zip_filename}.")
+        end
+      end
     end
   end
 end
