@@ -9,6 +9,7 @@ NCS Navigator MDES Warehouse History
   (#3243)
 - Use `attribute_name` and `attribute_value` when creating TransformErrors for
   foreign key violations. (#3189)
+- Clean up shell output for `Database`-based enumerators. (Includes #3072.)
 
 0.10.1
 ------

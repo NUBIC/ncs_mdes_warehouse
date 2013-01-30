@@ -121,7 +121,7 @@ module NcsNavigator::Warehouse::Transformers
 
       producers.each do |rp|
         shell.clear_line_then_say(
-          "Producing records from %-#{producer_name_length}s (%-22s)" % [rp.name, 'loading'])
+          "Producing records from %-#{producer_name_length}s (%-24s)" % [rp.name, 'loading'])
         log.debug("Executing query for producer #{rp.name}:\n#{rp.query}")
         repository.adapter.select(rp.query).each do |row|
           meta = { :configuration => @configuration }
@@ -132,13 +132,14 @@ module NcsNavigator::Warehouse::Transformers
           [*rp.row_processor.call(*args)].compact.each do |result|
             yield result
             result_count += 1
-            shell.back_up_and_say(24, "(%-6d in / %-6d out)" % [row_count, result_count])
+            shell.back_up_and_say(26, "(%-7d in / %-7d out)" % [row_count, result_count])
           end
-          shell.back_up_and_say(24, "(%-6d in / %-6d out)" % [row_count, result_count])
+          shell.back_up_and_say(26, "(%-7d in / %-7d out)" % [row_count, result_count])
         end
+        shell.back_up_and_say(26, "(%-7d in / %-7d out)" % [row_count, result_count])
         log.debug("Producer #{rp.name} complete")
       end
-      shell.say_line "\nComplete"
+      shell.clear_line_then_say("#{self.class} complete (%-7d in / %-7d out)\n" % [row_count, result_count])
 
       log.info(
         "Production from #{self.class} complete. " +
