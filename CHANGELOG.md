@@ -6,6 +6,8 @@ NCS Navigator MDES Warehouse History
 
 - Add `--and-pii` option to `emit-xml` to allow for simultaneously producing
   with- and without-PII XML from the same database reads. (#2285)
+- Add `--directory` option to `emit-xml` to allow for writing files with the
+  default names somewhere other than the current working directory. (#3073)
 - Handle `xsi:nil` in `VdrXml::Reader`. (#3217)
 - Limit caught exceptions in `EnumTransformer` to `StandardError` & subclasses.
   (#3243)

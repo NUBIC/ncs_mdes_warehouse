@@ -321,6 +321,20 @@ module NcsNavigator::Warehouse
           it 'uses the -PII variant for the one with PII' do
             pii_xml_file.filename.to_s.should == 'bear_lake-20110728-PII.xml'
           end
+
+          describe 'but a directory is specified' do
+            before do
+              options[:directory] = '/baz/zap'
+            end
+
+            it 'includes the directory in the with-PII name' do
+              pii_xml_file.filename.to_s.should == '/baz/zap/bear_lake-20110728-PII.xml'
+            end
+
+            it 'includes the directory in the without-PII name' do
+              no_pii_xml_file.filename.to_s.should == '/baz/zap/bear_lake-20110728.xml'
+            end
+          end
         end
 
         describe 'when one is specified' do

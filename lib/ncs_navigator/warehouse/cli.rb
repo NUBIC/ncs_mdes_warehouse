@@ -60,6 +60,8 @@ DESC
       :desc => 'Include PII values in the emitted XML. (Usually you should prefer --and-pii.)'
     method_option 'zip', :type => :boolean, :default => true,
       :desc => 'Create a zip file alongside the XML. (Use --no-zip to disable.)'
+    method_option 'directory', :type => :string, :default => nil,
+      :desc => 'The target directory for automatically-named files. (Default is CWD.)'
     method_option 'tables', :type => :string,
       :desc => 'Emit XML for a subset of tables.', :banner => 'TABLE,TABLE,TABLE'
     def emit_xml(filename=nil)

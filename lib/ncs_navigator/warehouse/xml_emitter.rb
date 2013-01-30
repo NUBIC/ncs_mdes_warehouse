@@ -179,7 +179,7 @@ XML
     def determine_files_to_create(filename, options)
       if options[:'and-pii']
         # two files, one with and one without PII
-        no_pii_filename = select_filename(filename, false)
+        no_pii_filename = select_filename(filename, false, options[:directory])
         with_pii_filename = Pathname.new(no_pii_filename.to_s.sub(/^(.*?)(\..*)$/, '\1-PII\2'))
         [
           [false, no_pii_filename],
@@ -190,19 +190,28 @@ XML
       else
         # one file, PII determined by --include-pii
         include_pii = options[:'include-pii']
-        actual_filename = select_filename(filename, include_pii)
+        actual_filename = select_filename(filename, include_pii, options[:directory])
         [
           XmlFile.new(actual_filename, include_pii, @zip, shell, log)
         ]
       end
     end
 
-    def select_filename(filename, include_pii)
+    def select_filename(filename, include_pii, directory_for_default_files)
+      if filename && directory_for_default_files
+        fail "It does not make sense to specify both a filename and the :directory option."
+      end
+
       case filename
       when Pathname
         filename
       when nil
-        self.class.default_filename(configuration, include_pii)
+        default_name = self.class.default_filename(configuration, include_pii)
+        if directory_for_default_files
+          Pathname.new(directory_for_default_files) + default_name
+        else
+          default_name
+        end
       else
         Pathname.new(filename.to_s)
       end
