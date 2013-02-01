@@ -65,7 +65,8 @@ module NcsNavigator::Warehouse::Transformers
 
       @record_checkers = {
         :validation => ValidateRecordChecker.new(log),
-        :foreign_key => ForeignKeyChecker.new(log, foreign_key_index)
+        :foreign_key => ForeignKeyChecker.new(log, foreign_key_index),
+        :psus => PsuIdChecker.new(log, @configuration.navigator.psus)
       }
     end
 
@@ -108,7 +109,7 @@ module NcsNavigator::Warehouse::Transformers
           receive_transform_error(record, status)
         else
           filters.call([record]).each do |filtered_record|
-            save_model_instance(filtered_record, status, [:validation, :foreign_key])
+            save_model_instance(filtered_record, status, [:psus, :validation, :foreign_key])
           end
         end
       end
@@ -126,10 +127,6 @@ module NcsNavigator::Warehouse::Transformers
       record = process_duplicate_if_appropriate(incoming_record)
       unless record
         log.info("Ignoring duplicate record #{record_ident incoming_record}.")
-        return
-      end
-
-      unless ensure_valid_psu(record, status)
         return
       end
 
@@ -168,32 +165,6 @@ module NcsNavigator::Warehouse::Transformers
       }
     end
 
-    ##
-    # Has valid PSU is true if:
-    #  * The record has no PSU reference, or
-    #  * The record's PSU ID is one of those configured for the
-    #    study center
-    def has_valid_psu?(record)
-      if record.respond_to?(:psu_id)
-        @configuration.navigator.psus.collect(&:id).include?(record.psu_id)
-      else
-        true
-      end
-    end
-
-    def ensure_valid_psu(record, status)
-      if has_valid_psu?(record)
-        true
-      else
-        msg = "Invalid PSU ID. The list of valid PSU IDs for this Study Center is #{@configuration.navigator.psus.collect(&:id).inspect}."
-        log.error "#{record_ident record}: #{msg}"
-        status.unsuccessful_record(record, msg,
-          :attribute_name => 'psu_id',
-          :attribute_value => record.psu_id.inspect)
-        false
-      end
-    end
-
     module RecordIdent
       def record_ident(rec)
         # No composite keys in the MDES
@@ -208,6 +179,43 @@ module NcsNavigator::Warehouse::Transformers
     def verify_record_or_report_errors(record, status, record_checks)
       record_checks.collect { |check| check.verify_or_report_errors(record, status) }.
         reject { |r| r }.empty? # does the result contain anything that isn't truthy?
+    end
+
+    class PsuIdChecker
+      include RecordIdent
+
+      attr_reader :log
+
+      def initialize(log, psus)
+        @log = log
+        @psus = psus
+      end
+
+      ##
+      # Has valid PSU is true if:
+      #  * The record has no PSU reference, or
+      #  * The record's PSU ID is one of those configured for the
+      #    study center
+      def has_valid_psu?(record)
+        if record.respond_to?(:psu_id)
+          @psus.collect(&:id).include?(record.psu_id)
+        else
+          true
+        end
+      end
+
+      def verify_or_report_errors(record, status)
+        if has_valid_psu?(record)
+          true
+        else
+          msg = "Invalid PSU ID. The list of valid PSU IDs for this Study Center is #{@psus.collect(&:id).inspect}."
+          log.error "#{record_ident record}: #{msg}"
+          status.unsuccessful_record(record, msg,
+            :attribute_name => 'psu_id',
+            :attribute_value => record.psu_id.inspect)
+          false
+        end
+      end
     end
 
     class ValidateRecordChecker

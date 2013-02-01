@@ -32,6 +32,9 @@ NCS Navigator MDES Warehouse History
 - Use `attribute_name` and `attribute_value` when creating TransformErrors for
   foreign key violations. (#3189)
 
+- Report invalid properties or unresolvable FKs on records that have invalid
+  PSU IDs. (#3264)
+
 - Clean up shell output for `Database`-based enumerators. (Includes #3072.)
 
 0.10.1

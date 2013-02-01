@@ -122,6 +122,7 @@ module NcsNavigator::Warehouse::Transformers
           records[2].should_receive(:save).and_return(true)
 
           records[1].psu_id = '20000041'
+          records[1].recruit_type = 'A'
 
           subject.transform(transform_status)
         end
@@ -135,11 +136,11 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         it 'records an error' do
-          transform_status.transform_errors.collect(&:record_id).should == ['2']
+          transform_status.transform_errors.collect(&:record_id).uniq.should == ['2']
         end
 
         describe 'the recorded error' do
-          let(:error) { transform_status.transform_errors.first }
+          let(:error) { transform_status.transform_errors.detect { |err| err.message =~ /PSU/ } }
 
           it 'has the correct model class' do
             error.model_class.should == Sample.to_s
@@ -160,6 +161,16 @@ module NcsNavigator::Warehouse::Transformers
 
           it 'has the invalid value' do
             error.attribute_value.should == '"20000041"'
+          end
+        end
+
+        describe 'and another invalidity' do
+          let(:validation_error) {
+            transform_status.transform_errors.detect { |err| err.message =~ /format/i }
+          }
+
+          it 'simultaneously reports an error about each' do
+            validation_error.attribute_name.should == 'recruit_type'
           end
         end
 
