@@ -10,6 +10,20 @@ NCS Navigator MDES Warehouse History
 - Add `--directory` option to `emit-xml` to allow for writing files with the
   default names somewhere other than the current working directory. (#3073)
 
+- Change `EnumTransformer` foreign key error handling. Foreign keys are
+  now completely resolved in memory. Previously, foreign key errors were
+  reported out of `EnumTransformer`, but the records were saved anyway. This
+  was mostly in order to allow the database to handle circular reference
+  resolution, but also because that implementation was simpler. The new
+  implementation is expected to handle resolving all possible foreign key issues
+  and so does not save records it finds to have bad FKs (or records that refer
+  to those records, etc.) (#3188)
+
+- In order to handle the previous, the interface for the object expected to be
+  in the configuration property `foreign_key_index` has changed. In the very
+  unlikely event that you were using a custom implementation, see the
+  `Configuration#foreign_key_index` docs for the new protocol.
+
 - Handle `xsi:nil` in `VdrXml::Reader`. (#3217)
 
 - Limit caught exceptions in `EnumTransformer` to `StandardError` & subclasses.

@@ -17,7 +17,7 @@ module NcsNavigator::Warehouse::Transformers
       include ::DataMapper::Resource
 
       property :id, Integer, :key => true
-      property :name, String
+      property :name, String, :length => (1..100)
       property :age, Integer
       belongs_to :sample,
         'NcsNavigator::Warehouse::Transformers::Sample', :child_key => [ :sample_id ], :required => false
@@ -64,7 +64,7 @@ module NcsNavigator::Warehouse::Transformers
         end
 
         subject.transform(transform_status)
-        transform_status.transform_errors.should be_empty
+        transform_status.transform_errors.should == []
       end
 
       describe 'with an invalid instance' do
@@ -169,22 +169,119 @@ module NcsNavigator::Warehouse::Transformers
         include_examples 'a foreign key index updater'
       end
 
-      describe 'with an unsatisfied foreign key' do
-        let(:error) { transform_status.transform_errors.first }
+      describe 'with an initially unsatisfied foreign key' do
+        let(:unsatisfied) { Subsample.new(:id => 3, :sample_id => 912, :name => '') }
+        let(:satisfier) { Sample.new(:id => unsatisfied.sample_id, :psu_id => '20000030', :name => 'Nine') }
+
+        let(:fk_error) {
+          transform_status.transform_errors.detect { |error| error.message =~ /foreign/i }
+        }
+
+        let(:validation_error) {
+          transform_status.transform_errors.detect { |error| error.message =~ /valid/i }
+        }
 
         before do
-          records << Subsample.new(:id => 3, :sample_id => 912)
-
           records.each do |m|
             m.stub!(:valid?).and_return(true)
             m.stub!(:save).and_return(true)
           end
 
-          subject.transform(transform_status)
+          records << unsatisfied
         end
 
-        it 'reports the unsatisfied foreign key' do
-          [error.attribute_name, error.attribute_value].should == ['sample_id', '912']
+        describe 'when the record is otherwise valid' do
+          before do
+            unsatisfied.name = 'Foo'
+            unsatisfied.should be_valid # setup
+          end
+
+          describe 'and the foreign key is never satisfied' do
+            it 'reports the unsatisfied foreign key' do
+              unsatisfied.stub!(:save).and_return(true)
+              subject.transform(transform_status)
+
+              [fk_error.attribute_name, fk_error.attribute_value].should == ['sample_id', '912']
+            end
+
+            it 'does not save the record with the unsatisfied key' do
+              unsatisfied.should_not_receive(:save)
+
+              subject.transform(transform_status)
+            end
+          end
+
+          describe 'and the foreign key is eventually satisfied' do
+
+            before do
+              satisfier.stub!(:valid?).and_return(true)
+              satisfier.stub!(:save).and_return(true)
+              records << satisfier
+            end
+
+            it 'does not report any errors' do
+              transform_status.transform_errors.should == []
+            end
+
+            it 'saves the record with the eventually satisfied key' do
+              satisfier.should_receive(:save)
+
+              subject.transform(transform_status)
+            end
+          end
+        end
+
+        describe 'when the record has invalid properties' do
+          before do
+            unsatisfied.name = ''
+            unsatisfied.should_not be_valid # setup
+          end
+
+          describe 'and the foreign key is never satisfied' do
+            it 'reports the unsatisfied foreign key' do
+              subject.transform(transform_status)
+
+              [fk_error.attribute_name, fk_error.attribute_value].should == ['sample_id', '912']
+            end
+
+            it 'reports the invalid values' do
+              subject.transform(transform_status)
+
+              validation_error.attribute_name.should == 'name'
+            end
+
+            it 'does not save the record with the unsatisfied key' do
+              unsatisfied.should_not_receive(:save)
+
+              subject.transform(transform_status)
+            end
+          end
+
+          describe 'and the foreign key is eventually satisfied' do
+            before do
+              satisfier.stub!(:valid?).and_return(true)
+              satisfier.stub!(:save).and_return(true)
+              records << satisfier
+            end
+
+            it 'does not report a foreign key problem' do
+              subject.transform(transform_status)
+
+              fk_error.should be_nil
+            end
+
+            it 'does report the invalid value' do
+              subject.transform(transform_status)
+
+              validation_error.attribute_name.should == 'name'
+            end
+
+            it 'does not save the record' do
+              unsatisfied.should_not_receive(:save)
+
+              subject.transform(transform_status)
+            end
+          end
         end
       end
 

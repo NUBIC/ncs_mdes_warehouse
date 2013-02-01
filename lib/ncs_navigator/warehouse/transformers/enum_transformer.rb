@@ -62,6 +62,11 @@ module NcsNavigator::Warehouse::Transformers
       @filters = Filters.new(filter_list ? [*filter_list].compact : [])
       @duplicates = options.delete(:duplicates) || :error
       @duplicates_strategy = select_duplicates_strategy
+
+      @record_checkers = {
+        :validation => ValidateRecordChecker.new(log),
+        :foreign_key => ForeignKeyChecker.new(log, foreign_key_index)
+      }
     end
 
     ##
@@ -96,53 +101,58 @@ module NcsNavigator::Warehouse::Transformers
     private
 
     def do_transform(status)
+      foreign_key_index.start_transform(status)
       enum.each do |record|
         case record
         when NcsNavigator::Warehouse::TransformError
           receive_transform_error(record, status)
         else
           filters.call([record]).each do |filtered_record|
-            saved_record = save_model_instance(filtered_record, status)
-            foreign_key_index.record_and_verify(saved_record) if saved_record
+            save_model_instance(filtered_record, status, [:validation, :foreign_key])
           end
         end
       end
-      foreign_key_index.report_errors(status)
+      late_resolved_records = foreign_key_index.end_transform
+      late_resolved_records.each do |record|
+        save_model_instance(record, status, []) unless has_reported_errors?(record, status)
+      end
     end
 
-    def save_model_instance(incoming_record, status)
+    ##
+    # @return [void]
+    def save_model_instance(incoming_record, status, record_check_kinds)
       status.record_count += 1
 
       record = process_duplicate_if_appropriate(incoming_record)
       unless record
         log.info("Ignoring duplicate record #{record_ident incoming_record}.")
-        return nil
+        return
       end
 
       unless ensure_valid_psu(record, status)
-        return nil
+        return
       end
 
-      if record.valid?
-        log.debug("Saving valid & resolved record #{record_ident record}.")
+      record_checks = record_check_kinds.map { |kind| @record_checkers[kind] }
+
+      saveable = verify_record_or_report_errors(record, status, record_checks)
+
+      if saveable
+        log.debug("Saving verified record #{record_ident record}.")
         begin
           if record.save
             record
+            foreign_key_index.record(record)
           else
-            msg = "Could not save valid record #{record.inspect}. #{record_messages(record).join(' ')}"
+            msg = "Could not save valid record #{record.inspect}."
             log.error msg
             status.unsuccessful_record(record, msg)
-            nil
           end
         rescue => e
           msg = "Error on save. #{e.class}: #{e}."
           log.error msg
           status.unsuccessful_record(record, msg)
-          nil
         end
-      else
-        report_validation_errors(record, status)
-        nil
       end
     end
 
@@ -151,32 +161,11 @@ module NcsNavigator::Warehouse::Transformers
       status.transform_errors << error
     end
 
-    def record_ident(rec)
-      # No composite keys in the MDES
-      '%s %s=%s' % [
-        rec.class.name.demodulize, rec.class.key.first.name, rec.key.try(:first).inspect]
-    end
-
-    def record_messages(record)
-      record.errors.keys.collect { |prop|
-        record.errors[prop].collect { |e|
-          v = record.send(prop)
-          "#{e} (#{prop}=#{v.inspect})."
-        }
-      }.flatten
-    end
-
-    def report_validation_errors(record, status)
-      log.error "Invalid record. #{record_messages(record).join(' ')}"
-      record.errors.keys.each do |prop|
-        record.errors[prop].each do |e|
-          status.unsuccessful_record(
-            record, "Invalid: #{e}.",
-            :attribute_name => prop,
-            :attribute_value => record.send(prop).inspect
-          )
-        end
-      end
+    def has_reported_errors?(record, status)
+      status.transform_errors.any? { |error|
+        error.model_class.to_s == record.class.to_s &&
+          error.record_id.to_s == record.key.first.to_s
+      }
     end
 
     ##
@@ -204,6 +193,84 @@ module NcsNavigator::Warehouse::Transformers
         false
       end
     end
+
+    module RecordIdent
+      def record_ident(rec)
+        # No composite keys in the MDES
+        '%s %s=%s' % [
+          rec.class.name.demodulize, rec.class.key.first.name, rec.key.try(:first).inspect]
+      end
+    end
+    include RecordIdent
+
+    ###### CHECKING FOR ERRORS IN A RECORD
+
+    def verify_record_or_report_errors(record, status, record_checks)
+      record_checks.collect { |check| check.verify_or_report_errors(record, status) }.
+        reject { |r| r }.empty? # does the result contain anything that isn't truthy?
+    end
+
+    class ValidateRecordChecker
+      include RecordIdent
+
+      attr_reader :log
+
+      def initialize(log)
+        @log = log
+      end
+
+      def verify_or_report_errors(record, status)
+        if record.valid?
+          log.debug "#{record_ident record} is valid."
+          true
+        else
+          log.error "#{record_ident record} is not valid. #{record_messages(record).join(' ')}"
+          record.errors.keys.each do |prop|
+            record.errors[prop].each do |e|
+              status.unsuccessful_record(
+                record, "Invalid: #{e}.",
+                :attribute_name => prop,
+                :attribute_value => record.send(prop).inspect
+              )
+            end
+          end
+          false
+        end
+      end
+
+      def record_messages(record)
+        record.errors.keys.collect { |prop|
+          record.errors[prop].collect { |e|
+            v = record.send(prop)
+            "#{e} (#{prop}=#{v.inspect})."
+          }
+        }.flatten
+      end
+    end
+
+    class ForeignKeyChecker
+      include RecordIdent
+
+      attr_reader :log, :fk_index
+
+      def initialize(log, fk_index)
+        @log = log
+        @fk_index = fk_index
+      end
+
+      def verify_or_report_errors(record, status)
+        log.debug "Verifying FKs for #{record_ident record}"
+        fk_index.verify_or_defer(record).tap do |result|
+          if result
+            log.debug "- All FKs currently resolved."
+          else
+            log.debug "- Deferring because one or more FKs are not resolved."
+          end
+        end
+      end
+    end
+
+    ###### HANDLING DUPLICATES
 
     def process_duplicate_if_appropriate(record)
       if @duplicates_strategy.duplicate?(record)

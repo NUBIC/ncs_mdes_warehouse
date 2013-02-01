@@ -43,7 +43,7 @@ module NcsNavigator::Warehouse
 
     describe '#foreign_key_index' do
       it 'provides an index by default' do
-        config.foreign_key_index.should respond_to(:record_and_verify)
+        config.foreign_key_index.should respond_to(:verify_or_defer)
       end
 
       it 'allows the index to be overridden' do

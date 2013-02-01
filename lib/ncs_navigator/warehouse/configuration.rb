@@ -97,8 +97,8 @@ module NcsNavigator::Warehouse
     # value is correct for virtually any case.
     #
     # @return [void]
-    # @param [#record_and_verify,#report_errors] index the replacement
-    #   foreign key index implementation.
+    # @param [#start_transform,#verify_or_defer,#record,#end_transform] index
+    #   the replacement foreign key index implementation.
     def foreign_key_index=(index)
       @foreign_key_index = index
     end
