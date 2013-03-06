@@ -54,6 +54,14 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
       it 'reads xsi:nil as nil' do
         person.person_dob.should be_nil
       end
+
+      it 'handles completely empty elements' do
+        person.last_name.should == ""
+      end
+
+      it 'handles values that occur after completely empty elements' do
+        person.suffix.should == '-7'
+      end
     end
   end
 end
