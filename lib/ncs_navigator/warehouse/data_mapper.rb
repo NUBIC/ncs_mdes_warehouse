@@ -65,6 +65,14 @@ module NcsNavigator::Warehouse
     # DataMapper `:integer` that's an {NcsType}.
     class NcsInteger < ::DataMapper::Property::Integer
       include NcsType
+
+      def typecast_to_primitive(value)
+        if value.respond_to?(:to_str) && value.to_str =~ /\A\d+\Z/
+          value.to_str.to_i
+        else
+          super
+        end
+      end
     end
 
     ##

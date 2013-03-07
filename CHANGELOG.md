@@ -4,6 +4,9 @@ NCS Navigator MDES Warehouse History
 0.11.1
 ------
 
+- Accept numeric strings with leading zeros for integer-typed properties.
+  (#3491)
+
 0.11.0
 ------
 
