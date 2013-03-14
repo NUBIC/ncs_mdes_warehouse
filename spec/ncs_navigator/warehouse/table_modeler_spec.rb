@@ -155,9 +155,9 @@ end
 
       describe 'of code lists' do
         before do
-          variable.type.code_list = NcsNavigator::Mdes::VariableType::CodeList.new
-          variable.type.code_list << NcsNavigator::Mdes::VariableType::CodeListEntry.new('60336')
-          variable.type.code_list << NcsNavigator::Mdes::VariableType::CodeListEntry.new('-4')
+          variable.type.code_list = NcsNavigator::Mdes::CodeList.new
+          variable.type.code_list << NcsNavigator::Mdes::CodeListEntry.new('60336')
+          variable.type.code_list << NcsNavigator::Mdes::CodeListEntry.new('-4')
 
           subject.model!
         end
@@ -295,7 +295,7 @@ end
         end
 
         it 'produces an NcsString when from a code list' do
-          variable.type.code_list = [NcsNavigator::Mdes::VariableType::CodeListEntry.new('foo')]
+          variable.type.code_list = [NcsNavigator::Mdes::CodeListEntry.new('foo')]
           subject.load!
 
           model_property.should be_a DataMapper::NcsString
