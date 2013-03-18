@@ -6,6 +6,7 @@ NCS Navigator MDES Warehouse History
 
 - Accept numeric strings with leading zeros for integer-typed properties.
   (#3491)
+- Disable "humanizing" of variable names in validation messages. (#3486)
 
 0.11.0
 ------
