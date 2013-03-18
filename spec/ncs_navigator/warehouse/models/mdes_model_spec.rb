@@ -168,5 +168,15 @@ module NcsNavigator::Warehouse::Models
         end
       end
     end
+
+    describe 'validation' do
+      let(:item) { Spec::Sample::GenerationalTableau.new(:tableau_id => '6', :age_span => '-3', :color_scale => '7') }
+
+      it 'uses the field name (not the de-underscored, de-_ided "humanized" field name) in messages' do
+        item.color_scale = '18'
+        item.should_not be_valid
+        item.errors[:color_scale].first.should == "color_scale must be one of 3, 4, 5, 6, 7, 8, -6"
+      end
+    end
   end
 end

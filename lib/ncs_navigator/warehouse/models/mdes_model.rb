@@ -2,6 +2,7 @@ require 'active_support/core_ext/string'
 require 'builder'
 
 require 'ncs_navigator/warehouse'
+require 'ncs_navigator/warehouse/data_mapper_patches'
 
 module NcsNavigator::Warehouse::Models
   ##

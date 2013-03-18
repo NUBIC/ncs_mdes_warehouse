@@ -1,5 +1,6 @@
 # Monkey patches for DataMapper components.
 
+######
 # Make all constraints deferrable. A configurable version of this has
 # been submitted to the dm-constraints:
 # https://github.com/datamapper/dm-constraints/pull/13
@@ -20,5 +21,27 @@ module DataMapper::Constraints::Adapters::DataObjectsAdapter::SQL
       ON UPDATE #{constraint_type}
       DEFERRABLE INITIALLY DEFERRED
     SQL
+  end
+end
+
+######
+# Disable humanizing in DM. The table and variable names in the MDES are known
+# to users of the system by their actual underscored names, so humanizing is
+# counterproductive.
+#
+# This implementation is a bit of a nuclear option, but the other options are:
+#
+# * Use custom validation messages for all validations.
+# * Interrupt humanizing the validators specifically.
+#
+# There's no reason why we ever want humanizing to happen, so I think this is
+# best.
+
+require 'dm-core/support/inflector/inflections'
+
+# @private
+module DataMapper::Inflector
+  def humanize(lower_case_and_underscored_word)
+    lower_case_and_underscored_word
   end
 end
