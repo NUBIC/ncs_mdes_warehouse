@@ -162,7 +162,6 @@ module NcsNavigator::Warehouse::Transformers
       status.transform_errors.any? { |error|
         error.model_class.to_s == record.class.to_s &&
           error.record_id.to_s == record.key.first.to_s
-          error.record_id.to_s == record.key.first.to_s
       }
     end
 
