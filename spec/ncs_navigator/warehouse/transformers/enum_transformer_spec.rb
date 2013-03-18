@@ -93,7 +93,7 @@ module NcsNavigator::Warehouse::Transformers
           end
 
           it 'has the invalidity message' do
-            err.message.should == 'Invalid: Recruit type has an invalid format.'
+            err.message.should == 'Invalid: recruit_type has an invalid format.'
           end
 
           it 'knows the invalid attribute' do
