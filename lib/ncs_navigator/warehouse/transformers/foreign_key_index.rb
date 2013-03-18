@@ -231,7 +231,7 @@ module NcsNavigator::Warehouse::Transformers
       end
 
       def model_class
-        record.class.to_s
+        record.class
       end
 
       def record_id
@@ -295,7 +295,7 @@ module NcsNavigator::Warehouse::Transformers
       end
 
       def model_class
-        record.class.to_s
+        record.class
       end
 
       def update_satisfied_by(fk_index, deferred_pool)

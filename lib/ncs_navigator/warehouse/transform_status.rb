@@ -42,7 +42,7 @@ module NcsNavigator::Warehouse
     def unsuccessful_record(record, message, error_attributes={})
       self.transform_errors <<
         TransformError.new({
-          :model_class => record.class.name,
+          :model_class => record.class,
           :record_id => (record.key.first if record && record.key),
           :message => message
         }.merge(error_attributes))
@@ -57,8 +57,9 @@ module NcsNavigator::Warehouse
 
     property :id,          Serial
     property :message,     Text,   :required => true
-    property :model_class, String, :length => 255
     property :record_id,   String, :length => 255
+    property :model_class, String, :length => 255
+    property :table_name,  String, :length => 255
     property :attribute_name,  String, :length => 255
     property :attribute_value, Text
 
@@ -93,6 +94,16 @@ module NcsNavigator::Warehouse
     # @return [String] single-line JSON serialization of {#as_json}.
     def to_json
       as_json.to_json
+    end
+
+    def model_class=(clz)
+      super
+
+      if clz.nil?
+        self.table_name = nil
+      elsif clz.respond_to?(:mdes_table_name)
+        self.table_name = clz.mdes_table_name
+      end
     end
   end
 

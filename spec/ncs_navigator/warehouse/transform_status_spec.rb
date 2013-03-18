@@ -1,8 +1,14 @@
 require 'spec_helper'
 
+require 'ncs_navigator/warehouse/data_mapper'
+
 module NcsNavigator::Warehouse
   class SampleRecordishThing
     include ::DataMapper::Resource
+    include NcsNavigator::Warehouse::Models::MdesModel
+
+    storage_names[:default] = 'sample_thing'
+
     property :record_id, Serial, :key => true
   end
 
@@ -25,6 +31,10 @@ module NcsNavigator::Warehouse
 
       it 'includes the class' do
         actual.model_class.should == SampleRecordishThing.to_s
+      end
+
+      it 'includes the table_name' do
+        actual.table_name.should == 'sample_thing'
       end
 
       it 'includes the message' do
@@ -67,7 +77,7 @@ module NcsNavigator::Warehouse
       let(:error) {
         TransformError.new(
           :message => "It's\n complicated",
-          :model_class => SampleRecordishThing.to_s,
+          :model_class => SampleRecordishThing,
           :record_id => '45-T',
           :attribute_name => 'Fred',
           :attribute_value => 'MacMurray'
@@ -101,6 +111,20 @@ module NcsNavigator::Warehouse
           error.id = 7
           parsed.should_not have_key('id')
         end
+      end
+    end
+
+    describe '#table_name' do
+      it 'is set from the table name of the model class when a model class is set' do
+        TransformError.new(:model_class => SampleRecordishThing).table_name.should == 'sample_thing'
+      end
+
+      it 'is not set when the model class is set to a string' do
+        TransformError.new(:model_class => 'SampleRecordishThing').table_name.should be_nil
+      end
+
+      it 'is set to nil when the model class is set to nil' do
+        TransformError.new(:model_class => nil).table_name.should be_nil
       end
     end
   end
