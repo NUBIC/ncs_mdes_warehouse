@@ -219,11 +219,12 @@ XML
 
     def write_all_xml_for_model(model)
       shell.say(' %20s' % '[loading]')
+      key = model.key.first.name.to_sym
       count = model.count
       offset = 0
       while offset < count
         shell.back_up_and_say(20, '%20s' % '[loading]')
-        model.all(:limit => @block_size, :offset => offset).each do |instance|
+        model.all(:limit => @block_size, :offset => offset, :order => key.asc).each do |instance|
           xml_files.each { |xf| xf.write_instance(instance) }
           @record_count += 1
 

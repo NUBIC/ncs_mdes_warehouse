@@ -13,6 +13,8 @@ NCS Navigator MDES Warehouse History
 
 - Include MDES table name if available in TransformErrors. (#3487)
 
+- Emit XML records of the same type in key order. (#3337)
+
 0.11.0
 ------
 

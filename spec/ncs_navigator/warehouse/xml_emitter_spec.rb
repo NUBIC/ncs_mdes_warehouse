@@ -108,12 +108,12 @@ module NcsNavigator::Warehouse
         end
 
         it 'contains the right records' do
-          xml.xpath('//person/person_id').collect { |e| e.text.strip }.sort.should == %w(QX9 XQ4)
+          xml.xpath('//person/person_id').collect { |e| e.text.strip }.should == %w(QX9 XQ4)
         end
 
         describe 'and including PII in a single file' do
           let(:xml_first_names) {
-            xml.xpath('//person/first_name').collect { |e| e.text.strip }.sort
+            xml.xpath('//person/first_name').collect { |e| e.text.strip }
           }
 
           it 'excludes PII by default' do
