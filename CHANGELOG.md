@@ -1,8 +1,10 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
-0.11.1
+0.12.0
 ------
+
+- Add models for MDES 3.2 based on 3.2.00.00. (#3631)
 
 - Accept numeric strings with leading zeros for integer-typed properties.
   (#3491)
