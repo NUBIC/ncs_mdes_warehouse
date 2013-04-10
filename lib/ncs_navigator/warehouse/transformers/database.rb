@@ -13,14 +13,11 @@ module NcsNavigator::Warehouse::Transformers
   #     class StaffPortalTransformer
   #       include NcsNavigator::Warehouse::Transformers::Database
   #
-  #       # Include the models for the version of the MDES this
-  #       # transformer is compatible with
-  #       include NcsNavigator::Warehouse::Models::TwoPointZero
-  #
   #       bcdatabase :name => 'ncs_staff_portal'
   #
-  #       produce_records(:staff) do |row|
-  #         Staff.new(
+  #       produce_records(:staff) do |row, meta|
+  #         staff_model = meta[:configuration].model(:staff)
+  #         staff_model.new(
   #           :staff_id => 'SP' + row.username
   #           # etc.
   #         )
@@ -32,8 +29,9 @@ module NcsNavigator::Warehouse::Transformers
   #           SELECT sub.*, s.username
   #           FROM staff_languages sub INNER JOIN staff s ON sub.staff_id=s.id
   #         )
-  #       ) do |row|
-  #         StaffLanguages.new(
+  #       ) do |row, meta|
+  #         sl_model = meta[:configuration].model(:staff_language)
+  #         sl_model.new(
   #           :staff_language_id => 'SP' + row.id,
   #           :staff_id => 'SP' + row.username,
   #           :staff_lang => row.lang_code
@@ -231,6 +229,14 @@ module NcsNavigator::Warehouse::Transformers
       ##
       # Define a translation from the results of a query into one or
       # more warehouse records.
+      #
+      # The optional second parameter the `logic` proc/block is a hash of
+      # metadata. That metadata contains a single key:
+      #
+      # * :configuration. Provides the {Configuration} in use by the warehouse
+      #   that is executing this transformer. Among other things, this allows
+      #   {dynamic lookup of models Configuration#model} based on the in-use
+      #   MDES version.
       #
       # @param [Symbol] name the name of this producer; if you don't
       #   specify a `:query`, the default is to return every row from
