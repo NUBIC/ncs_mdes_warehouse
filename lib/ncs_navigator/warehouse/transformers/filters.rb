@@ -20,6 +20,18 @@ module NcsNavigator::Warehouse::Transformers
   # Depending on the filter order, a particular filter may never see
   # some of the eventually transformed records. This will happen if
   # records are created by a filter lower in the filter chain.
+  #
+  # Leaky abstraction note: if a filter needs to change the primary key for a
+  # record, there is unfortunate DataMapper behavior to contend with. DM
+  # memoizes the result of `Resource#key` after the first time it is invoked.
+  # The warehouse infrastructure will certainly have invoked `#key` on a record
+  # which is passed to a filter's call method. In order so that subsequent calls
+  # to `#key` reflect the filter's changes, it needs to work around this. Two
+  # possibilities:
+  #
+  # * Instead of changing the key on the passed-in record, create a new record
+  #   with the new key (and all the other attributes) and return that.
+  # * `record.instance_eval { remove_instance_variable(:@_key) }`
   class Filters
     include Enumerable
     extend Forwardable
