@@ -207,6 +207,25 @@ module NcsNavigator::Warehouse
           actual_ids.collect(&:to_i).sort[2456].should == 2456
         end
       end
+
+      describe 'with directly provided instances' do
+        before do
+          options[:content] = [
+            create_person('XQ9', :first_name => 'Xavier'),
+            create_person('QX4', :first_name => 'Quentin'),
+            create_instance(participant_model, :p_id => 'P_QX9')
+          ]
+        end
+
+        it 'contains the specified records' do
+          xml.xpath('//person').size.should == 2
+          xml.xpath('//participant').size.should == 1
+        end
+
+        it 'contains the records in the provided order' do
+          xml.xpath('//person/person_id').collect { |e| e.text.strip }.should == %w(XQ9 QX4)
+        end
+      end
     end
 
     describe 'the generated ZIP file', :slow do

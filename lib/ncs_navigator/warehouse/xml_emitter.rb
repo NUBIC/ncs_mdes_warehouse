@@ -88,34 +88,38 @@ XML
     # @param [Pathname,#to_s,nil] filename the filename to which the output
     #   will be written. If `nil`, the {.default_filename} is used.
     #
+    # @option options [Boolean] :include-pii (false) should PII
+    #   variable values be included in the XML?
+    # @option options [Boolean] :zip (true) should a ZIP file be
+    #   produced alongside the XML file?
+    # @option options [Enumerable] :content an enumerable over the records to
+    #   emit. A {Contents} will be created using the other options
+    #   if this is not specified.
     # @option options [Fixnum] :block-size (5000) the maximum number
     #   of records to load into memory before writing them to the XML
     #   file. Reduce this to reduce the memory load of the emitter.
     #   Increasing it will probably not improve performance, even if
-    #   you have sufficient memory to load more records.
-    # @option options [Boolean] :include-pii (false) should PII
-    #   variable values be included in the XML?
+    #   you have sufficient memory to load more records. Only used if `:content`
+    #   is not specified.
     # @option options [Array<#to_s>] :tables (all for current MDES
-    #   version) the tables to include in the emitted XML.
-    # @option options [Boolean] :zip (true) should a ZIP file be
-    #   produced alongside the XML file?
+    #   version) the tables to include in the emitted XML. Only used if
+    #   `:content` is not specified.
     def initialize(config, filename, options={})
       @configuration = config
-      @record_count = 0
-      @block_size = options[:'block-size'] || 5000
       @zip = options.has_key?(:zip) ? options[:zip] : true
 
       @xml_files = determine_files_to_create(filename, options)
 
+      @tracker = ProgressTracker.new(@configuration)
 
-      @models =
-        if options[:tables]
-          options[:tables].collect { |t| t.to_s }.collect { |t|
-            config.models_module.mdes_order.find { |model| model.mdes_table_name == t }
-          }
-        else
-          config.models_module.mdes_order
-        end
+      if options[:content]
+        @content_enumerator = options[:content]
+      else
+        @content_enumerator = Contents.new(config, {
+          :tables => options[:tables],
+          :'block-size' => options[:'block-size']
+        })
+      end
     end
 
     ##
@@ -126,19 +130,16 @@ XML
       shell.say_line("Exporting to #{xml_files.collect(&:describe).join(', ')}")
       log.info("Beginning XML export to #{xml_files.collect(&:describe).join(', ')}")
 
-      @start = Time.now
+      @tracker.start!
       xml_files.each { |xf| xf.write HEADER_TEMPLATE.result(binding) }
-      models.each do |model|
-        shell.clear_line_then_say('Writing XML for %33s' % model.mdes_table_name)
-        write_all_xml_for_model(model)
+      @content_enumerator.each do |instance|
+        @tracker.starting_instance(instance)
+        xml_files.each { |xf| xf.write_instance(instance) }
+        @tracker.finish_instance(instance)
       end
       xml_files.each { |xf| xf.write FOOTER_TEMPLATE }
       xml_files.each { |xf| xf.close }
-      @end = Time.now
-
-      msg = "%d records written in %d seconds (%.1f/sec).\n" % [@record_count, emit_time, emit_rate]
-      shell.clear_line_then_say(msg)
-      log.info(msg)
+      @tracker.stop!
 
       xml_files.each { |xf| xf.zip_if_desired }
       log.info("XML export complete")
@@ -217,23 +218,6 @@ XML
       end
     end
 
-    def write_all_xml_for_model(model)
-      shell.say(' %20s' % '[loading]')
-      key = model.key.first.name.to_sym
-      count = model.count
-      offset = 0
-      while offset < count
-        shell.back_up_and_say(20, '%20s' % '[loading]')
-        model.all(:limit => @block_size, :offset => offset, :order => key.asc).each do |instance|
-          xml_files.each { |xf| xf.write_instance(instance) }
-          @record_count += 1
-
-          shell.back_up_and_say(20, '%5d (%5.1f/sec)' % [@record_count, emit_rate])
-        end
-        offset += @block_size
-      end
-    end
-
     def sc_id
       configuration.navigator.sc_id
     end
@@ -244,14 +228,6 @@ XML
 
     def specification_version
       configuration.mdes.specification_version
-    end
-
-    def emit_time
-      (@end || Time.now) - @start
-    end
-
-    def emit_rate
-      @record_count / emit_time
     end
 
     ##
@@ -298,6 +274,63 @@ XML
           end
           shell.clear_line_then_say("Zipped #{zip_filename}.")
         end
+      end
+    end
+
+    ##
+    # @private
+    class ProgressTracker
+      extend Forwardable
+
+      attr_reader :start, :stop, :record_count, :shell
+
+      def_delegators :@configuration, :shell, :log
+
+      def initialize(config)
+        @record_count = 0
+        @current_model = nil
+        @configuration = config
+      end
+
+      def start!
+        @start = Time.now
+      end
+
+      def starting_instance(i)
+        model_changed!(i.class) unless i.class == @current_model
+      end
+
+      def model_changed!(new_model)
+        shell.clear_line_then_say('Writing XML for %33s' % new_model.mdes_table_name)
+        shell.say(' %20s' % '[loading]')
+        @current_model = new_model
+      end
+      private :model_changed!
+
+      def finish_instance(i)
+        @record_count += 1
+        update_status
+      end
+
+      def update_status
+        shell.back_up_and_say(20, '%5d (%5.1f/sec)' % [record_count, emit_rate])
+      end
+      private :update_status
+
+      def stop!
+        @stop = Time.now
+
+        msg = "%d records written in %d seconds (%.1f/sec).\n" % [record_count, emit_time, emit_rate]
+        shell.clear_line_then_say(msg)
+        log.info(msg)
+      end
+
+      def emit_time
+        (stop || Time.now) - start
+      end
+
+      def emit_rate
+        record_count / emit_time
       end
     end
   end

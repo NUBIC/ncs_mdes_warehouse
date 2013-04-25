@@ -9,6 +9,7 @@ module NcsNavigator
     autoload :CLI,                 'ncs_navigator/warehouse/cli'
     autoload :Comparator,          'ncs_navigator/warehouse/comparator'
     autoload :Configuration,       'ncs_navigator/warehouse/configuration'
+    autoload :Contents,            'ncs_navigator/warehouse/contents'
     autoload :DataMapper,          'ncs_navigator/warehouse/data_mapper'
     autoload :DatabaseInitializer, 'ncs_navigator/warehouse/database_initializer'
     autoload :Hooks,               'ncs_navigator/warehouse/hooks'

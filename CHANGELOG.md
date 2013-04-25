@@ -4,6 +4,10 @@ NCS Navigator MDES Warehouse History
 0.12.1
 ------
 
+- Split out content enumeration from `XmlEmitter`. `Contents` is an `Enumerable`
+  providing memory-efficient access to every record in a set of tables (or all
+  tables). (#3936)
+
 0.12.0
 ------
 
