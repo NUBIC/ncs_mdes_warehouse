@@ -28,7 +28,7 @@ class NcsNavigator::Warehouse::Configuration
     end
 
     def self.const_missing(const)
-      [NcsNavigator::Warehouse::Transformers].each do |ns|
+      [NcsNavigator::Warehouse::Transformers, NcsNavigator::Warehouse::Filters].each do |ns|
         if ns.const_defined?(const)
           return ns.const_get(const)
         end

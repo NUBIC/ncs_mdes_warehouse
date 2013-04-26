@@ -13,6 +13,7 @@ module NcsNavigator
     autoload :DataMapper,          'ncs_navigator/warehouse/data_mapper'
     autoload :DatabaseInitializer, 'ncs_navigator/warehouse/database_initializer'
     autoload :Hooks,               'ncs_navigator/warehouse/hooks'
+    autoload :Filters,             'ncs_navigator/warehouse/filters'
     autoload :Models,              'ncs_navigator/warehouse/models'
     autoload :PostgreSQL,          'ncs_navigator/warehouse/postgresql'
     autoload :StringifyTrace,      'ncs_navigator/warehouse/stringify_trace'

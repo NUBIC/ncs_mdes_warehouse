@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module NcsNavigator::Warehouse::Transformers
+module NcsNavigator::Warehouse::Filters
   describe NoSsuOutreachPlaceholderFilter, :use_mdes do
     let(:filter) { NoSsuOutreachPlaceholderFilter.new(spec_config) }
 

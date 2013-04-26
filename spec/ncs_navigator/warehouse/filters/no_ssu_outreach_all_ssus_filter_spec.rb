@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module NcsNavigator::Warehouse::Transformers
+module NcsNavigator::Warehouse::Filters
   describe NoSsuOutreachAllSsusFilter, :use_mdes do
     describe '#initialize' do
       it 'defaults the SSU list to the configuration list' do

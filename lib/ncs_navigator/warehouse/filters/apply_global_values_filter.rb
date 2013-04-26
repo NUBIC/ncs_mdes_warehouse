@@ -1,6 +1,6 @@
 require 'ncs_navigator/warehouse'
 
-module NcsNavigator::Warehouse::Transformers
+module NcsNavigator::Warehouse::Filters
   ##
   # A filter which sets certain variables to the same values on all
   # records if those variables are not already set when the filter

@@ -1,25 +1,25 @@
 require 'spec_helper'
 
-module NcsNavigator::Warehouse::Transformers
-  describe Filters do
+module NcsNavigator::Warehouse::Filters
+  describe CompositeFilter do
     let(:filter_one)   { StubFilter.new('one') }
     let(:filter_two)   { StubFilter.new('two') }
     let(:filter_three) { StubFilter.new('three') }
 
     describe '#initialize' do
       it 'sets the #filters attribute' do
-        Filters.new([filter_two, filter_one]).filters.should == [filter_two, filter_one]
+        CompositeFilter.new([filter_two, filter_one]).filters.should == [filter_two, filter_one]
       end
 
       it 'rejects objects that do not have a call method' do
-        lambda { Filters.new([filter_three, Object.new]) }.
+        lambda { CompositeFilter.new([filter_three, Object.new]) }.
           should raise_error(/Filter 1 \(Object\) does not have a call method/)
       end
     end
 
     describe '#call' do
       describe 'with some filters' do
-        let(:filters) { Filters.new([filter_one, filter_two, filter_three]) }
+        let(:filters) { CompositeFilter.new([filter_one, filter_two, filter_three]) }
 
         it 'feeds the result from the each into the next' do
           filter_one.should_receive(:call).with([:foo]).and_return([:foo, :bar])
@@ -50,7 +50,7 @@ module NcsNavigator::Warehouse::Transformers
       end
 
       describe 'with no filters' do
-        let(:filters) { Filters.new([]) }
+        let(:filters) { CompositeFilter.new([]) }
 
         it 'returns the input' do
           filters.call([:foo]).should == [:foo]
@@ -67,10 +67,10 @@ module NcsNavigator::Warehouse::Transformers
     end
 
     describe 'enumerableness' do
-      let(:filters) { Filters.new([filter_one, filter_two, filter_three]) }
+      let(:filters) { CompositeFilter.new([filter_one, filter_two, filter_three]) }
 
       it 'is Enumerable' do
-        Filters.ancestors.should include(::Enumerable)
+        CompositeFilter.ancestors.should include(::Enumerable)
       end
 
       it 'delegates #each to the filter list' do

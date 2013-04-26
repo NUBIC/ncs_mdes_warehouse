@@ -1,6 +1,6 @@
 require 'ncs_navigator/warehouse'
 
-module NcsNavigator::Warehouse::Transformers
+module NcsNavigator::Warehouse::Filters
   ##
   # Some source data sets include unnecessary placeholder records and
   # values. This filter excludes the following variables and records:

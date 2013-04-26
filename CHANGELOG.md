@@ -1,8 +1,13 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
-0.12.1
+0.13.0
 ------
+
+- Move all existing filters to new `Filters` module. Any fully-qualified
+  references to those filters will need to be updated. Filter-name-only
+  references made from within a configuration file will still resolve fine.
+  (#3940)
 
 - Split out content enumeration from `XmlEmitter`. `Contents` is an `Enumerable`
   providing memory-efficient access to every record in a set of tables (or all

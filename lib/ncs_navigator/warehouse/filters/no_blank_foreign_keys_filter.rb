@@ -1,6 +1,6 @@
 require 'ncs_navigator/warehouse'
 
-module NcsNavigator::Warehouse::Transformers
+module NcsNavigator::Warehouse::Filters
   ##
   # This filter transforms any blank foreign keys into nil. Blank
   # foreign keys are a common issue in source XML data.

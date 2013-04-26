@@ -1,4 +1,5 @@
 require 'ncs_navigator/warehouse'
+require 'ncs_navigator/warehouse/data_mapper_patches'
 
 require 'forwardable'
 
@@ -32,7 +33,7 @@ module NcsNavigator::Warehouse::Transformers
     attr_reader :enum
 
     ##
-    # @return [Filters] the filters in use on this transformer.
+    # @return [CompositeFilter] the filters in use on this transformer.
     attr_reader :filters
 
     ##
@@ -54,12 +55,13 @@ module NcsNavigator::Warehouse::Transformers
     #   `:ignore` means do not attempt to save the duplicate.
     #   `:replace` means substitute the duplicate for the existing record.
     #
-    # @see Filters
+    # @see CompositeFilter
     def initialize(configuration, enum, options={})
       @configuration = configuration
       @enum = enum
       filter_list = options.delete(:filters)
-      @filters = Filters.new(filter_list ? [*filter_list].compact : [])
+      @filters = NcsNavigator::Warehouse::Filters::CompositeFilter.new(
+        filter_list ? [*filter_list].compact : [])
       @duplicates = options.delete(:duplicates) || :error
       @duplicates_strategy = select_duplicates_strategy
 

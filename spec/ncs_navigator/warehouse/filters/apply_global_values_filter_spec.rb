@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module NcsNavigator::Warehouse::Transformers
+module NcsNavigator::Warehouse::Filters
   describe ApplyGlobalValuesFilter, :use_mdes do
     let(:filter) {
       ApplyGlobalValuesFilter.new(spec_config, :values => { :first_name => 'Fred' })

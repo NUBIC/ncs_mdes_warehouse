@@ -1,25 +1,24 @@
 require 'forwardable'
 
-module NcsNavigator::Warehouse::Transformers
+module NcsNavigator::Warehouse::Filters
   ##
-  # Encapsulates an ordered list of filters that can be applied to a
-  # record coming out of an enumeration in {EnumTransformer}.
+  # Encapsulates an ordered list of filters that can be applied to one or more
+  # records. Filters of this type are used in {EnumTransformer} and {Contents}.
   #
-  # Each filter is an object with an `call` method. The `call`
-  # method takes an array of zero or more records as input and returns
-  # an array of zero or more records. The input and output arrays may
-  # be the same or different. A filter may add, remove, or mutate
-  # records (or all three).
+  # Each filter is an object with an `call` method. The `call` method takes an
+  # array of zero or more records as input and returns an array of zero or more
+  # records. The input and output arrays may be the same or different. A filter
+  # may add, remove, or mutate records (or all three).
   #
-  # A filter will be called multiple times for a single transform run,
-  # but it will never see the same record twice. To put it another
-  # way, the first filter will be invoked exactly once per record
-  # yielded from an {EnumTransformer}'s enumeration. Subsequent
-  # filters are invoked on return value from the previous filter.
+  # A filter will be called multiple times for a single transform run, but it
+  # will never see the same record twice. To put it another way, the first
+  # filter will be invoked exactly once per record yielded from the underlying
+  # enumeration. Subsequent filters are invoked on the return value from the
+  # previous filter.
   #
-  # Depending on the filter order, a particular filter may never see
-  # some of the eventually transformed records. This will happen if
-  # records are created by a filter lower in the filter chain.
+  # Depending on the filter order, a particular filter may never see some of the
+  # eventually transformed records. This will happen if records are created by a
+  # filter lower in the filter chain.
   #
   # Leaky abstraction note: if a filter needs to change the primary key for a
   # record, there is unfortunate DataMapper behavior to contend with. DM
@@ -32,7 +31,7 @@ module NcsNavigator::Warehouse::Transformers
   # * Instead of changing the key on the passed-in record, create a new record
   #   with the new key (and all the other attributes) and return that.
   # * `record.instance_eval { remove_instance_variable(:@_key) }`
-  class Filters
+  class CompositeFilter
     include Enumerable
     extend Forwardable
 

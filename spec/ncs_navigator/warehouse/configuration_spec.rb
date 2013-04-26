@@ -542,6 +542,14 @@ module NcsNavigator::Warehouse
         subject.log_file.to_s.should == 'NcsNavigator::Warehouse::Transformers::EnumTransformer.log'
       end
 
+      it 'evaluates constants from NcsNavigator::Warehouse::Filters' do
+        write_file do |f|
+          f.puts 'c.log_file = "#{CompositeFilter}.log"'
+        end
+
+        subject.log_file.to_s.should == 'NcsNavigator::Warehouse::Filters::CompositeFilter.log'
+      end
+
       it 'reports missing constants as bare' do
         write_file do |f|
           f.puts 'c.add_transformer = ATransformerIForgotToRequire'

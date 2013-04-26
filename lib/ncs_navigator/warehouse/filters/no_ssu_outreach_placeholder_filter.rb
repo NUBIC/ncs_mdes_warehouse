@@ -1,6 +1,6 @@
 require 'ncs_navigator/warehouse'
 
-module NcsNavigator::Warehouse::Transformers
+module NcsNavigator::Warehouse::Filters
   ##
   # A filter which associates outreach event records that don't have
   # an SSU ID with an automatically-created placeholder SSU.

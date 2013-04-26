@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module NcsNavigator::Warehouse::Transformers
+module NcsNavigator::Warehouse::Filters
   describe CodedAsMissingFilter, :use_mdes do
     def call(records)
       filter.call(records)
