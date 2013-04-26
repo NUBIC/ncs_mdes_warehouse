@@ -5,6 +5,7 @@ module NcsNavigator::Warehouse
     let(:enumerator) { Contents.new(spec_config, options) }
     let(:options) { { } }
     let(:yielded) { enumerator.to_a }
+    let(:yielded_keys) { yielded.collect { |i| i.key.first } }
 
     def person_model
       spec_config.models_module.const_get(:Person)
@@ -103,6 +104,42 @@ module NcsNavigator::Warehouse
 
             people_count.should == 2
             p_count.should == 1
+          end
+        end
+
+        describe 'and filters' do
+          it 'yields nothing when the filter removes a record' do
+            options[:filters] = [
+              lambda { |recs| recs.first.key.first == 'QX9' ? [] : recs }
+            ]
+
+            yielded_keys.should == %w(XQ4 P_QX4)
+          end
+
+          it 'yields the replacement record when a record is replaced' do
+            options[:filters] = [
+              lambda { |recs| recs.first.key.first == 'QX9' ? [create_person('AB8')] : recs }
+            ]
+
+            yielded_keys.should == %w(AB8 XQ4 P_QX4)
+          end
+
+          it 'yields all the replacement records when a record is replaced' do
+            options[:filters] = [
+              lambda { |recs| recs.first.key.first == 'QX9' ? [create_person('AB8'), create_person('FR2')] : recs }
+            ]
+
+            yielded_keys.should == %w(AB8 FR2 XQ4 P_QX4)
+          end
+
+          it 'applies the filters in order' do
+            options[:filters] = [
+              lambda { |recs| recs.first.key.first == 'QX9' ? [create_person('AB8', :first_name => 'Adam')] : recs },
+              lambda { |recs| recs.each { |rec| rec.first_name = rec.first_name.reverse if rec.respond_to?(:first_name) } }
+            ]
+
+            yielded.select { |rec| rec.respond_to?(:first_name) }.collect(&:first_name).
+              should == %w(madA reivaX)
           end
         end
       end

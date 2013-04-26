@@ -14,6 +14,10 @@ module NcsNavigator::Warehouse
     attr_reader :models
 
     ##
+    # @return [CompositeFilter] the filters in use on this transformer.
+    attr_reader :filters
+
+    ##
     # @return [Numeric] the maximum number of records to load into memory before
     #   yielding them to the consumer.
     attr_reader :block_size
@@ -24,6 +28,8 @@ module NcsNavigator::Warehouse
     # @param [Configuration] config the configuration for the
     #   warehouse from which to iterate over records.
     #
+    # @option options [Array<#call>,#call] :filters a list of
+    #   filters to use for this transformer
     # @option options [Fixnum] :block-size (5000) the maximum number
     #   of records to load into memory before yielding them to the consumer.
     #   Reduce this to reduce the memory load of the emitter. Increasing it
@@ -44,6 +50,10 @@ module NcsNavigator::Warehouse
         else
           config.models_module.mdes_order
         end
+
+      filter_list = options[:filters]
+      @filters = NcsNavigator::Warehouse::Filters::CompositeFilter.new(
+        filter_list ? [*filter_list].compact : [])
     end
 
     ##
@@ -55,7 +65,9 @@ module NcsNavigator::Warehouse
         offset = 0
         while offset < count
           model.all(:limit => block_size, :offset => offset, :order => key.asc).each do |instance|
-            yield instance
+            filters.call([instance]).each do |filtered_record|
+              yield filtered_record
+            end
           end
           offset += block_size
         end
