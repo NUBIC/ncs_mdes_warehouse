@@ -176,6 +176,26 @@ module NcsNavigator::Warehouse
       end
     end
 
+    describe '#default_xml_filter_set' do
+      it 'defaults to nil' do
+        config.default_xml_filter_set.should be_nil
+      end
+    end
+
+    describe '#default_xml_filter_set=' do
+      it 'accepts a known filter set name' do
+        config.add_filter_set :foo, lambda { |recs| recs }
+        config.default_xml_filter_set = :foo
+
+        config.default_xml_filter_set.should == :foo
+      end
+
+      it 'fails with an unknown filter set name' do
+        expect { config.default_xml_filter_set = :foo }.
+          to raise_error("Unknown filter set :foo.")
+      end
+    end
+
     describe '#mdes_version=' do
       context 'for a known version', :slow, :use_mdes, :modifies_warehouse_state  do
         it 'makes the models available' do

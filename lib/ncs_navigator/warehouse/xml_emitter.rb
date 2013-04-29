@@ -104,6 +104,12 @@ XML
     # @option options [Array<#to_s>] :tables (all for current MDES
     #   version) the tables to include in the emitted XML. Only used if
     #   `:content` is not specified.
+    # @option options [Array<#to_sym>,nil] :filters (config.default_xml_filter_set)
+    #    named filter sets to apply to the data before emitting XML. Only used if
+    #   `:content` is not specified. If the option is not specified at all, the
+    #   {default in the configuration Configuration#default_xml_filter_set} will
+    #   be used, if any. To avoid using even this default, include
+    #   `:filters=>nil` in the options.
     def initialize(config, filename, options={})
       @configuration = config
       @zip = options.has_key?(:zip) ? options[:zip] : true
@@ -115,9 +121,21 @@ XML
       if options[:content]
         @content_enumerator = options[:content]
       else
+        filter_names =
+          if options.has_key?(:filters)
+            options[:filters] ? options[:filters] : []
+          else
+            [config.default_xml_filter_set].compact
+          end
+        filters =
+          unless filter_names.empty?
+            filter_names.collect { |n| config.filter_set(n) }
+          end
+
         @content_enumerator = Contents.new(config, {
           :tables => options[:tables],
-          :'block-size' => options[:'block-size']
+          :'block-size' => options[:'block-size'],
+          :filters => filters
         })
       end
     end

@@ -187,6 +187,81 @@ module NcsNavigator::Warehouse
             p_count.should == 1
           end
         end
+
+        describe 'and filters' do
+          let(:person_names) { xml.xpath('//person/first_name').collect(&:inner_text) }
+
+          before do
+            options[:'include-pii'] = true
+
+            spec_config.add_filter_set :reverser, lambda { |recs|
+              if recs.first.respond_to?(:first_name)
+                recs.first.first_name = recs.first.first_name.reverse
+              end
+              recs
+            }
+            spec_config.add_filter_set :upcaser, lambda { |recs|
+              if recs.first.respond_to?(:first_name)
+                recs.first.first_name = recs.first.first_name.upcase
+              end
+              recs
+            }
+          end
+
+          after do
+            # spec_config is shared across all specs, so clean it up
+            spec_config.filter_sets.delete(:reverser)
+            spec_config.filter_sets.delete(:upcaser)
+          end
+
+          describe 'when there is a default XML filter in the configuration' do
+            before do
+              spec_config.default_xml_filter_set = :reverser
+            end
+
+            after do
+              spec_config.default_xml_filter_set = nil
+            end
+
+            it 'is used when there are no filters in the options' do
+              options.delete(:filters)
+
+              person_names.should == %w(nitneuQ reivaX)
+            end
+
+            it 'is not used when a different filter is in the options' do
+              options[:filters] = ['upcaser']
+
+              person_names.should == %w(QUENTIN XAVIER)
+            end
+
+            it 'is not used when explicitly disabled' do
+              options[:filters] = nil
+
+              person_names.should == %w(Quentin Xavier)
+            end
+          end
+
+          describe 'when there is no default XML filter in the configuration' do
+            it 'applies no filters when none are specified' do
+              options.delete(:filters)
+
+              person_names.should == %w(Quentin Xavier)
+            end
+
+            it 'applies no filters when an absence of filters is specified' do
+              options[:filters] = nil
+
+              person_names.should == %w(Quentin Xavier)
+            end
+
+            it 'applies specified filters, if any' do
+              options[:filters] = ['upcaser', 'reverser']
+
+              person_names.should == %w(NITNEUQ REIVAX)
+            end
+          end
+        end
       end
 
       describe 'with lots and lots of actual data', :slow, :use_database do

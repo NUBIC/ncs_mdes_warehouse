@@ -53,3 +53,8 @@ c.add_filter_set :quux, [FilterOne, lambda { |recs| recs }, FilterThree.new(c)]
 
 # Filter sets may include other filter sets:
 c.add_filter_set :baz, [FilterSeven.new, :quux]
+
+# Specify a filter set to use by default in emit-xml. Any filter referenced
+# using --filters in the invocation of emit-xml will be used _instead_ of this
+# filter.
+c.default_xml_filter_set = :quux

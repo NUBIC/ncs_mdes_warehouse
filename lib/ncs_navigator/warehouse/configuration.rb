@@ -195,6 +195,24 @@ module NcsNavigator::Warehouse
       filter_sets[name.to_sym] = Filters::CompositeFilter.new(filters)
     end
 
+    ##
+    # @return [Symbol,nil] the filter set to with the XML emitter if none is
+    #   specified.
+    attr_reader :default_xml_filter_set
+
+    ##
+    # @param [Symbol,#to_sym] name the name of a known filter set to use by
+    #   default in the XML emitter.
+    # @return [void]
+    def default_xml_filter_set=(name)
+      if name
+        filter_set(name) # fails if unknown
+        @default_xml_filter_set = name.to_sym
+      else
+        @default_xml_filter_set = nil
+      end
+    end
+
     ####
     #### MDES version
     ####

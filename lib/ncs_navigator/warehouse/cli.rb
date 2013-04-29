@@ -64,11 +64,19 @@ DESC
       :desc => 'The target directory for automatically-named files. (Default is CWD.)'
     method_option 'tables', :type => :string,
       :desc => 'Emit XML for a subset of tables.', :banner => 'TABLE,TABLE,TABLE'
+    method_option 'filters', :type => :string, :banner => 'FILTER_SET,FILTER_SET',
+      :desc => 'Use these named filter sets when producing the XML. Default is set in configuration. Use --no-filters to disable default without providing an alternative.'
     def emit_xml(filename=nil)
       use_database
 
-      XmlEmitter.new(configuration, filename,
-        options.merge(:tables => options[:tables].try(:split, /\s*,\s*/))).emit_xml
+      options[:tables] = options[:tables].try(:split, /\s*,\s*/))
+      # need to prevent the addition of a :filters key entirely in order
+      # to detect --no-filters, which shows up as :filters=>nil.
+      if options[:filters]
+        options[:filters] = options[:filters].split(/\s*,\s*/)
+      end
+
+      XmlEmitter.new(configuration, filename, options).emit_xml
     end
 
     desc 'etl', 'Performs the full extract-transform-load process for this configuration'
