@@ -9,6 +9,14 @@ NCS Navigator MDES Warehouse History
   references made from within a configuration file will still resolve fine.
   (#3940)
 
+- Add the concept of named "filter sets" to the warehouse configuration. (#3940)
+
+- Support specifying one or more named filter sets to use with `emit-xml`.
+  (#3940)
+
+- Support specifying a default filter set to use with `emit-xml` if none are
+  specified on the command line. (#3940)
+
 - Split out content enumeration from `XmlEmitter`. `Contents` is an `Enumerable`
   providing memory-efficient access to every record in a set of tables (or all
   tables). (#3936)
