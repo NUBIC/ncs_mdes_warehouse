@@ -102,6 +102,80 @@ module NcsNavigator::Warehouse
       end
     end
 
+    describe '#add_filter_set' do
+      let(:a_filter) { lambda { |recs| recs + ['A'] } }
+      let(:b_filter) { lambda { |recs| ['B'] + recs } }
+      let(:c_filter) { lambda { |recs| ['C'] + recs + ['C'] } }
+
+      describe 'with one valid filter' do
+        before do
+          config.add_filter_set(:quux, a_filter)
+        end
+
+        it 'adds the filter set' do
+          config.filter_set(:quux).should_not be_nil
+        end
+
+        it 'produces a callable filter' do
+          config.filter_set(:quux).call(['D']).should == %w(D A)
+        end
+      end
+
+      describe 'with an array valid filters' do
+        before do
+          config.add_filter_set(:some, [b_filter, c_filter, a_filter])
+        end
+
+        it 'adds the filter set' do
+          config.filter_set(:some).should_not be_nil
+        end
+
+        it 'produces a single callable filter' do
+          config.filter_set(:some).call(['D']).should == %w(C B D C A)
+        end
+      end
+
+      describe 'with a reference to another filter set' do
+        it 'expands the reference if the name is known' do
+          config.add_filter_set(:gamma, c_filter)
+          config.add_filter_set(:beta, [:gamma, b_filter])
+
+          config.filter_set(:beta).call(['D']).should == %w(B C D C)
+        end
+
+        it 'fails if the name is unknown' do
+          expect {
+            config.add_filter_set(:beta, [:gamma, b_filter])
+          }.to raise_error('Unknown filter set :gamma.')
+        end
+      end
+
+      describe 'with an object without a #call method' do
+        it 'gives a helpful message if the object is constructable' do
+          lambda { config.add_filter_set(:quux, String) }.
+            should raise_error('String does not have a call method. Perhaps you meant String.new?')
+        end
+
+        it 'gives a helpful message if the object is just an instance' do
+          lambda { config.add_filter_set(:quux, "not a filter") }.
+            should raise_error('"not a filter" does not have a call method.')
+        end
+
+        it 'does not add the filter set' do
+          config.add_filter_set(:quux, 'not a filter') rescue nil
+          config.filter_sets.should_not have_key(:quux)
+        end
+      end
+
+      describe 'when there is a set with the same name' do
+        it 'throws a useful error message' do
+          config.add_filter_set(:beta, b_filter)
+          expect { config.add_filter_set(:beta, c_filter) }.
+            to raise_error('There is already a filter set named :beta.')
+        end
+      end
+    end
+
     describe '#mdes_version=' do
       context 'for a known version', :slow, :use_mdes, :modifies_warehouse_state  do
         it 'makes the models available' do

@@ -46,3 +46,10 @@ c.add_transformer Bar.new(configuration)
 # :normal or :quiet. The default is :normal; it will usually make more
 # sense to control this from the command line.
 #c.output_level = :normal
+
+# Give a set of one or more filters a name.
+# This name can be used with `emit-xml` to apply the filter during export.
+c.add_filter_set :quux, [FilterOne, lambda { |recs| recs }, FilterThree.new(c)]
+
+# Filter sets may include other filter sets:
+c.add_filter_set :baz, [FilterSeven.new, :quux]

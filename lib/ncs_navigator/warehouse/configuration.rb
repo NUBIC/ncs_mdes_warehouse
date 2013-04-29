@@ -134,6 +134,68 @@ module NcsNavigator::Warehouse
     end
 
     ####
+    #### Filters
+    ####
+
+    ##
+    # @return [Hash<Symbol,#call>] an index of named {CompositeFilter}s
+    #   reflecting the configured named filter sets
+    def filter_sets
+      @filter_sets ||= {}
+    end
+
+    ##
+    # Looks up a filter set by name. Errors out if no match found.
+    #
+    # If you need to refer to a named filter set in your configuration file,
+    # use this method instead of {#filter_sets}. E.g.:
+    #
+    #   c.add_transformer SomeDatabase.create_transformer(c, :filters => [c.filter_set(:some_filters)])
+    #
+    # Using this method instead of {#filter_sets} ensures that you will get a
+    # useful error message if you have a typo in your filter name.
+    #
+    # @return [#call] the {CompositeFilter} registered under the given
+    #   name. If none, it raises {Error}.
+    def filter_set(name)
+      filter_sets[name.to_sym] or raise Error, "Unknown filter set #{name.inspect}."
+    end
+
+    ##
+    # Define a named filter set.
+    #
+    # @param [Symbol,#to_sym] name the name for this set.
+    # @param [#call, Array<#call>] one_or_more_filters the filters to use in
+    #   the set
+    # @return [void]
+    def add_filter_set(name, one_or_more_filters)
+      if filter_sets.has_key?(name.to_sym)
+        raise Error, "There is already a filter set named #{name.inspect}."
+      end
+
+      filters = [*one_or_more_filters].collect do |candidate|
+        case candidate
+        when Symbol
+          filter_set(candidate)
+        else
+          candidate
+        end
+      end
+
+      filters.each do |candidate|
+        unless candidate.respond_to?(:call)
+          if candidate.respond_to?(:new)
+            raise Error, "#{candidate.inspect} does not have a call method. Perhaps you meant #{candidate.inspect}.new?"
+          else
+            raise Error, "#{candidate.inspect} does not have a call method."
+          end
+        end
+      end
+
+      filter_sets[name.to_sym] = Filters::CompositeFilter.new(filters)
+    end
+
+    ####
     #### MDES version
     ####
 
