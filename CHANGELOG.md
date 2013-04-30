@@ -21,6 +21,9 @@ NCS Navigator MDES Warehouse History
   providing memory-efficient access to every record in a set of tables (or all
   tables). (#3936)
 
+- Add filters for adding and removing prefixes to/from the keys for all records
+  of a particular type. (#3968)
+
 0.12.0
 ------
 
