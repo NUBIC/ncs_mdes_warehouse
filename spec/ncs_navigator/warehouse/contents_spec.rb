@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module NcsNavigator::Warehouse
-  describe Contents do
+  describe Contents, :use_mdes do
     let(:enumerator) { Contents.new(spec_config, options) }
     let(:options) { { } }
     let(:yielded) { enumerator.to_a }
@@ -27,7 +27,7 @@ module NcsNavigator::Warehouse
       end
     end
 
-    describe '#each', :slow do
+    describe '#each', :slow, :use_database do
       def default_required_attributes(model)
         model.properties.select { |prop| prop.required? }.inject({}) { |h, prop|
           h[prop.name] = '-4'; h
@@ -50,7 +50,7 @@ module NcsNavigator::Warehouse
         records.each { |rec| rec.save or fail "Save of #{rec.inspect} failed." }
       end
 
-      describe 'with exactly one actual record', :use_database do
+      describe 'with exactly one actual record' do
         let(:records) {
           [
             create_person('XQ4')
@@ -66,7 +66,7 @@ module NcsNavigator::Warehouse
         end
       end
 
-      describe 'with actual data', :use_database do
+      describe 'with actual data' do
         let(:records) {
           [
             create_person('XQ4', :first_name => 'Xavier'),
@@ -144,7 +144,7 @@ module NcsNavigator::Warehouse
         end
       end
 
-      describe 'with lots and lots of actual data', :use_database do
+      describe 'with lots and lots of actual data' do
         let(:count) { 3134 }
         let(:records) { (0...count).collect { |n| create_person(n) } }
         let(:actual_ids) { enumerator.collect { |e| e.key.first } }
