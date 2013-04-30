@@ -69,7 +69,7 @@ DESC
     def emit_xml(filename=nil)
       use_database
 
-      options[:tables] = options[:tables].try(:split, /\s*,\s*/))
+      options[:tables] = options[:tables].try(:split, /\s*,\s*/)
       # need to prevent the addition of a :filters key entirely in order
       # to detect --no-filters, which shows up as :filters=>nil.
       if options[:filters]
