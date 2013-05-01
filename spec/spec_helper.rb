@@ -67,12 +67,12 @@ RSpec.configure do |config|
 
   ###### use_database
 
-  config.before(:each, :use_database) do
-    $db_init ||=
-      begin
-        init = NcsNavigator::Warehouse::DatabaseInitializer.new(spec_config)
-        init.set_up_repository(:both)
-      end
+  # Other specs call set_up_repository with different warehouse configs.
+  # This interferes with global state (DM's connection setup), so we need
+  # to reconnect for each :use_database group to correct.
+  config.before(:all, :use_database) do
+    init = NcsNavigator::Warehouse::DatabaseInitializer.new(spec_config)
+    init.set_up_repository(:both)
   end
 
   config.after(:each, :use_database) do
