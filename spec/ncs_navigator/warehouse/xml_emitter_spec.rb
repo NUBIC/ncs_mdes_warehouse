@@ -32,6 +32,28 @@ module NcsNavigator::Warehouse
       end
     end
 
+    describe '#models' do
+      it 'exposes the configured list of models when no :content' do
+        options[:tables] = %w(person household_unit)
+        emitter.models.should == [mdes_model(:person), mdes_model(:household_unit)]
+      end
+
+      it 'uses the models from the provided :content, if any' do
+        content = mock(Enumerable)
+        content.should_receive(:models).and_return([mdes_model(:listing_unit)])
+        options[:content] = content
+
+        options[:tables] = %w(person household_unit)
+
+        emitter.models.should == [mdes_model(:listing_unit)]
+      end
+
+      it 'is nil if the :content does not provide models' do
+        options[:content] = []
+        emitter.models.should be_nil
+      end
+    end
+
     # Most of the details of the XML are tested on the MdesModel mixin
     describe 'the generated XML', :slow do
       describe 'global attributes' do

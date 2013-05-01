@@ -20,12 +20,6 @@ module NcsNavigator::Warehouse
     attr_reader :configuration
 
     ##
-    # @return [Array<Models::MdesModel>] the models whose data will be
-    #   emitted. This is determined from the `:tables` option to
-    #   {#initialize}.
-    attr_reader :models
-
-    ##
     # @private exposed for testing
     # @return [Array] the configuration objects related to each separate XML
     #   file emitted in one run.
@@ -138,6 +132,15 @@ XML
           :filters => filters
         })
       end
+    end
+
+    ##
+    # @return [Array<Models::MdesModel>] the models whose data will be
+    #   emitted. This is determined from the `:tables` option to
+    #   {#initialize} or by any `models` method implemented by the value passed
+    #   to the `:content` option.
+    def models
+      @content_enumerator.models if @content_enumerator.respond_to?(:models)
     end
 
     ##

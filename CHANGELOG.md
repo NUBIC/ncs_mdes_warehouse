@@ -4,6 +4,9 @@ NCS Navigator MDES Warehouse History
 0.13.1
 ------
 
+- Fix XmlEmitter#models so that it returns the configured models (if available).
+  (#3984)
+
 0.13.0
 ------
 
