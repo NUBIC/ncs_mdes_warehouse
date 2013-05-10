@@ -1,8 +1,10 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
-0.13.2
+0.14.0
 ------
+
+- Add models for MDES 3.3 based on 3.3.00.00. (#3918)
 
 0.13.1
 ------
