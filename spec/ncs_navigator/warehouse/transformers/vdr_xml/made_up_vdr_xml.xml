@@ -45,7 +45,7 @@
       <tsu_id>-7</tsu_id>
       <list_line>-7</list_line>
       <list_source random_attr='foo'>3</list_source>
-      <list_comment>NA</list_comment>
+      <list_comment>This listing is tall &amp; narrow.</list_comment>
       <transaction_type>NA</transaction_type>
     </listing_unit>
 
@@ -114,7 +114,7 @@
       <email_type_oth>-7</email_type_oth>
       <email_share>2</email_share>
       <email_active>1</email_active>
-      <email_comment>NA</email_comment>
+      <email_comment>NA&#64;example.net</email_comment>
       <email_start_date>9666-96-96</email_start_date>
       <email_end_date>9666-96-96</email_end_date>
       <transaction_type xsi:nil="true"/>

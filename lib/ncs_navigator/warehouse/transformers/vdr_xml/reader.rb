@@ -92,11 +92,13 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
         else
           # node is the start tag of a table variable
           var = node.local_name.to_sym
+
           val =
             if node.attribute('xsi:nil') == 'true'
               nil
-            else
-              node.inner_xml.strip.gsub('&#13;', "\r")
+            elsif !node.self_closing?
+              child = node.read
+              child.value? ? child.value.strip.gsub('&#13;', "\r") : ''
             end
 
           unless node.self_closing?

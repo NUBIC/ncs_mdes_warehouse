@@ -6,6 +6,9 @@ NCS Navigator MDES Warehouse History
 
 - Add models for MDES 3.3 based on 3.3.00.00. (#3918)
 
+- Ensure that &amp; and other XML-mandatory entities are decoded in
+  `VdrXml::Reader`. (#4013)
+
 0.13.1
 ------
 

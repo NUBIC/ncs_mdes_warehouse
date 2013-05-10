@@ -51,12 +51,20 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
         person.person_comment.should == "Likes\r\nline\r\nbreaks"
       end
 
+      it 'decodes numeric entities' do
+        email.email_comment.should == 'NA@example.net'
+      end
+
+      it 'decodes named entities' do
+        listing_unit.list_comment.should == 'This listing is tall & narrow.'
+      end
+
       it 'reads xsi:nil as nil' do
         person.person_dob.should be_nil
       end
 
       it 'handles completely empty elements' do
-        person.last_name.should == ""
+        person.last_name.should be_nil
       end
 
       it 'handles values that occur after completely empty elements' do
