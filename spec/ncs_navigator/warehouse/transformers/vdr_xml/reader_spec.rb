@@ -63,12 +63,22 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
         person.person_dob.should be_nil
       end
 
-      it 'handles completely empty elements' do
+      it 'handles self-closing empty elements' do
         person.last_name.should be_nil
       end
 
-      it 'handles values that occur after completely empty elements' do
-        person.suffix.should == '-7'
+      it 'handles blank elements' do
+        person.maiden_name.should == ''
+      end
+
+      it 'does not skip the element after a self-closing element' do
+        person.last_name.should be_nil      # the self-closing element
+        person.middle_name.should == 'Anne' # the next element
+      end
+
+      it 'does not skip the element after a blank element' do
+        person.when_move.should == ''         # the empty element
+        person.date_move.should == '9777-97'  # the next element
       end
     end
   end

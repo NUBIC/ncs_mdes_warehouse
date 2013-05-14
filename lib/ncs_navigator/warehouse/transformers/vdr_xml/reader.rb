@@ -103,9 +103,8 @@ class NcsNavigator::Warehouse::Transformers::VdrXml
 
           unless node.self_closing?
             # Skip to closing tag
-            n = node.read
-            until n.node_type == Nokogiri::XML::Reader::TYPE_END_ELEMENT
-              n = node.read
+            until node.node_type == Nokogiri::XML::Reader::TYPE_END_ELEMENT
+              node.read
             end
           end
 
