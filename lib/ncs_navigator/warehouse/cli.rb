@@ -4,6 +4,12 @@ require 'thor'
 
 module NcsNavigator::Warehouse
   class CLI < Thor
+
+    def initialize(args=[], options={}, config={})
+      super
+      @options = @options.dup
+    end
+
     class_option :quiet, :type => :boolean, :aliases => %w(-q),
       :desc => 'Suppress the status messages printed to standard error'
     class_option 'config', :type => :string, :aliases => %w(-c),
