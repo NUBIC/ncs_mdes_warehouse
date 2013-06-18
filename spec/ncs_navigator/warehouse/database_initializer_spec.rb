@@ -2,6 +2,30 @@ require 'spec_helper'
 
 module NcsNavigator::Warehouse
   describe DatabaseInitializer do
+    describe '#drop_all_null_constraints', :slow do
+      it 'drops NOT NULL constraints on all non-primary key columns in all tables' do
+        subject = DatabaseInitializer.new(spec_config)
+        subject.set_up_repository(:working)
+        subject.replace_schema
+        subject.drop_all_null_constraints(:working)
+
+        models  = ::DataMapper::Model.descendants
+        adapter = ::DataMapper.repository(:mdes_warehouse_working).adapter
+        models.each do |model|
+          model.properties.each do |property|
+            result = adapter.select(%Q|
+              SELECT is_nullable
+              FROM information_schema.columns
+              WHERE table_name = '#{model.storage_name}'
+              AND column_name = '#{property.name}'
+            |)
+            result.first.should == "YES" unless model.key.include?(property)
+          end
+        end
+
+      end
+    end
+
     describe '#replace_schema', :slow, :use_mdes do
       subject { DatabaseInitializer.new(spec_config) }
       let(:mdes_models) { spec_config.models_module.mdes_order }
