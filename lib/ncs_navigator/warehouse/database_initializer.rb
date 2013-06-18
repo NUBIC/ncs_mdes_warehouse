@@ -93,6 +93,26 @@ module NcsNavigator::Warehouse
       create_no_pii_views
     end
 
+    def drop_all_null_constraints(which, options={})
+      shell.clear_line_then_say "Dropping all NOT NULL constraints in #{which} schema" unless options[:quiet]
+      models = ::DataMapper::Model.descendants
+      adapter = ::DataMapper.repository(:"mdes_warehouse_#{which}").adapter
+
+      models.each do |model|
+        model.properties.each do |property|
+          # Skip if NULLS are allowed or column is part of the primary key
+          next if property.allow_blank? || model.key.include?(property)
+          adapter.execute(%Q|
+            ALTER TABLE #{model.storage_name}
+            ALTER COLUMN #{property.name}
+            DROP NOT NULL
+          |)
+        end
+      end
+
+      shell.clear_line_then_say "Dropped all NOT NULL constratins in #{which} schema.\n" unless options[:quiet]
+    end
+
     # @private Exposed for use in tests
     def drop_all(which, options={})
       shell.clear_line_then_say "Dropping everything in #{which} schema" unless options[:quiet]

@@ -95,10 +95,13 @@ DESC
       :desc => 'Copy the working schema to production even if there are errors'
     method_option 'preserve', :type => 'boolean',
       :desc => 'Do not wipe the working database before beginning ETL (for debugging)'
+    method_option 'drop_not_null', :type => 'boolean',
+      :desc => 'Drop NOT NULL constraints for all, but the primary key colums in the database'
     def etl
       db = DatabaseInitializer.new(configuration)
       db.set_up_repository(:both)
       db.replace_schema unless options[:preserve]
+      db.drop_all_null_constraints(:working) if options[:drop_not_null]
 
       success = TransformLoad.new(configuration).run
       if success || options['force']
