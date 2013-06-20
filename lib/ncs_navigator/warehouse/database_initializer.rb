@@ -110,7 +110,7 @@ module NcsNavigator::Warehouse
         end
       end
 
-      shell.clear_line_then_say "Dropped all NOT NULL constratins in #{which} schema.\n" unless options[:quiet]
+      shell.clear_line_then_say "Dropped all NOT NULL constraints in #{which} schema.\n" unless options[:quiet]
     end
 
     # @private Exposed for use in tests
@@ -272,4 +272,3 @@ module NcsNavigator::Warehouse
     private :escape_cmd
   end
 end
-

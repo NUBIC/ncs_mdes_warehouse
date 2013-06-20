@@ -96,7 +96,7 @@ DESC
     method_option 'preserve', :type => 'boolean',
       :desc => 'Do not wipe the working database before beginning ETL (for debugging)'
     method_option 'drop_not_null', :type => 'boolean',
-      :desc => 'Drop NOT NULL constraints for all, but the primary key colums in the database'
+      :desc => 'Drop NOT NULL constraints for all but the primary key columns in the database'
     def etl
       db = DatabaseInitializer.new(configuration)
       db.set_up_repository(:both)
