@@ -55,7 +55,7 @@ module NcsNavigator::Warehouse::Transformers
       if record.valid?
         log.debug("Saving valid transformed event record #{record_ident record}.")
         begin
-          unless record.save
+          unless record.save # TODO: need to handle soft_validations here?
             msg = "Could not save valid record #{record.inspect}. #{record_messages(record).join(' ')}"
             log.error msg
             status.unsuccessful_record(record, msg)
@@ -95,4 +95,3 @@ module NcsNavigator::Warehouse::Transformers
     end
   end
 end
-

@@ -14,6 +14,8 @@ module NcsNavigator::Warehouse
       :desc => 'Suppress the status messages printed to standard error'
     class_option 'config', :type => :string, :aliases => %w(-c),
       :desc => "Supply an alternate configuration file instead of the default #{Configuration.environment_file}"
+    class_option :soft_validations, :type => :boolean,
+      :desc => "Record DataMapper validations (as transform errors) but still attempt to export"
 
     no_tasks {
       def configuration
@@ -27,6 +29,7 @@ module NcsNavigator::Warehouse
                 c.output_level = options['quiet'] ? :quiet : :normal
               end
               c.set_up_logs
+              c.soft_validations = options['soft_validations']
             end
           end
       end
@@ -183,4 +186,3 @@ DESC
     end
   end
 end
-
