@@ -19,10 +19,12 @@ module NcsNavigator::Warehouse
               WHERE table_name = '#{model.storage_name}'
               AND column_name = '#{property.name}'
             |)
-            result.first.should == "YES" unless model.key.include?(property)
+
+            unless model.key.include?(property)
+              result.first.should == "YES"
+            end
           end
         end
-
       end
     end
 
