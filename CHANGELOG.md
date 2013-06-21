@@ -1,6 +1,15 @@
 NCS Navigator MDES Warehouse History
 ====================================
 
+0.15.0
+------
+
+- Add soft_validations option: Record DataMapper validations
+  (as transform errors) but still attempt to export (#4315)
+
+- Add drop_not_null option: Drop NOT NULL constraints for all, but
+  the primary key colums in the database (#4316)
+
 0.14.1
 ------
 
