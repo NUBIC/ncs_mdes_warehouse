@@ -66,7 +66,7 @@ module NcsNavigator::Warehouse::Transformers
       @duplicates_strategy = select_duplicates_strategy
 
       @record_checkers = {
-        :validation => ValidateRecordChecker.new(log),
+        :validation => ValidateRecordChecker.new(log, @configuration),
         :foreign_key => ForeignKeyChecker.new(log, foreign_key_index),
         :psus => PsuIdChecker.new(log, @configuration.navigator.psus)
       }
@@ -139,11 +139,11 @@ module NcsNavigator::Warehouse::Transformers
       if saveable
         log.debug("Saving verified record #{record_ident record}.")
         begin
-          if record.save
+          if (@configuration.soft_validations ? record.save! : record.save)
             record
             foreign_key_index.record(record)
           else
-            msg = "Could not save valid record #{record.inspect}."
+            msg = "Could not save record #{record.inspect}.\n\t Errors: #{record.errors.inspect}"
             log.error msg
             status.unsuccessful_record(record, msg)
           end
@@ -225,8 +225,9 @@ module NcsNavigator::Warehouse::Transformers
 
       attr_reader :log
 
-      def initialize(log)
+      def initialize(log, configuration)
         @log = log
+        @configuration = configuration
       end
 
       def verify_or_report_errors(record, status)
@@ -244,7 +245,7 @@ module NcsNavigator::Warehouse::Transformers
               )
             end
           end
-          false
+          @configuration.soft_validations
         end
       end
 

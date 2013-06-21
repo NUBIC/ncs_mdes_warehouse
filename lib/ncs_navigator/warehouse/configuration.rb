@@ -406,6 +406,9 @@ module NcsNavigator::Warehouse
       @output_level ||= :normal
     end
 
+    # try to save records with DataMapper validation errors i.e. record.valid?
+    attr_accessor :soft_validations
+
     ##
     # Set the desired terminal output level.
     #
@@ -560,4 +563,3 @@ module NcsNavigator::Warehouse
     end
   end
 end
-
