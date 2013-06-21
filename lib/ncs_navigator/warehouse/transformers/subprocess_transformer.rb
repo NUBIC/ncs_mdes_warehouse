@@ -68,6 +68,7 @@ module NcsNavigator::Warehouse::Transformers
     def initialize(config, exec_and_args, options={})
       @configuration = config
       @exec_and_args = exec_and_args
+      @exec_and_args << '--soft_validations' if @configuration.soft_validations
       @directory = options[:directory] || '.'
       @environment = options[:environment] || {}
     end
