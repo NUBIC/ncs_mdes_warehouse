@@ -50,22 +50,8 @@ module NcsNavigator::Warehouse::Transformers
     private
 
     # TODO: share this stuff between here and EnumTransformer
-
     def save(record, status)
-      if record.valid?
-        log.debug("Saving valid transformed event record #{record_ident record}.")
-        begin
-          unless record.save # TODO: need to handle soft_validations here?
-            msg = "Could not save valid record #{record.inspect}. #{record_messages(record).join(' ')}"
-            log.error msg
-            status.unsuccessful_record(record, msg)
-          end
-        rescue => e
-          msg = "Error on save. #{e.class}: #{e}."
-          log.error msg
-          status.unsuccessful_record(record, msg)
-        end
-      else
+      if !(valid = record.valid?)
         log.error "Event invalid after transformation. #{record_messages(record).join(' ')}"
         record.errors.keys.each do |prop|
           record.errors[prop].each do |e|
@@ -75,6 +61,21 @@ module NcsNavigator::Warehouse::Transformers
               :attribute_value => record.send(prop).inspect
               )
           end
+        end
+      end
+
+      if valid || @configuration.soft_validations
+        log.debug("Saving valid transformed event record #{record_ident record}.")
+        begin
+          unless (@configuration.soft_validations ? record.save! : record.save)
+            msg = "Could not save valid record #{record.inspect}. #{record_messages(record).join(' ')}"
+            log.error msg
+            status.unsuccessful_record(record, msg)
+          end
+        rescue => e
+          msg = "Error on save. #{e.class}: #{e}."
+          log.error msg
+          status.unsuccessful_record(record, msg)
         end
       end
     end
