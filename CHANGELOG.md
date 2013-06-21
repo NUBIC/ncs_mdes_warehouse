@@ -10,9 +10,6 @@ NCS Navigator MDES Warehouse History
 - Add drop_not_null option: Drop NOT NULL constraints for all, but
   the primary key colums in the database (#4316)
 
-0.14.1
-------
-
 0.14.0
 ------
 
