@@ -17,7 +17,7 @@ class NcsNavigator::Warehouse::Configuration
     end
 
     def eval
-      instance_eval(File.read(@filename), @filename)
+      instance_eval(File.read(@filename.to_s), @filename.to_s)
       configuration.finish
       @evaled = true
     end

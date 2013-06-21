@@ -48,5 +48,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake', '~> 0.9.2'
   s.add_development_dependency 'yard', '~> 0.7.2'
   s.add_development_dependency 'ci_reporter', '1.6.6'
-  s.add_development_dependency 'fakefs', '0.4.0' # FakeFS does not follow semver
+  s.add_development_dependency 'fakefs', '0.4.2' # FakeFS does not follow semver
 end
