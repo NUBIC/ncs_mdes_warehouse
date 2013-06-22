@@ -11,17 +11,18 @@ module NcsNavigator::Warehouse
 
         models  = ::DataMapper::Model.descendants
         adapter = ::DataMapper.repository(:mdes_warehouse_working).adapter
-        models.each do |model|
-          model.properties.each do |property|
-            result = adapter.select(%Q|
-              SELECT is_nullable
-              FROM information_schema.columns
-              WHERE table_name = '#{model.storage_name}'
-              AND column_name = '#{property.name}'
-            |)
 
-            unless model.key.include?(property)
-              result.first.should == "YES"
+        models.each do |m|
+          nullables = adapter.select(%Q{
+            SELECT cs.column_name
+              FROM information_schema.columns AS cs
+              WHERE cs.is_nullable = 'YES'
+              AND cs.table_name = '#{m.storage_name}'
+          })
+
+          m.properties.each do |p|
+            unless m.key.include?(p)
+              nullables.should include(p.name.to_s)
             end
           end
         end
