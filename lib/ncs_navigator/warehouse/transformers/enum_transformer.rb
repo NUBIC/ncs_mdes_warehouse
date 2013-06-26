@@ -143,7 +143,7 @@ module NcsNavigator::Warehouse::Transformers
             record
             foreign_key_index.record(record)
           else
-            msg = "Could not save record #{record.inspect}.\n\t Errors: #{record.errors.inspect}"
+            msg = "Could not save record #{record_ident record}."
             log.error msg
             status.unsuccessful_record(record, msg)
           end
