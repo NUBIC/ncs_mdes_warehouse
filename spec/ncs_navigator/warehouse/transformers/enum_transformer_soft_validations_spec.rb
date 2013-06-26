@@ -29,29 +29,23 @@ module NcsNavigator::Warehouse::Transformers
 
         it 'saves invalid records but still records validation errors' do
           records[2].recruit_type = 'H'
-          records[2].dirty?.should == true
-          records[2].valid?.should == false
+          records[2].should be_dirty
+          records[2].should_not be_valid
           transformer.transform(transform_status)
           transform_status.transform_errors.size.should == 1
-          records[2].dirty?.should == false
+          records[2].should_not be_dirty
         end
 
         context "in combination with drop_all_null_constraints" do
-
-          around(:each) do |ex|
-            NcsNavigator::Warehouse::Spec.database_initializer.replace_schema
-            ex.run
-            NcsNavigator::Warehouse::Spec.database_initializer.replace_schema
-          end
-
+          before(:all) {NcsNavigator::Warehouse::Spec.database_initializer.drop_all_null_constraints(:working)}
+          after (:all) {NcsNavigator::Warehouse::Spec.database_initializer.replace_schema}
           it 'saves null records with drop_all_null_constraints' do
-            NcsNavigator::Warehouse::Spec.database_initializer.drop_all_null_constraints(:working)
             records[2].name = nil
-            records[2].dirty?.should == true
-            records[2].valid?.should == false
+            records[2].should be_dirty
+            records[2].should_not be_valid
             transformer.transform(transform_status)
             transform_status.transform_errors.size.should == 1
-            records[2].dirty?.should == false
+            records[2].should_not be_dirty
           end
         end
       end
