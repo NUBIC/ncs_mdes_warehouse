@@ -33,25 +33,12 @@ module NcsNavigator::Warehouse
 
           build_status_for(transformer, position).tap do |status|
             begin
-              TransformStatus.transaction do
-                if repo.adapter.to_s =~ /Postgres/
-                  repo.adapter.execute("SET LOCAL synchronous_commit TO OFF")
-                end
-                begin
-                  transformer.transform(status)
-                rescue => e
-                  shell.say_line("\nTransform failed. (See log for more detail.)")
-                  msg = "Transform failed. #{e.class}: #{e}\n#{stringify_trace(e.backtrace)}"
-                  log.error(msg)
-                  status.add_error(msg)
-                end
-              end
-            rescue DataObjects::IntegrityError => e
-              shell.say_line(
-                "\nTransform failed with data integrity error. (See log for more detail.)")
-              log.error(
-                "Transform failed with data integrity error: #{e}.\n#{stringify_trace(e.backtrace)}")
-              status.add_error("Transform failed with data integrity error: #{e}.")
+              transformer.transform(status)
+            rescue => e
+              shell.say_line("\nTransform failed. (See log for more detail.)")
+              msg = "Transform failed. #{e.class}: #{e}\n#{stringify_trace(e.backtrace)}"
+              log.error(msg)
+              status.add_error(msg)
             end
             status.end_time = Time.now
             unless status.save
