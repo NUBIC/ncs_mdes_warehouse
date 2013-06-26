@@ -140,34 +140,6 @@ module NcsNavigator::Warehouse
         end
       end
 
-      describe 'with an integrity error on transaction commit' do
-        let(:runs) { [] }
-
-        before do
-          config.add_transformer(BlockTransformer.new { |s| runs << 'A' })
-          config.add_transformer(BlockTransformer.new { |s| runs << 'B' })
-          config.add_transformer(BlockTransformer.new { |s| runs << 'C3' })
-
-          TransformStatus.should_receive(:transaction).ordered.and_yield
-          TransformStatus.should_receive(:transaction).ordered.
-            and_raise(DataObjects::IntegrityError.new('Foo'))
-          TransformStatus.should_receive(:transaction).ordered.and_yield
-
-          loader.run
-        end
-
-        it 'records a TransformError' do
-          TransformStatus.all[1].transform_errors.first.message.
-            should =~ /^Transform failed with data integrity error: Foo/
-        end
-
-        it 'still runs all the transformers' do
-          # this is not A B C3 due to a limitation in rspec-mocks --
-          # you apparently can't .and_yield.and_raise and have both apply.
-          runs.should == %w(A C3)
-        end
-      end
-
       describe 'with post-ETL hooks' do
         let(:hook_a) { RecordingHook.new }
         let(:hook_success) { RecordingHook.new(:succeeded) }
