@@ -45,3 +45,16 @@ module DataMapper::Inflector
     lower_case_and_underscored_word
   end
 end
+
+# TODO: add/verify there are specs to ensure this does not break the
+#       behavior of mdes-wh without --soft_validations
+#
+# This hack is added to get around DataMapper validating :required =>
+# true in dm-core. With dm-validations :required => true is also
+# validated but the validation in dm-core cannot be disabled using
+# save! (or any other known method)
+class DataMapper::Property
+  def valid?(*args)
+    true
+  end
+end

@@ -23,8 +23,8 @@ module NcsNavigator::Warehouse
       end
     end
 
-    def self.database_initializer
-      @database_initializer ||= DatabaseInitializer.new(configuration)
+    def self.database_initializer(config = self.configuration)
+      @database_initializer ||= DatabaseInitializer.new(config)
     end
   end
 end
