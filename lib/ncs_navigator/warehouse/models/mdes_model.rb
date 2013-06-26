@@ -29,6 +29,13 @@ module NcsNavigator::Warehouse::Models
             content = %w(-3 -6).detect { |c| prop.options[:set].include?(c) }
           end
 
+          # If the content is a BigDecimal, we don't want
+          # the result in engineering notation, which is the default.
+          # We want floating-point notation instead.
+          if content.is_a?(BigDecimal)
+            content = content.to_s('F')
+          end
+
           # Omit if blank and omittable, otherwise have a blast
           if !content.blank? || !prop.omittable
             xml.tag!(variable_name, content)

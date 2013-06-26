@@ -33,9 +33,10 @@ module NcsNavigator::Warehouse::Models
         property   :color_scale, NcsNavigator::Warehouse::DataMapper::NcsString,
                    :pii => true,
                    :set => %w(3 4 5 6 7 8 -6)
+        property   :sample_size, NcsNavigator::Warehouse::DataMapper::NcsDecimal
         property   :size, NcsNavigator::Warehouse::DataMapper::NcsInteger, :omittable => true
 
-        mdes_order :tableau_id, :age_span, :context_id, :ssn, :color_scale, :size
+        mdes_order :tableau_id, :age_span, :context_id, :ssn, :color_scale, :size, :sample_size
       end
 
       class Spec::Sample::Context
@@ -55,7 +56,7 @@ module NcsNavigator::Warehouse::Models
     describe '.mdes_order' do
       it 'is retrievable' do
         Spec::Sample::GenerationalTableau.mdes_order.
-          should == [ :tableau_id, :age_span, :context_id, :ssn, :color_scale, :size ]
+          should == [ :tableau_id, :age_span, :context_id, :ssn, :color_scale, :size, :sample_size ]
       end
     end
 
@@ -67,7 +68,7 @@ module NcsNavigator::Warehouse::Models
       subject {
         Spec::Sample::GenerationalTableau.new(
           :tableau_id => 4, :age_span => '19-54', :ssn => '555-45-4444', :color_scale => '5',
-          :size => 14
+          :size => 14, :sample_size => 15.01234
         ).tap do |gt|
           gt.context_id = 'AB-7833'
         end
@@ -82,7 +83,11 @@ module NcsNavigator::Warehouse::Models
       end
 
       it 'emits the expected number of columns' do
-        xml.root.elements.size.should == 7
+        xml.root.elements.size.should == 8
+      end
+
+      it 'produces decimals in a floating-point notation' do
+        xml.xpath('//sample_size').first.text.strip.should == "15.01234"
       end
 
       it 'produces XML omitting PII by default' do
@@ -104,7 +109,7 @@ module NcsNavigator::Warehouse::Models
 
       it 'emits the columns according to the mdes_order' do
         xml.root.elements.collect(&:name).
-          should == %w(tableau_id age_span context_id ssn color_scale size transaction_type)
+          should == %w(tableau_id age_span context_id ssn color_scale size sample_size transaction_type)
       end
 
       it 'emits the property values as expected' do
