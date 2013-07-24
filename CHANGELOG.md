@@ -10,6 +10,10 @@ NCS Navigator MDES Warehouse History
 - Add drop_not_null option: Drop NOT NULL constraints for all, but
   the primary key colums in the database (#4316)
 
+- Fix trh_meter_calibration's equip_id foreign key reference (#4586)
+
+- Update XmlEmitter to work with latest Thor (#4589)
+
 0.14.0
 ------
 
