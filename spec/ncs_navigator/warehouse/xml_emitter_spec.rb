@@ -5,7 +5,7 @@ require 'zip/zip'
 module NcsNavigator::Warehouse
   describe XmlEmitter, :use_mdes do
     let(:filename) { tmpdir + 'export.xml' }
-    let(:options) { { :zip => false } }
+    let(:options) { { 'zip' => false } }
     let(:emitter) { XmlEmitter.new(spec_config, filename, options) }
     let(:xml) {
       emitter.emit_xml
@@ -246,19 +246,19 @@ module NcsNavigator::Warehouse
             end
 
             it 'is used when there are no filters in the options' do
-              options.delete(:filters)
+              options.delete('filters')
 
               person_names.should == %w(nitneuQ reivaX)
             end
 
             it 'is not used when a different filter is in the options' do
-              options[:filters] = ['upcaser']
+              options['filters'] = ['upcaser']
 
               person_names.should == %w(QUENTIN XAVIER)
             end
 
             it 'is not used when explicitly disabled' do
-              options[:filters] = nil
+              options['filters'] = nil
 
               person_names.should == %w(Quentin Xavier)
             end
@@ -266,19 +266,19 @@ module NcsNavigator::Warehouse
 
           describe 'when there is no default XML filter in the configuration' do
             it 'applies no filters when none are specified' do
-              options.delete(:filters)
+              options.delete('filters')
 
               person_names.should == %w(Quentin Xavier)
             end
 
             it 'applies no filters when an absence of filters is specified' do
-              options[:filters] = nil
+              options['filters'] = nil
 
               person_names.should == %w(Quentin Xavier)
             end
 
             it 'applies specified filters, if any' do
-              options[:filters] = ['upcaser', 'reverser']
+              options['filters'] = ['upcaser', 'reverser']
 
               person_names.should == %w(NITNEUQ REIVAX)
             end
@@ -345,12 +345,12 @@ module NcsNavigator::Warehouse
         end
 
         it 'exists if explicitly requested' do
-          options[:zip] = true
+          options['zip'] = true
           actual.should be_readable
         end
 
         it 'does not exist when excluded' do
-          options[:zip] = false
+          options['zip'] = false
           actual.exist?.should be_false
         end
       end

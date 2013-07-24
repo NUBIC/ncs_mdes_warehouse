@@ -106,7 +106,7 @@ XML
     #   `:filters=>nil` in the options.
     def initialize(config, filename, options={})
       @configuration = config
-      @zip = options.has_key?(:zip) ? options[:zip] : true
+      @zip = options.has_key?('zip') ? options['zip'] : true
 
       @xml_files = determine_files_to_create(filename, options)
 
@@ -116,8 +116,8 @@ XML
         @content_enumerator = options[:content]
       else
         filter_names =
-          if options.has_key?(:filters)
-            options[:filters] ? options[:filters] : []
+          if options.has_key?('filters')
+            options['filters'] ? options['filters'] : []
           else
             [config.default_xml_filter_set].compact
           end
