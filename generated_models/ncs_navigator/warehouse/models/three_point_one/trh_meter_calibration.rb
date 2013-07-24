@@ -17,7 +17,7 @@ module NcsNavigator::Warehouse::Models::ThreePointOne
                'NcsNavigator::Warehouse::Models::ThreePointOne::SrscInfo',
                :child_key => [ :srsc_id ], :required => true
     belongs_to :equip,
-               'NcsNavigator::Warehouse::Models::ThreePointOne::SpecEquipment',
+               'NcsNavigator::Warehouse::Models::ThreePointOne::EnvEquipment',
                :child_key => [ :equip_id ], :required => true
     belongs_to :staff,
                'NcsNavigator::Warehouse::Models::ThreePointOne::Staff',
